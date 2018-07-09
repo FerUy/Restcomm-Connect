@@ -60,6 +60,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.restcomm.connect.commons.annotations.concurrency.ThreadSafe;
@@ -265,8 +266,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             return status(BAD_REQUEST).entity(unsupportedOperationException.getMessage()).build();
         }
 
-        /*********************************************/
-        /*** Query GMLC for Location Data, stage 1 ***/
+        /***********************************************/
+        /******* Query GMLC for Location Data  ********/
         /*********************************************/
         try {
             String targetMSISDN = data.getFirst("DeviceIdentifier");
@@ -276,8 +277,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String gmlcUser = gmlcConf.getString("gmlc-user");
             String gmlcPassword = gmlcConf.getString("gmlc-password");
             // Credentials credentials = new UsernamePasswordCredentials(gmlcUser, gmlcPassword);
-            URL url = new URL(gmlcURI + targetMSISDN);
+            String psiService = data.getFirst("psiService");
+            String coreNetwork = data.getFirst("coreNetwork");
+            URIBuilder uriBuilder = new URIBuilder(gmlcURI);
+            uriBuilder.addParameter("msisdn", targetMSISDN);
+            uriBuilder.addParameter("coreNetwork", coreNetwork);
+            uriBuilder.addParameter("psiService", psiService);
+            URL url = uriBuilder.build().toURL();
             HttpClient client = HttpClientBuilder.create().build();
+            logger.info("\ncURL URL: "+url);
             HttpGet request = new HttpGet(String.valueOf(url));
             // Authorization for further stage of the project
             request.addHeader("User-Agent", gmlcUser);
@@ -317,17 +325,49 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                     String token = item.substring(item.lastIndexOf("=") + 1);
                                     data.putSingle("LocationAge", token);
                                 }
+                                if (item.contains("mscNumber")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("NetworkEntityAddress", token);
+                                }
                                 if (item.contains("vlrNumber")) {
                                     String token = item.substring(item.lastIndexOf("=") + 1);
                                     data.putSingle("NetworkEntityAddress", token);
+                                }
+                                if (item.contains("mscNumber")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("NetworkEntityAddress", token);
+                                }
+                                if (item.contains("vlrNumber")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("NetworkEntityAddress", token);
+                                }
+                                if (item.contains("geographicalLatitude")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("DeviceLatitude", token);
+                                }
+                                if (item.contains("geodeticLatitude")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("DeviceLatitude", token);
                                 }
                                 if (item.contains("latitude")) {
                                     String token = item.substring(item.lastIndexOf("=") + 1);
                                     data.putSingle("DeviceLatitude", token);
                                 }
+                                if (item.contains("geographicalLongitude")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("DeviceLongitude", token);
+                                }
+                                if (item.contains("geodeticLongitude")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("DeviceLongitude", token);
+                                }
                                 if (item.contains("longitude")) {
                                     String token = item.substring(item.lastIndexOf("=") + 1);
                                     data.putSingle("DeviceLongitude", token);
+                                }
+                                if (item.contains("innerRadius")) {
+                                    String token = item.substring(item.lastIndexOf("=") + 1);
+                                    data.putSingle("Radius", token);
                                 }
                                 if (item.contains("civicAddress")) {
                                     String token = item.substring(item.lastIndexOf("=") + 1);
@@ -338,15 +378,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         if (gmlcURI != null && gmlcResponse != null) {
                             // For debugging/logging purposes only
                             if (logger.isDebugEnabled()) {
-                                logger.debug("Geolocation data of " + targetMSISDN + " retrieved from GMCL at: " + gmlcURI);
+                                logger.debug("Geolocation data of " + targetMSISDN + " retrieved from GMLC at: " + gmlcURI);
                                 logger.debug("MCC (Mobile Country Code) = " + getInteger("MobileCountryCode", data));
                                 logger.debug("MNC (Mobile Network Code) = " + data.getFirst("MobileNetworkCode"));
                                 logger.debug("LAC (Location Area Code) = " + data.getFirst("LocationAreaCode"));
                                 logger.debug("CI (Cell ID) = " + data.getFirst("CellId"));
                                 logger.debug("AOL (Age of Location) = " + getInteger("LocationAge", data));
                                 logger.debug("NNN (Network Node Number/Address) = " + +getLong("NetworkEntityAddress", data));
-                                logger.debug("Devide Latitude = " + data.getFirst("DeviceLatitude"));
-                                logger.debug("Devide Longitude = " + data.getFirst("DeviceLongitude"));
+                                logger.debug("Device Latitude = " + data.getFirst("DeviceLatitude"));
+                                logger.debug("Device Longitude = " + data.getFirst("DeviceLongitude"));
                                 logger.debug("Civic Address = " + data.getFirst("FormattedAddress"));
                             }
                         }
