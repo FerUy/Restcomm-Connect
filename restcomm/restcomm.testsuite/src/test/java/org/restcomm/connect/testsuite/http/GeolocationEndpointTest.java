@@ -108,7 +108,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-                .withQueryParam("msisdn", equalTo(msisdn))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "text/xml")
@@ -116,7 +115,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-                .withQueryParam("msisdn", equalTo(msisdn))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "text/xml")
@@ -215,7 +213,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -223,7 +220,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -283,7 +279,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -291,7 +286,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -472,7 +466,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -480,7 +473,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -630,7 +622,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -638,7 +629,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -685,7 +675,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -693,7 +682,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -801,7 +789,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -809,7 +796,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -852,7 +838,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -860,7 +845,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -1059,7 +1043,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -1067,7 +1050,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -1231,7 +1213,6 @@ public class GeolocationEndpointTest {
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
@@ -1239,7 +1220,6 @@ public class GeolocationEndpointTest {
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
-            .withQueryParam("msisdn", equalTo(msisdn))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
