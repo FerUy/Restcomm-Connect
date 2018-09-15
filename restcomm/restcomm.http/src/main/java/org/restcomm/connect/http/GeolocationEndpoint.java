@@ -282,7 +282,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 InputStream stream = null;
                 String gmlcResponse = null;
                 try {
-                    if (httpRespType == null && psiService == null && coreNetwork == null) {
+                    if (httpRespType != null && psiService == null && coreNetwork == null) {
                         stream = entity.getContent();
                         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
                         while (null != (gmlcResponse = br.readLine())) {
@@ -341,7 +341,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         }
                     } else {
                         gmlcResponse = EntityUtils.toString(entity, "UTF-8");
-                        if (httpRespType.equalsIgnoreCase("json")) {
+                        if (httpRespType == null) {
                             if (gmlcResponse != null) {
                                 if (psiService == null) {
                                     logger.info("Data retrieved from GMLC via MAP ATI: " + gmlcResponse);
@@ -937,12 +937,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         HashMap<String, String> atiResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
-        String network = jobject.get("network").getAsString();
-        atiResponse.put("network", network);
-        String protocol = jobject.get("protocol").getAsString();
-        atiResponse.put("protocol", protocol);
-        String operation = jobject.get("operation").getAsString();
-        atiResponse.put("operation", operation);
         JsonObject cgiSaiLai = jelement.getAsJsonObject();
         cgiSaiLai = cgiSaiLai.getAsJsonObject("CGIorSAIorLAI");
         String mcc = cgiSaiLai.get("mcc").getAsString();
@@ -959,115 +953,210 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         atiResponse.put("vlrNumber", vlrNumber);
         String subscriberState = jobject.get("subscriberState").getAsString();
         atiResponse.put("subscriberState", subscriberState);
+        // the following will never be retrieved in MAP ATI, but checked for not breaking testsuite
+        if (jobject.get("latitude") != null) {
+            String latitude = jobject.get("latitude").getAsString();
+            atiResponse.put("latitude", latitude);
+        }
+        if (jobject.get("longitude") != null) {
+            String longitude = jobject.get("longitude").getAsString();
+            atiResponse.put("longitude", longitude);
+        }
+        if (jobject.get("civicAddress") != null) {
+            String civicAddress = jobject.get("civicAddress").getAsString();
+            atiResponse.put("civicAddress", civicAddress);
+        }
         return atiResponse;
     }
 
     private static HashMap<String, String> parsePslJsonString(String jsonLine) {
         HashMap<String, String> sriPslResponse = new HashMap<>();
-        //JsonElement jelement = new JsonParser().parse(jsonLine);
-        Gson gson = new Gson();
-        JsonElement jelement = gson.fromJson(jsonLine, JsonElement.class);
+        JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
-        String network = jobject.get("network").getAsString();
-        sriPslResponse.put("network", network);
-        String protocol = jobject.get("protocol").getAsString();
-        sriPslResponse.put("protocol", protocol);
-        String operation = jobject.get("operation").getAsString();
-        sriPslResponse.put("operation", operation);
-        String lcsReferenceNumber = jobject.get("lcsReferenceNumber").getAsString();
-        sriPslResponse.put("lcsReferenceNumber", lcsReferenceNumber);
+        if (jobject.get("lcsReferenceNumber") != null) {
+            String lcsReferenceNumber = jobject.get("lcsReferenceNumber").getAsString();
+            sriPslResponse.put("lcsReferenceNumber", lcsReferenceNumber);
+        }
         JsonObject sri = jobject.getAsJsonObject("SRIforLCS");
-        String msisdn = sri.get("msisdn").getAsString();
-        sriPslResponse.put("msisdn", msisdn);
-        String imsi = sri.get("imsi").getAsString();
-        sriPslResponse.put("imsi", imsi);
-        String lmsi = sri.get("lmsi").getAsString();
-        sriPslResponse.put("lmsi", lmsi);
-        String networkNodeNumber = sri.get("networkNodeNumber").getAsString();
-        sriPslResponse.put("networkNodeNumber", networkNodeNumber);
-        String gprsNodeIndicator = sri.get("gprsNodeIndicator").getAsString();
-        sriPslResponse.put("gprsNodeIndicator", gprsNodeIndicator);
-        String mmeName = sri.get("mmeName").getAsString();
-        sriPslResponse.put("mmeName", mmeName);
-        String sgsnName = sri.get("sgsnName").getAsString();
-        sriPslResponse.put("sgsnName", sgsnName);
-        String tgppAAAServerName = sri.get("3GPPAAAServerName").getAsString();
-        sriPslResponse.put("tgppAAAServerName", tgppAAAServerName);
-        String hGmlcAddress = sri.get("hGmlcAddress").getAsString();
-        sriPslResponse.put("hGmlcAddress", hGmlcAddress);
-        String vGmlcAddress = sri.get("vGmlcAddress").getAsString();
-        sriPslResponse.put("vGmlcAddress", vGmlcAddress);
-        String pprAddress = sri.get("pprAddress").getAsString();
-        sriPslResponse.put("pprAddress", pprAddress);
+        if (sri.get("msisdn") != null) {
+            String msisdn = sri.get("msisdn").getAsString();
+            sriPslResponse.put("msisdn", msisdn);
+        }
+        if (sri.get("imsi") != null) {
+            String imsi = sri.get("imsi").getAsString();
+            sriPslResponse.put("imsi", imsi);
+        }
+        if (sri.get("lmsi") != null) {
+            String lmsi = sri.get("lmsi").getAsString();
+            sriPslResponse.put("lmsi", lmsi);
+        }
+        if (sri.get("networkNodeNumber") != null) {
+            String networkNodeNumber = sri.get("networkNodeNumber").getAsString();
+            sriPslResponse.put("networkNodeNumber", networkNodeNumber);
+        }
+        if (sri.get("gprsNodeIndicator") != null) {
+            String gprsNodeIndicator = sri.get("gprsNodeIndicator").getAsString();
+            sriPslResponse.put("gprsNodeIndicator", gprsNodeIndicator);
+        }
+        if (sri.get("mmeName") != null) {
+            String mmeName = sri.get("mmeName").getAsString();
+            sriPslResponse.put("mmeName", mmeName);
+        }
+        if (sri.get("sgsnName") != null) {
+            String sgsnName = sri.get("sgsnName").getAsString();
+            sriPslResponse.put("sgsnName", sgsnName);
+        }
+        if (sri.get("3GPPAAAServerName") != null) {
+            String tgppAAAServerName = sri.get("3GPPAAAServerName").getAsString();
+            sriPslResponse.put("tgppAAAServerName", tgppAAAServerName);
+        }
+        if (sri.get("hGmlcAddress") != null) {
+            String hGmlcAddress = sri.get("hGmlcAddress").getAsString();
+            sriPslResponse.put("hGmlcAddress", hGmlcAddress);
+        }
+        if (sri.get("vGmlcAddress") != null) {
+            String vGmlcAddress = sri.get("vGmlcAddress").getAsString();
+            sriPslResponse.put("vGmlcAddress", vGmlcAddress);
+        }
+        if (sri.get("pprAddress") != null) {
+            String pprAddress = sri.get("pprAddress").getAsString();
+            sriPslResponse.put("pprAddress", pprAddress);
+        }
+
         JsonObject psl = jelement.getAsJsonObject();
         psl = psl.getAsJsonObject("PSL");
         JsonObject locationEstimate = psl.getAsJsonObject("LocationEstimate");
-        String typeOfShape = locationEstimate.get("typeOfShape").getAsString();
-        sriPslResponse.put("typeOfShape", typeOfShape);
-        String latitude = locationEstimate.get("latitude").getAsString();
-        sriPslResponse.put("latitude", latitude);
-        String longitude = locationEstimate.get("longitude").getAsString();
-        sriPslResponse.put("longitude", longitude);
-        String uncertainty = locationEstimate.get("uncertainty").getAsString();
-        sriPslResponse.put("uncertainty", uncertainty);
-        String uncertaintySemiMajorAxis = locationEstimate.get("uncertaintySemiMajorAxis").getAsString();
-        sriPslResponse.put("uncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
-        String uncertaintySemiMinorAxis = locationEstimate.get("uncertaintySemiMinorAxis").getAsString();
-        sriPslResponse.put("uncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
-        String angleOfMajorAxis = locationEstimate.get("angleOfMajorAxis").getAsString();
-        sriPslResponse.put("angleOfMajorAxis", angleOfMajorAxis);
-        String confidence = locationEstimate.get("confidence").getAsString();
-        sriPslResponse.put("confidence", confidence);
-        String altitude = locationEstimate.get("altitude").getAsString();
-        sriPslResponse.put("altitude", altitude);
-        String uncertaintyAltitude = locationEstimate.get("uncertaintyAltitude").getAsString();
-        sriPslResponse.put("uncertaintyAltitude", uncertaintyAltitude);
-        String innerRadius = locationEstimate.get("innerRadius").getAsString();
-        sriPslResponse.put("innerRadius", innerRadius);
-        String uncertaintyRadius = locationEstimate.get("uncertaintyRadius").getAsString();
-        sriPslResponse.put("uncertaintyRadius", uncertaintyRadius);
-        String offsetAngle = locationEstimate.get("offsetAngle").getAsString();
-        sriPslResponse.put("offsetAngle", offsetAngle);
-        String includedAngle = locationEstimate.get("includedAngle").getAsString();
-        sriPslResponse.put("includedAngle", includedAngle);
-        String ageOfLocationEstimate = psl.get("ageOfLocationEstimate").getAsString();
-        sriPslResponse.put("ageOfLocationEstimate", ageOfLocationEstimate);
-        String deferredMTLRresponseIndicator = psl.get("deferredMTLRresponseIndicator").getAsString();
-        sriPslResponse.put("deferredMTLRresponseIndicator", deferredMTLRresponseIndicator);
-        String moLrShortCircuitIndicator = psl.get("moLrShortCircuitIndicator").getAsString();
-        sriPslResponse.put("moLrShortCircuitIndicator", deferredMTLRresponseIndicator);
+        if (locationEstimate.get("typeOfShape") != null) {
+            String typeOfShape = locationEstimate.get("typeOfShape").getAsString();
+            sriPslResponse.put("typeOfShape", typeOfShape);
+        }
+        if (locationEstimate.get("latitude") != null) {
+            String latitude = locationEstimate.get("latitude").getAsString();
+            sriPslResponse.put("latitude", latitude);
+        }
+        if (locationEstimate.get("longitude") != null) {
+            String longitude = locationEstimate.get("longitude").getAsString();
+            sriPslResponse.put("longitude", longitude);
+        }
+        if (locationEstimate.get("uncertainty") != null) {
+            String uncertainty = locationEstimate.get("uncertainty").getAsString();
+            sriPslResponse.put("uncertainty", uncertainty);
+        }
+        if (locationEstimate.get("uncertaintySemiMajorAxis") != null) {
+            String uncertaintySemiMajorAxis = locationEstimate.get("uncertaintySemiMajorAxis").getAsString();
+            sriPslResponse.put("uncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
+        }
+        if (locationEstimate.get("uncertaintySemiMinorAxis") != null) {
+            String uncertaintySemiMinorAxis = locationEstimate.get("uncertaintySemiMinorAxis").getAsString();
+            sriPslResponse.put("uncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
+        }
+        if (locationEstimate.get("angleOfMajorAxis") != null) {
+            String angleOfMajorAxis = locationEstimate.get("angleOfMajorAxis").getAsString();
+            sriPslResponse.put("angleOfMajorAxis", angleOfMajorAxis);
+        }
+        if (locationEstimate.get("confidence") != null) {
+            String confidence = locationEstimate.get("confidence").getAsString();
+            sriPslResponse.put("confidence", confidence);
+        }
+        if (locationEstimate.get("altitude") != null) {
+            String altitude = locationEstimate.get("altitude").getAsString();
+            sriPslResponse.put("altitude", altitude);
+        }
+
+        if (locationEstimate.get("uncertaintyAltitude") != null) {
+            String uncertaintyAltitude = locationEstimate.get("uncertaintyAltitude").getAsString();
+            sriPslResponse.put("uncertaintyAltitude", uncertaintyAltitude);
+        }
+        if (locationEstimate.get("innerRadius") != null) {
+            String innerRadius = locationEstimate.get("innerRadius").getAsString();
+            sriPslResponse.put("innerRadius", innerRadius);
+        }
+        if (locationEstimate.get("uncertaintyRadius") != null) {
+            String uncertaintyRadius = locationEstimate.get("uncertaintyRadius").getAsString();
+            sriPslResponse.put("uncertaintyRadius", uncertaintyRadius);
+        }
+        if (locationEstimate.get("offsetAngle") != null) {
+            String offsetAngle = locationEstimate.get("offsetAngle").getAsString();
+            sriPslResponse.put("offsetAngle", offsetAngle);
+        }
+        if (locationEstimate.get("includedAngle") != null) {
+            String includedAngle = locationEstimate.get("includedAngle").getAsString();
+            sriPslResponse.put("includedAngle", includedAngle);
+        }
+        if (psl.get("ageOfLocationEstimate") != null) {
+            String ageOfLocationEstimate = psl.get("ageOfLocationEstimate").getAsString();
+            sriPslResponse.put("ageOfLocationEstimate", ageOfLocationEstimate);
+        }
+        if (psl.get("deferredMTLRresponseIndicator") != null) {
+            String deferredMTLRresponseIndicator = psl.get("deferredMTLRresponseIndicator").getAsString();
+            sriPslResponse.put("deferredMTLRresponseIndicator", deferredMTLRresponseIndicator);
+        }
+        if (psl.get("moLrShortCircuitIndicator") != null) {
+            String moLrShortCircuitIndicator = psl.get("moLrShortCircuitIndicator").getAsString();
+            sriPslResponse.put("moLrShortCircuitIndicator", moLrShortCircuitIndicator);
+        }
+
         JsonObject cgiSaiLai = psl.getAsJsonObject("CGIorSAIorLAI");
-        String mcc = cgiSaiLai.get("mcc").getAsString();
-        sriPslResponse.put("mcc", mcc);
-        String mnc = cgiSaiLai.get("mnc").getAsString();
-        sriPslResponse.put("mnc", mnc);
-        String lac = cgiSaiLai.get("lac").getAsString();
-        sriPslResponse.put("lac", lac);
-        String ci = cgiSaiLai.get("cellid").getAsString();
-        sriPslResponse.put("ci", ci);
+        if (cgiSaiLai.get("mcc") != null) {
+            String mcc = cgiSaiLai.get("mcc").getAsString();
+            sriPslResponse.put("mcc", mcc);
+        }
+        if (cgiSaiLai.get("mnc") != null) {
+            String mnc = cgiSaiLai.get("mnc").getAsString();
+            sriPslResponse.put("mnc", mnc);
+        }
+        if (cgiSaiLai.get("lac") != null) {
+            String lac = cgiSaiLai.get("lac").getAsString();
+            sriPslResponse.put("lac", lac);
+        }
+        if (cgiSaiLai.get("cellid") != null) {
+            String ci = cgiSaiLai.get("cellid").getAsString();
+            sriPslResponse.put("ci", ci);
+        }
         JsonObject geranPosInfo = psl.getAsJsonObject("GERANPositioningInfo");
-        String geranPositioningInfo = geranPosInfo.get("geranPositioningInfo").getAsString();
-        sriPslResponse.put("geranPositioningInfo", geranPositioningInfo);
-        String geranGanssPositioningData = geranPosInfo.get("geranGanssPositioningData").getAsString();
-        sriPslResponse.put("geranGanssPositioningData", geranGanssPositioningData);
+        if (geranPosInfo.get("geranPositioningInfo") != null) {
+            String geranPositioningInfo = geranPosInfo.get("geranPositioningInfo").getAsString();
+            sriPslResponse.put("geranPositioningInfo", geranPositioningInfo);
+        }
+        if (geranPosInfo.get("geranGanssPositioningData") != null) {
+            String geranGanssPositioningData = geranPosInfo.get("geranGanssPositioningData").getAsString();
+            sriPslResponse.put("geranGanssPositioningData", geranGanssPositioningData);
+        }
         JsonObject utranPosInfo = psl.getAsJsonObject("UTRANPositioningInfo");
-        String utranPositioningInfo = utranPosInfo.get("utranPositioningInfo").getAsString();
-        sriPslResponse.put("utranPositioningInfo", utranPositioningInfo);
-        String utranGanssPositioningData = utranPosInfo.get("utranGanssPositioningData").getAsString();
-        sriPslResponse.put("utranGanssPositioningData", utranGanssPositioningData);
+        if (utranPosInfo.get("utranPositioningInfo") != null) {
+            String utranPositioningInfo = utranPosInfo.get("utranPositioningInfo").getAsString();
+            sriPslResponse.put("utranPositioningInfo", utranPositioningInfo);
+        }
+        if (utranPosInfo.get("utranGanssPositioningData") != null) {
+            String utranGanssPositioningData = utranPosInfo.get("utranGanssPositioningData").getAsString();
+            sriPslResponse.put("utranGanssPositioningData", utranGanssPositioningData);
+        }
+
         JsonObject velocityEstimate = psl.getAsJsonObject("VelocityEstimate");
-        String horizontalSpeed = velocityEstimate.get("horizontalSpeed").getAsString();
-        sriPslResponse.put("horizontalSpeed", horizontalSpeed);
-        String bearing = velocityEstimate.get("bearing").getAsString();
-        sriPslResponse.put("bearing", bearing);
-        String verticalSpeed = velocityEstimate.get("verticalSpeed").getAsString();
-        sriPslResponse.put("verticalSpeed", verticalSpeed);
-        String uncertaintyHorizontalSpeed = velocityEstimate.get("uncertaintyHorizontalSpeed").getAsString();
-        sriPslResponse.put("uncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
-        String uncertaintyVerticalSpeed = velocityEstimate.get("uncertaintyVerticalSpeed").getAsString();
-        sriPslResponse.put("uncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
-        String velocityType = velocityEstimate.get("velocityType").getAsString();
-        sriPslResponse.put("velocityType", velocityType);
+        if (velocityEstimate.get("horizontalSpeed") != null) {
+            String horizontalSpeed = velocityEstimate.get("horizontalSpeed").getAsString();
+            sriPslResponse.put("horizontalSpeed", horizontalSpeed);
+        }
+        if (velocityEstimate.get("bearing") != null) {
+            String bearing = velocityEstimate.get("bearing").getAsString();
+            sriPslResponse.put("bearing", bearing);
+        }
+        if (velocityEstimate.get("verticalSpeed") != null) {
+            String verticalSpeed = velocityEstimate.get("verticalSpeed").getAsString();
+            sriPslResponse.put("verticalSpeed", verticalSpeed);
+        }
+        if (velocityEstimate.get("uncertaintyHorizontalSpeed") != null) {
+            String uncertaintyHorizontalSpeed = velocityEstimate.get("uncertaintyHorizontalSpeed").getAsString();
+            sriPslResponse.put("uncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
+        }
+        if (velocityEstimate.get("uncertaintyVerticalSpeed") != null) {
+            String uncertaintyVerticalSpeed = velocityEstimate.get("uncertaintyVerticalSpeed").getAsString();
+            sriPslResponse.put("uncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
+        }
+        if (velocityEstimate.get("velocityType") != null) {
+            String velocityType = velocityEstimate.get("velocityType").getAsString();
+            sriPslResponse.put("velocityType", velocityType);
+        }
         return sriPslResponse;
     }
 
@@ -1075,121 +1164,222 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         HashMap<String, String> psiResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
-        String network = jobject.get("network").getAsString();
-        psiResponse.put("network", network);
-        String protocol = jobject.get("protocol").getAsString();
-        psiResponse.put("protocol", protocol);
-        String operation = jobject.get("operation").getAsString();
-        psiResponse.put("operation", operation);
-        String imsi = jobject.get("imsi").getAsString();
-        psiResponse.put("imsi", imsi);
-        String imei = jobject.get("imei").getAsString();
-        psiResponse.put("imei", imei);
-        String lmsi = jobject.get("lmsi").getAsString();
-        psiResponse.put("lmsi", lmsi); //
-        String subscriberState = jobject.get("subscriberState").getAsString();
-        psiResponse.put("subscriberState", subscriberState);
+        if (jobject.get("imsi") != null) {
+            String imsi = jobject.get("imsi").getAsString();
+            psiResponse.put("imsi", imsi);
+        }
+        if (jobject.get("imei") != null) {
+            String imei = jobject.get("imei").getAsString();
+            psiResponse.put("imei", imei);
+        }
+        if (jobject.get("lmsi") != null) {
+            String lmsi = jobject.get("lmsi").getAsString();
+            psiResponse.put("lmsi", lmsi);
+        }
+        if (jobject.get("subscriberState") != null) {
+            String subscriberState = jobject.get("subscriberState").getAsString();
+            psiResponse.put("subscriberState", subscriberState);
+        }
+
         JsonObject locationInfo = jelement.getAsJsonObject();
         locationInfo = locationInfo.getAsJsonObject("LocationInformation");
+
         JsonObject cgiSaiLai = locationInfo.getAsJsonObject("CGIorSAIorLAI");
-        String mcc = cgiSaiLai.get("mcc").getAsString();
-        psiResponse.put("mcc", mcc);
-        String mnc = cgiSaiLai.get("mnc").getAsString();
-        psiResponse.put("mnc", mnc);
-        String lac = cgiSaiLai.get("lac").getAsString();
-        psiResponse.put("lac", lac);
-        String ci = cgiSaiLai.get("cellid").getAsString();
-        psiResponse.put("ci", ci);
-        String saiPresent = locationInfo.get("saiPresent").getAsString();
-        psiResponse.put("saiPresent", saiPresent);
-        String locationNumber = locationInfo.get("locationNumber").getAsString();
-        psiResponse.put("locationNumber", locationNumber);
-        String aol = locationInfo.get("aol").getAsString();
-        psiResponse.put("aol", aol);
-        String vlrNumber = locationInfo.get("vlrNumber").getAsString();
-        psiResponse.put("vlrNumber", vlrNumber);
-        String mscNumber = locationInfo.get("mscNumber").getAsString();
-        psiResponse.put("mscNumber", mscNumber);
+        if (cgiSaiLai.get("mcc") != null) {
+            String mcc = cgiSaiLai.get("mcc").getAsString();
+            psiResponse.put("mcc", mcc);
+        }
+        if (cgiSaiLai.get("mnc") != null) {
+            String mnc = cgiSaiLai.get("mnc").getAsString();
+            psiResponse.put("mnc", mnc);
+        }
+        if (cgiSaiLai.get("lac") != null) {
+            String lac = cgiSaiLai.get("lac").getAsString();
+            psiResponse.put("lac", lac);
+        }
+        if (cgiSaiLai.get("cellid") != null) {
+            String ci = cgiSaiLai.get("cellid").getAsString();
+            psiResponse.put("ci", ci);
+        }
+
+        if (locationInfo.get("saiPresent") != null) {
+            String saiPresent = locationInfo.get("saiPresent").getAsString();
+            psiResponse.put("saiPresent", saiPresent);
+        }
+        if (locationInfo.get("locationNumber") != null) {
+            String locationNumber = locationInfo.get("locationNumber").getAsString();
+            psiResponse.put("locationNumber", locationNumber);
+        }
+        if (locationInfo.get("aol") != null) {
+            String aol = locationInfo.get("aol").getAsString();
+            psiResponse.put("aol", aol);
+        }
+        if (locationInfo.get("vlrNumber") != null) {
+            String vlrNumber = locationInfo.get("vlrNumber").getAsString();
+            psiResponse.put("vlrNumber", vlrNumber);
+        }
+        if (locationInfo.get("mscNumber") != null) {
+            String mscNumber = locationInfo.get("mscNumber").getAsString();
+            psiResponse.put("mscNumber", mscNumber);
+        }
+
         JsonObject geographicalInformation = locationInfo.getAsJsonObject("GeographicalInformation");
-        String latitude = geographicalInformation.get("latitude").getAsString();
-        psiResponse.put("latitude", latitude);
-        String longitude = geographicalInformation.get("longitude").getAsString();
-        psiResponse.put("longitude", longitude);
-        String typeOfShape = geographicalInformation.get("typeOfShape").getAsString();
-        psiResponse.put("typeOfShape", typeOfShape);
-        String uncertainty = geographicalInformation.get("uncertainty").getAsString();
-        psiResponse.put("uncertainty", uncertainty);
+        if (geographicalInformation.get("latitude") != null) {
+            String latitude = geographicalInformation.get("latitude").getAsString();
+            psiResponse.put("latitude", latitude);
+        }
+        if (geographicalInformation.get("longitude") != null) {
+            String longitude = geographicalInformation.get("longitude").getAsString();
+            psiResponse.put("longitude", longitude);
+        }
+        if (geographicalInformation.get("typeOfShape") != null) {
+            String typeOfShape = geographicalInformation.get("typeOfShape").getAsString();
+            psiResponse.put("typeOfShape", typeOfShape);
+        }
+        if (geographicalInformation.get("uncertainty") != null) {
+            String uncertainty = geographicalInformation.get("uncertainty").getAsString();
+            psiResponse.put("uncertainty", uncertainty);
+        }
         JsonObject geodeticInformation = locationInfo.getAsJsonObject("GeodeticInformation");
-        String geodLatitude = geodeticInformation.get("latitude").getAsString();
-        psiResponse.put("geodLatitude", geodLatitude);
-        String geodLongitude = geodeticInformation.get("longitude").getAsString();
-        psiResponse.put("geodLongitude", geodLongitude);
-        String geodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
-        psiResponse.put("geodTypeOfShape", geodTypeOfShape);
-        String geodUncertainty = geodeticInformation.get("uncertainty").getAsString();
-        psiResponse.put("geodUncertainty", geodUncertainty);
-        String confidence = geodeticInformation.get("confidence").getAsString();
-        psiResponse.put("confidence", confidence);
-        String screeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-        psiResponse.put("screeningAndPresentationIndicators", screeningAndPresentationIndicators);
-        String currentLocationRetrieved = locationInfo.get("currentLocationRetrieved").getAsString();
-        psiResponse.put("currentLocationRetrieved", currentLocationRetrieved);
+        if (geodeticInformation.get("latitude") != null) {
+            String geodLatitude = geodeticInformation.get("latitude").getAsString();
+            psiResponse.put("geodLatitude", geodLatitude);
+        }
+        if (geodeticInformation.get("longitude") != null) {
+            String geodLongitude = geodeticInformation.get("longitude").getAsString();
+            psiResponse.put("geodLongitude", geodLongitude);
+        }
+        if (geodeticInformation.get("typeOfShape") != null) {
+            String geodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
+            psiResponse.put("geodTypeOfShape", geodTypeOfShape);
+        }
+        if (geodeticInformation.get("uncertainty") != null) {
+            String geodUncertainty = geodeticInformation.get("uncertainty").getAsString();
+            psiResponse.put("geodUncertainty", geodUncertainty);
+        }
+        if (geodeticInformation.get("confidence") != null) {
+            String confidence = geodeticInformation.get("confidence").getAsString();
+            psiResponse.put("confidence", confidence);
+        }
+        if (geodeticInformation.get("screeningAndPresentationIndicators") != null) {
+            String screeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+            psiResponse.put("screeningAndPresentationIndicators", screeningAndPresentationIndicators);
+        }
+
+        if (locationInfo.get("currentLocationRetrieved") != null) {
+            String currentLocationRetrieved = locationInfo.get("currentLocationRetrieved").getAsString();
+            psiResponse.put("currentLocationRetrieved", currentLocationRetrieved);
+        }
+
         JsonObject locationInfoEPS = locationInfo.getAsJsonObject("LocationInformationEPS");
-        String mmeName = locationInfoEPS.get("mmeName").getAsString();
-        psiResponse.put("mmeName", mmeName);
-        String eUtranCgi = locationInfoEPS.get("eUtranCgi").getAsString();
-        psiResponse.put("eUtranCgi", eUtranCgi);
-        String trackingAreaId = locationInfoEPS.get("trackingAreaId").getAsString();
-        psiResponse.put("trackingAreaId", trackingAreaId);
+        if (locationInfoEPS.get("mmeName") != null) {
+            String mmeName = locationInfoEPS.get("mmeName").getAsString();
+            psiResponse.put("mmeName", mmeName);
+        }
+        if (locationInfoEPS.get("eUtranCgi") != null) {
+            String eUtranCgi = locationInfoEPS.get("eUtranCgi").getAsString();
+            psiResponse.put("eUtranCgi", eUtranCgi);
+        }
+        if (locationInfoEPS.get("trackingAreaId") != null) {
+            String trackingAreaId = locationInfoEPS.get("trackingAreaId").getAsString();
+            psiResponse.put("trackingAreaId", trackingAreaId);
+        }
+
         JsonObject locationInfoGPRS = jelement.getAsJsonObject();
         locationInfoGPRS = locationInfoGPRS.getAsJsonObject("LocationInformationGPRS");
         cgiSaiLai = locationInfoGPRS.getAsJsonObject("CGIorSAIorLAI");
-        mcc = cgiSaiLai.get("mcc").getAsString();
-        psiResponse.put("gprsMcc", mcc);
-        mnc = cgiSaiLai.get("mnc").getAsString();
-        psiResponse.put("gprsMnc", mnc);
-        lac = cgiSaiLai.get("lac").getAsString();
-        psiResponse.put("gprsLac", lac);
-        ci = cgiSaiLai.get("cellid").getAsString();
-        psiResponse.put("gprsCi", ci);
+        if (cgiSaiLai.get("mcc") != null) {
+            String mcc = cgiSaiLai.get("mcc").getAsString();
+            psiResponse.put("gprsMcc", mcc);
+        }
+        if (cgiSaiLai.get("mnc") != null) {
+            String mnc = cgiSaiLai.get("mnc").getAsString();
+            psiResponse.put("gprsMnc", mnc);
+        }
+        if (cgiSaiLai.get("lac") != null) {
+            String lac = cgiSaiLai.get("lac").getAsString();
+            psiResponse.put("gprsLac", lac);
+        }
+        if (cgiSaiLai.get("cellid") != null) {
+            String ci = cgiSaiLai.get("cellid").getAsString();
+            psiResponse.put("gprsCi", ci);
+        }
+
         JsonObject geoInfoGPRS = locationInfoGPRS.getAsJsonObject("GeographicalInformationGPRS");
-        latitude = geoInfoGPRS.get("latitude").getAsString();
-        psiResponse.put("gprsLatitude", latitude);
-        longitude = geoInfoGPRS.get("longitude").getAsString();
-        psiResponse.put("gprsLongitude", longitude);
-        typeOfShape = geoInfoGPRS.get("typeOfShape").getAsString();
-        psiResponse.put("gprsTypeOfShape", typeOfShape);
-        uncertainty = geoInfoGPRS.get("uncertainty").getAsString();
-        psiResponse.put("gprsUncertainty", uncertainty);
+        if (geoInfoGPRS.get("latitude") != null) {
+            String latitude = geoInfoGPRS.get("latitude").getAsString();
+            psiResponse.put("gprsLatitude", latitude);
+        }
+        if (geoInfoGPRS.get("longitude") != null) {
+            String longitude = geoInfoGPRS.get("longitude").getAsString();
+            psiResponse.put("gprsLongitude", longitude);
+        }
+        if (geoInfoGPRS.get("typeOfShape") != null) {
+            String typeOfShape = geoInfoGPRS.get("typeOfShape").getAsString();
+            psiResponse.put("gprsTypeOfShape", typeOfShape);
+        }
+        if (geoInfoGPRS.get("uncertainty") != null) {
+            String uncertainty = geoInfoGPRS.get("uncertainty").getAsString();
+            psiResponse.put("gprsUncertainty", uncertainty);
+        }
+
         JsonObject geodInfoGPRS = locationInfoGPRS.getAsJsonObject("GeodeticInformationGPRS");
-        latitude = geodInfoGPRS.get("latitude").getAsString();
-        psiResponse.put("gprsGeodLatitude", latitude);
-        longitude = geodInfoGPRS.get("longitude").getAsString();
-        psiResponse.put("gprsGeodLongitude", longitude);
-        typeOfShape = geodInfoGPRS.get("typeOfShape").getAsString();
-        psiResponse.put("gprsGeodTypeOfShape", typeOfShape);
-        uncertainty = geodInfoGPRS.get("uncertainty").getAsString();
-        psiResponse.put("gprsGeodUncertainty", uncertainty);
-        confidence = geodInfoGPRS.get("confidence").getAsString();
-        psiResponse.put("gprsConfidence", confidence);
-        screeningAndPresentationIndicators = geodInfoGPRS.get("screeningAndPresentationIndicators").getAsString();
-        psiResponse.put("gprsScreeningAndPresentationIndicators", screeningAndPresentationIndicators);
-        String sgsnNumber = locationInfoGPRS.get("sgsnNumber").getAsString();
-        psiResponse.put("sgsnNumber", sgsnNumber);
-        String lsaId = locationInfoGPRS.get("lsaId").getAsString();
-        psiResponse.put("lsaId", lsaId);
-        String routeingAreaId = locationInfoGPRS.get("routeingAreaId").getAsString();
-        psiResponse.put("routeingAreaId", routeingAreaId);
+        if (geodInfoGPRS.get("latitude") != null) {
+            String latitude = geodInfoGPRS.get("latitude").getAsString();
+            psiResponse.put("gprsGeodLatitude", latitude);
+        }
+        if (geodInfoGPRS.get("longitude") != null) {
+            String longitude = geodInfoGPRS.get("longitude").getAsString();
+            psiResponse.put("gprsGeodLongitude", longitude);
+        }
+        if (geodInfoGPRS.get("typeOfShape") != null) {
+            String typeOfShape = geodInfoGPRS.get("typeOfShape").getAsString();
+            psiResponse.put("gprsGeodTypeOfShape", typeOfShape);
+        }
+        if (geodInfoGPRS.get("uncertainty") != null) {
+            String uncertainty = geodInfoGPRS.get("uncertainty").getAsString();
+            psiResponse.put("gprsGeodUncertainty", uncertainty);
+        }
+        if (geodInfoGPRS.get("confidence") != null) {
+            String confidence = geodInfoGPRS.get("confidence").getAsString();
+            psiResponse.put("gprsConfidence", confidence);
+        }
+        if (geodInfoGPRS.get("screeningAndPresentationIndicators") != null) {
+            String screeningAndPresentationIndicators = geodInfoGPRS.get("screeningAndPresentationIndicators").getAsString();
+            psiResponse.put("gprsScreeningAndPresentationIndicators", screeningAndPresentationIndicators);
+        }
+
+        if (locationInfoGPRS.get("sgsnNumber") != null) {
+            String sgsnNumber = locationInfoGPRS.get("sgsnNumber").getAsString();
+            psiResponse.put("sgsnNumber", sgsnNumber);
+        }
+        if (locationInfoGPRS.get("lsaId") != null) {
+            String lsaId = locationInfoGPRS.get("lsaId").getAsString();
+            psiResponse.put("lsaId", lsaId);
+        }
+        if (locationInfoGPRS.get("routeingAreaId") != null) {
+            String routeingAreaId = locationInfoGPRS.get("routeingAreaId").getAsString();
+            psiResponse.put("routeingAreaId", routeingAreaId);
+        }
+
         JsonObject mnpInfoResult = jelement.getAsJsonObject();
         mnpInfoResult = mnpInfoResult.getAsJsonObject("MNPInfoResult");
-        String mnpStatus = mnpInfoResult.get("mnpStatus").getAsString();
-        psiResponse.put("mnpStatus", mnpStatus);
-        String mnpMsisdn = mnpInfoResult.get("mnpMsisdn").getAsString();
-        psiResponse.put("mnpMsisdn", mnpMsisdn);
-        String mnpImsi = mnpInfoResult.get("mnpImsi").getAsString();
-        psiResponse.put("mnpImsi", mnpImsi);
-        String mnpRouteingNumber = mnpInfoResult.get("mnpRouteingNumber").getAsString();
-        psiResponse.put("mnpRouteingNumber", mnpRouteingNumber);
+        if (mnpInfoResult.get("mnpStatus") != null) {
+            String mnpStatus = mnpInfoResult.get("mnpStatus").getAsString();
+            psiResponse.put("mnpStatus", mnpStatus);
+        }
+        if (mnpInfoResult.get("mnpMsisdn") != null) {
+            String mnpMsisdn = mnpInfoResult.get("mnpMsisdn").getAsString();
+            psiResponse.put("mnpMsisdn", mnpMsisdn);
+        }
+        if (mnpInfoResult.get("mnpImsi") != null) {
+            String mnpImsi = mnpInfoResult.get("mnpImsi").getAsString();
+            psiResponse.put("mnpImsi", mnpImsi);
+        }
+        if (mnpInfoResult.get("mnpRouteingNumber") != null) {
+            String mnpRouteingNumber = mnpInfoResult.get("mnpRouteingNumber").getAsString();
+            psiResponse.put("mnpRouteingNumber", mnpRouteingNumber);
+        }
         return psiResponse;
     }
 

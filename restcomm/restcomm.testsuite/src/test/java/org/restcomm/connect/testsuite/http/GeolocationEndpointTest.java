@@ -98,7 +98,24 @@ public class GeolocationEndpointTest {
         Thread.sleep(1000);
     }
 
-    String gmlcResponse = "mcc=598,mnc=1,lac=320,cellid=521,aol=0,vlrNumber=598001,latitude=35.349781,longitude=87.754320,civicAddress=Avenue2501";
+    //String gmlcResponse = "mcc=598,mnc=1,lac=320,cellid=521,aol=0,vlrNumber=598001,latitude=35.349781,longitude=87.754320,civicAddress=Avenue2501";
+    String gmlcResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"ATI\",\n" +
+        "  \"CGIorSAIorLAI\": {\n" +
+        "    \"mcc\": \"598\",\n" +
+        "    \"mnc\": \"1\",\n" +
+        "    \"lac\": \"320\",\n" +
+        "    \"cellid\": \"521\"\n" +
+        "  },\n" +
+        "  \"aol\": \"0\",\n" +
+        "  \"vlrNumber\": \"598001\",\n" +
+        "  \"subscriberState\": \"assumedIdle\",\n" +
+        "  \"latitude\": \"35.349781\",\n" +
+        "  \"longitude\": \"87.754320\",\n" +
+        "  \"civicAddress\": \"Avenue2501\"\n" +
+        "}";
 
     @Test
     public void testCreateAndGetImmediateGeolocation()
@@ -110,14 +127,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", "text/xml")
+                        .withHeader("Content-Type", "application/json")
                         .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", "text/xml")
+                        .withHeader("Content-Type", "application/json")
                         .withBody(gmlcResponse)));
 
         // Define Immediate Geolocation attributes for this method
@@ -222,7 +239,7 @@ public class GeolocationEndpointTest {
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Immediate Geolocation attributes for this method
@@ -281,14 +298,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Geolocation attributes
@@ -468,14 +485,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Geolocation attributes
@@ -624,14 +641,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Immediate Geolocation attributes for this method
@@ -677,14 +694,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Geolocation attributes for this test method
@@ -791,14 +808,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Geolocation attributes for this test method
@@ -840,14 +857,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Notification Geolocation attributes
@@ -1045,14 +1062,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         // Define Notification Geolocation attributes
@@ -1215,14 +1232,14 @@ public class GeolocationEndpointTest {
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "text/xml")
+                .withHeader("Content-Type", "application/json")
                 .withBody(gmlcResponse)));
 
         String deviceIdentifier;
