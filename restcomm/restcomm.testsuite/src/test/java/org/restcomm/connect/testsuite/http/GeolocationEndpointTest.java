@@ -27,6 +27,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -99,7 +100,7 @@ public class GeolocationEndpointTest {
     }
 
     //String gmlcResponse = "mcc=598,mnc=1,lac=320,cellid=521,aol=0,vlrNumber=598001,latitude=35.349781,longitude=87.754320,civicAddress=Avenue2501";
-    String gmlcResponse = "{\n" +
+    String gmlcMapAtiResponse = "{\n" +
         "  \"network\": \"GSM\",\n" +
         "  \"protocol\": \"MAP\",\n" +
         "  \"operation\": \"ATI\",\n" +
@@ -111,11 +112,73 @@ public class GeolocationEndpointTest {
         "  },\n" +
         "  \"aol\": \"0\",\n" +
         "  \"vlrNumber\": \"598001\",\n" +
-        "  \"subscriberState\": \"assumedIdle\",\n" +
-        "  \"latitude\": \"35.349781\",\n" +
-        "  \"longitude\": \"87.754320\",\n" +
-        "  \"civicAddress\": \"Avenue2501\"\n" +
+        "  \"subscriberState\": \"assumedIdle\"\n" +
         "}";
+
+    String gmlcMapLsmResponse = "{\n" +
+        "  \"network\": \"UMTS\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"SRIforLCS-PSL\",\n" +
+        "  \"lcsReferenceNumber\": \"2\",\n" +
+        "  \"SRIforLCS\": {\n" +
+        "    \"msisdn\": \"59899077937\",\n" +
+        "    \"imsi\": \"748026871012345\",\n" +
+        "    \"lmsi\": \"2915\",\n" +
+        "    \"networkNodeNumber\": \"5982123007\",\n" +
+        "    \"gprsNodeIndicator\": \"false\",\n" +
+        "    \"mmeName\": \"MME7480001\",\n" +
+        "    \"sgsnName\": \"\",\n" +
+        "    \"3GPPAAAServerName\": \"AAA74800017\",\n" +
+        "    \"hGmlcAddress\": \"134570\",\n" +
+        "    \"vGmlcAddress\": \"157003\",\n" +
+        "    \"pprAddress\": \"938012\"\n" +
+        "  },\n" +
+        "  \"PSL\": {\n" +
+        "    \"LocationEstimate\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithAltitudeAndUncertaintyEllipsoid\",\n" +
+        "      \"latitude\": \"34.78911995887756\",\n" +
+        "      \"longitude\": \"-124.90201950073242\",\n" +
+        "      \"uncertainty\": \"0.0\",\n" +
+        "      \"uncertaintySemiMajorAxis\": \"35.949729863572216\",\n" +
+        "      \"uncertaintySemiMinorAxis\": \"18.531167061100025\",\n" +
+        "      \"angleOfMajorAxis\": \"30.0\",\n" +
+        "      \"confidence\": \"0\",\n" +
+        "      \"altitude\": \"1500\",\n" +
+        "      \"uncertaintyAltitude\": \"487.8518112499371\",\n" +
+        "      \"innerRadius\": \"0\",\n" +
+        "      \"uncertaintyRadius\": \"0.0\",\n" +
+        "      \"offsetAngle\": \"0.0\",\n" +
+        "      \"includedAngle\": \"0.0\"\n" +
+        "    },\n" +
+        "    \"ageOfLocationEstimate\": \"0\",\n" +
+        "    \"deferredMTLRresponseIndicator\": \"true\",\n" +
+        "    \"moLrShortCircuitIndicator\": \"true\",\n" +
+        "    \"accuracyFulfilmentIndicator\": \"0\",\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": \"437\",\n" +
+        "      \"mnc\": \"109\",\n" +
+        "      \"lac\": \"8304\",\n" +
+        "      \"cellid\": \"17185\"\n" +
+        "    },\n" +
+        "    \"GERANPositioningInfo\": {\n" +
+        "      \"geranPositioningInfo\": \"29152\",\n" +
+        "      \"geranGanssPositioningData\": \"820135\"\n" +
+        "    },\n" +
+        "    \"UTRANPositioningInfo\": {\n" +
+        "      \"utranPositioningInfo\": \"933601\",\n" +
+        "      \"utranGanssPositioningData\": \"933600\"\n" +
+        "    },\n" +
+        "    \"VelocityEstimate\": {\n" +
+        "      \"horizontalSpeed\": \"101\",\n" +
+        "      \"bearing\": \"3\",\n" +
+        "      \"verticalSpeed\": \"2\",\n" +
+        "      \"uncertaintyHorizontalSpeed\": \"5\",\n" +
+        "      \"uncertaintyVerticalSpeed\": \"1\",\n" +
+        "      \"velocityType\": \"HorizontalWithVerticalVelocityAndUncertainty\"\n" +
+        "    }\n" +
+        "  }\n" +
+        "}";
+
 
     @Test
     public void testCreateAndGetImmediateGeolocation()
@@ -128,14 +191,14 @@ public class GeolocationEndpointTest {
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(gmlcResponse)));
+                        .withBody(gmlcMapAtiResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(gmlcResponse)));
+                        .withBody(gmlcMapAtiResponse)));
 
         // Define Immediate Geolocation attributes for this method
         String deviceIdentifier;
@@ -160,25 +223,52 @@ public class GeolocationEndpointTest {
         assertTrue(df.parse(geolocationJson.get("date_executed").getAsString()) != null);
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn") == null);
+        assertTrue(geolocationJson.get("imsi") == null);
+        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("lmsi") == null);
+        assertTrue(geolocationJson.get("reference_number") == null);
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals("598"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("598001"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString().equals("0"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("35.349781"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("87.754320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_range") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString().equals("Avenue2501"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type") == null);
         assertTrue(geolocationJson.get("last_geolocation_response") == null);
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -192,26 +282,53 @@ public class GeolocationEndpointTest {
         assertTrue(df.parse(geolocationJson.get("date_executed").getAsString()) != null);
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn") == null);
+        assertTrue(geolocationJson.get("imsi") == null);
+        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("lmsi") == null);
+        assertTrue(geolocationJson.get("reference_number") == null);
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals("598"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("598001"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString().equals("0"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("35.349781"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("87.754320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_range") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString().equals("Avenue2501"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type") == null);
-        assertTrue(geolocationJson.get("last_geolocation_response") == null);
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
 
@@ -233,14 +350,14 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "text/xml")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         // Define Immediate Geolocation attributes for this method
         String deviceIdentifier;
@@ -267,8 +384,8 @@ public class GeolocationEndpointTest {
 
         // Test create Immediate type of Geolocation via POST with one prohibited parameter
         @SuppressWarnings("unused")
-        String eventGeofenceLatitude = null;
-        geolocationParams.add("EventGeofenceLatitude", eventGeofenceLatitude = "45.426280"); // "EventGeofenceLatitude"
+        String geofenceId = null;
+        geolocationParams.add("GeofenceId", geofenceId = "21"); // "GeofenceId"
         // applicable only for Notification
         // type of Geolocation
         // HTTP POST Geolocation creation with given parameters values
@@ -285,7 +402,6 @@ public class GeolocationEndpointTest {
             assertTrue(rejectedGeolocationSid == null);
             logger.info("Exception during HTTP POST: " + exception.getMessage());
         }
-
     }
 
     @Test
@@ -299,19 +415,18 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         // Define Geolocation attributes
         String deviceIdentifier, responseStatus, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode,
-            networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude, accuracy, internetAddress,
-            physicalAddress, formattedAddress, locationTimestamp, geolocationPositioningType, lastGeolocationResponse;
+            networkEntityAddress, ageOfLocationInfo, locationTimestamp, geolocationPositioningType, lastGeolocationResponse;
 
         // Create Immediate type of Geolocation via POST
         // Parameter values Assignment
@@ -326,24 +441,15 @@ public class GeolocationEndpointTest {
         // Define new values to the application attributes (POST test)
         MultivaluedMap<String, String> geolocationParamsUpdate = new MultivaluedMapImpl();
         geolocationParamsUpdate.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParamsUpdate.add("DesiredAccuracy", "Low");
         geolocationParamsUpdate.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "successfull");
-        geolocationParamsUpdate.add("CellId", cellId = "12345");
-        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "321");
         geolocationParamsUpdate.add("MobileCountryCode", mobileCountryCode = "749");
         geolocationParamsUpdate.add("MobileNetworkCode", mobileNetworkCode = "01");
+        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "321");
+        geolocationParamsUpdate.add("CellId", cellId = "12345");
         geolocationParamsUpdate.add("NetworkEntityAddress", networkEntityAddress = "5980042343201");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "0");
-        geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "-34.908134");
-        geolocationParamsUpdate.add("DeviceLongitude", deviceLongitude = "-55.908134");
-        geolocationParamsUpdate.add("Accuracy", accuracy = "75");
-        geolocationParamsUpdate.add("InternetAddress", internetAddress = "2001:0:9d38:6ab8:30a5:1c9d:58c6:5898");
-        geolocationParamsUpdate.add("PhysicalAddress", physicalAddress = "D8-97-BA-19-02-D8");
-        geolocationParamsUpdate.add("FormattedAddress", formattedAddress = "Avenida Brasil 2681, 11500, Montevideo, Uruguay");
         geolocationParamsUpdate.add("LocationTimestamp", locationTimestamp = "2016-04-17T20:28:40.690-03:00");
-        geolocationParamsUpdate.add("Radius", "200");
-        geolocationParamsUpdate.add("GeolocationPositioningType", geolocationPositioningType = "Network");
         geolocationParamsUpdate.add("LastGeolocationResponse", lastGeolocationResponse = "false");
         geolocationParamsUpdate.add("Cause", "Not API Compliant");
         // Update Geolocation via POST
@@ -363,59 +469,71 @@ public class GeolocationEndpointTest {
         assertTrue(df.parse(geolocationJson.get("date_executed").getAsString()) != null);
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn") == null);
+        assertTrue(geolocationJson.get("imsi") == null);
+        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("lmsi") == null);
+        assertTrue(geolocationJson.get("reference_number") == null);
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equalsIgnoreCase(ImmediateGT));
         assertTrue(geolocationJson.get("response_status").getAsString().equals(responseStatus));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
-            .equals(locationAreaCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString()
             .equals(mobileCountryCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString()
             .equals(mobileNetworkCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
+            .equals(locationAreaCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString()
-            .equals(deviceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString()
-            .equals(deviceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy").getAsString().equals(accuracy));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address").getAsString()
-            .equals(internetAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address").getAsString()
-            .equals(physicalAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString()
-            .equals(formattedAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
-            .equals(locationTimestamp));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type").getAsString().equals(geolocationPositioningType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_range") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
         assertTrue(geolocationJson.get("last_geolocation_response").getAsString().equals(lastGeolocationResponse));
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
 
         // Define new values for the Geolocation attributes (PUT test)
         geolocationParamsUpdate = new MultivaluedMapImpl();
-        geolocationParamsUpdate.add("DesiredAccuracy", "Average");
         geolocationParamsUpdate.add("StatusCallback", "http://192.1.2.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "successfull");
-        geolocationParamsUpdate.add("CellId", cellId = "55777");
-        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "707");
         geolocationParamsUpdate.add("MobileCountryCode", mobileCountryCode = "748");
         geolocationParamsUpdate.add("MobileNetworkCode", mobileNetworkCode = "03");
+        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "707");
+        geolocationParamsUpdate.add("CellId", cellId = "55777");
         geolocationParamsUpdate.add("NetworkEntityAddress", networkEntityAddress = "598003245701");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "1");
-        geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "43 38 19.39");
-        geolocationParamsUpdate.add("DeviceLongitude", deviceLongitude = "-170 21 10.02");
-        geolocationParamsUpdate.add("Accuracy", accuracy = "25");
-        geolocationParamsUpdate.add("InternetAddress", internetAddress = "180.7.2.141");
-        geolocationParamsUpdate.add("PhysicalAddress", physicalAddress = "A8-77-CA-29-32-D1");
-        geolocationParamsUpdate.add("FormattedAddress", formattedAddress = "Avenida Italia 2681, 11100, Montevideo, Uruguay");
         geolocationParamsUpdate.add("LocationTimestamp", locationTimestamp = "2016-04-17T20:31:27.790-08:00");
-        geolocationParamsUpdate.add("Radius", "100");
         geolocationParamsUpdate.add("GeolocationPositioningType", geolocationPositioningType = "Network");
         geolocationParamsUpdate.add("LastGeolocationResponse", lastGeolocationResponse = "true");
         geolocationParamsUpdate.add("Cause", "API Not Compliant");
@@ -434,36 +552,61 @@ public class GeolocationEndpointTest {
         assertTrue(df.parse(geolocationJson.get("date_executed").getAsString()) != null);
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn") == null);
+        assertTrue(geolocationJson.get("imsi") == null);
+        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("lmsi") == null);
+        assertTrue(geolocationJson.get("reference_number") == null);
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status").getAsString().equals(responseStatus));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
-            .equals(locationAreaCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString()
             .equals(mobileCountryCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString()
             .equals(mobileNetworkCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
+            .equals(locationAreaCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString()
-            .equals(deviceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString()
-            .equals(deviceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy").getAsString().equals(accuracy));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address").getAsString()
-            .equals(internetAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address").getAsString()
-            .equals(physicalAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString()
-            .equals(formattedAddress));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_range") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
             .equals(locationTimestamp));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type").getAsString().equals(geolocationPositioningType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_range") == null);
         assertTrue(geolocationJson.get("last_geolocation_response").getAsString().equals(lastGeolocationResponse));
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -471,7 +614,6 @@ public class GeolocationEndpointTest {
         // Remove created & updated Geolocation via HTTP DELETE
         RestcommGeolocationsTool.getInstance().deleteImmediateGeolocation(deploymentUrl.toString(), adminUsername,
             adminAuthToken, adminAccountSid, geolocationSid.toString());
-
     }
 
     @Test
@@ -486,18 +628,18 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         // Define Geolocation attributes
         String deviceIdentifier, responseStatus, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode,
-            networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude, accuracy, internetAddress,
+            networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude, internetAddress,
             physicalAddress, formattedAddress, locationTimestamp = "2016-04-17T20:28:40.690-03:00", geolocationPositioningType, lastGeolocationResponse;
 
         // Create Immediate type of Geolocation via POST
@@ -531,24 +673,49 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
         assertTrue(geolocationJson.get("source") == null);
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn") == null);
+        assertTrue(geolocationJson.get("imsi") == null);
+        assertTrue(geolocationJson.get("imei") == null);
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status").getAsString().equalsIgnoreCase("failed"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_range") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
         assertTrue(geolocationJson.get("geolocation_positioning_type") == null);
         assertTrue(geolocationJson.get("last_geolocation_response") == null);
         assertTrue(geolocationJson.get("cause") != null);
@@ -556,24 +723,19 @@ public class GeolocationEndpointTest {
 
         // Define new values for the Geolocation attributes (PUT test)
         geolocationParamsUpdate = new MultivaluedMapImpl();
-        geolocationParamsUpdate.add("DesiredAccuracy", "High");
         geolocationParamsUpdate.add("StatusCallback", "http://192.1.2.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "successfull");
-        geolocationParamsUpdate.add("CellId", cellId = "34580");
-        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "709");
         geolocationParamsUpdate.add("MobileCountryCode", mobileCountryCode = "748");
         geolocationParamsUpdate.add("MobileNetworkCode", mobileNetworkCode = "01");
+        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "709");
+        geolocationParamsUpdate.add("CellId", cellId = "34580");
         geolocationParamsUpdate.add("NetworkEntityAddress", networkEntityAddress = "598003245702");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "1");
         geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "S43\u00b038'19.39''");
         geolocationParamsUpdate.add("DeviceLongitude", deviceLongitude = "E169\u00b028'49.07''");
-        geolocationParamsUpdate.add("Accuracy", accuracy = "25");
         geolocationParamsUpdate.add("InternetAddress", internetAddress = "180.7.2.141");
         geolocationParamsUpdate.add("PhysicalAddress", physicalAddress = "A8-77-CA-29-32-D1");
-        geolocationParamsUpdate.add("FormattedAddress", formattedAddress = "Avenida Italia 2681, 11100, Montevideo, Uruguay");
         geolocationParamsUpdate.add("LocationTimestamp", locationTimestamp = "2016-04-17T20:31:28.388-05:00");
-        geolocationParamsUpdate.add("Radius", "5");
-        geolocationParamsUpdate.add("GeolocationPositioningType", geolocationPositioningType = "GPS");
         geolocationParamsUpdate.add("LastGeolocationResponse", lastGeolocationResponse = "true");
         geolocationParamsUpdate.add("Cause", "API Not Compliant");
         // Update Geolocation via PUT
@@ -594,34 +756,54 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status").getAsString().equals(responseStatus));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
-            .equals(locationAreaCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
+            .equals(locationTimestamp));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString()
             .equals(mobileCountryCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString()
             .equals(mobileNetworkCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
+            .equals(locationAreaCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString()
             .equals(deviceLatitude));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString()
             .equals(deviceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy").getAsString().equals(accuracy));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_range") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address").getAsString()
             .equals(internetAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address").getAsString()
             .equals(physicalAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString()
-            .equals(formattedAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
-            .equals(locationTimestamp));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type").getAsString().equals(geolocationPositioningType));
         assertTrue(geolocationJson.get("last_geolocation_response").getAsString().equals(lastGeolocationResponse));
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -642,14 +824,14 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapAtiResponse)));
 
         // Define Immediate Geolocation attributes for this method
         String deviceIdentifier;
@@ -658,15 +840,17 @@ public class GeolocationEndpointTest {
         // Parameter values Assignment
         MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
         geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParams.add("DesiredAccuracy", "High");
         geolocationParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("MobileCountryCode", "748");
+        geolocationParams.add("MobileNetworkCode","01");
+        geolocationParams.add("LocationAreaCode","709");
+        geolocationParams.add("CellId","34580");
+        geolocationParams.add("NetworkEntityAddress","598003245702");
+        geolocationParams.add("LocationAge", "1");
         geolocationParams.add("ResponseStatus", "successfull");
-        geolocationParams.add("Accuracy", "5");
         geolocationParams.add("InternetAddress", "194.87.1.127");
         geolocationParams.add("PhysicalAddress", "D8-97-BA-19-02-D8");
         geolocationParams.add("LocationTimestamp", "2016-04-15");
-        geolocationParams.add("Radius", "200");
-        geolocationParams.add("GeolocationPositioningType", "GPS");
         geolocationParams.add("LastGeolocationResponse", "true");
         geolocationParams.add("Cause", "Not API Compliant");
         // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
@@ -688,37 +872,48 @@ public class GeolocationEndpointTest {
     public void testCreateAndGetNotificationGeolocation()
         throws ParseException, IllegalArgumentException, ClientProtocolException, IOException {
 
-        String msisdn = "5989738292";
+        String imsi = "748026871012345";
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         // Define Geolocation attributes for this test method
-        String deviceIdentifier, eventGeofenceLatitude, eventGeofenceLongitude;
-
-        // Test create Notification type of Geolocation via POST (only mandatory parameters)
+        String deviceIdentifier, geofenceType, geofenceId, deferredLocationEventType;
+        // Test create Notification type of Geolocation via POST
         // Parameter values Assignment
         MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
-        geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParams.add("EventGeofenceLatitude", eventGeofenceLatitude = "45.426280");
-        geolocationParams.add("EventGeofenceLongitude", eventGeofenceLongitude = "-80.566560");
-        geolocationParams.add("GeofenceRange", "300");
-        geolocationParams.add("GeofenceEvent", "in");
-        geolocationParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("DeviceIdentifier", deviceIdentifier = imsi);
+        geolocationParams.add("CoreNetwork","UMTS");
+        geolocationParams.add("Priority","high");
+        geolocationParams.add("HorizontalAccuracy","500");
+        geolocationParams.add("VerticalAccuracy","100");
+        geolocationParams.add("VerticalCoordinateRequest","true");
+        geolocationParams.add("ResponseTime","low");
+        geolocationParams.add("LocationEstimateType","current");
+        geolocationParams.add("GeofenceEventType", deferredLocationEventType = "inside");
+        geolocationParams.add("GeofenceType", geofenceType = "locationAreaId");
+        geolocationParams.add("GeofenceId", geofenceId = "10");
+        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("ReferenceNumber","33");
+        geolocationParams.add("ServiceTypeID","0");
+        geolocationParams.add("EventIntervalTime","60");
+        geolocationParams.add("EventReportingAmount","5");
+        geolocationParams.add("EventReportingInterval","180");
+        geolocationParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
-        JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
-            deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
+        JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(deploymentUrl.toString(),
+            adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
         Sid geolocationSid = new Sid(geolocationJson.get("sid").getAsString());
 
         // Test asserts via GET to a single Geolocation
@@ -731,27 +926,52 @@ public class GeolocationEndpointTest {
         assertTrue(df.parse(geolocationJson.get("date_executed").getAsString()) != null);
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn").getAsString().equals("59899077937"));
+        assertTrue(geolocationJson.get("imsi").getAsString().equals("748026871012345"));
+        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("lmsi").getAsString().equals("2915"));
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(NotificationGT));
         assertTrue(geolocationJson.get("response_status") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals("598"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("598001"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString().equals("0"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("35.349781"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("87.754320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy") == null);
+        //assertTrue(geolocationJson.get("reference_number").getAsLong() == 3);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 437);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("109"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("8304"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("17185"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 0);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5982123007"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("MME7480001"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
+            equals("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("34.78911995887756"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("-124.90201950073242"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis").getAsString().equals("35.949729863572216"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis").getAsString().equals("18.531167061100025"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis").getAsString().equals("30.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence").getAsString().equals("0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude").getAsString().equals("1500"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude_uncertainty").getAsString().equals("487.8518112499371"));
+        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius").getAsString().equals("0"));
+        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed").getAsString().equals("101"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed").getAsString().equals("2"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed").getAsString().equals("5"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed").getAsString().equals("1"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing").getAsString().equals("3"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type").getAsString().equals(geofenceType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id").getAsString().equals(geofenceId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type").getAsString().equals(deferredLocationEventType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString().equals("Avenue2501"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude").getAsString()
-            .equals(eventGeofenceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude").getAsString()
-            .equals(eventGeofenceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type") == null);
         assertTrue(geolocationJson.get("last_geolocation_response") == null);
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -764,29 +984,53 @@ public class GeolocationEndpointTest {
         assertTrue(df.parse(geolocationJson.get("date_updated").getAsString()) != null);
         assertTrue(df.parse(geolocationJson.get("date_executed").getAsString()) != null);
         assertTrue(geolocationJson.get("account_sid").getAsString().equals(adminAccountSid));
-        assertTrue(geolocationJson.get("source") == null);
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
+        assertTrue(geolocationJson.get("msisdn").getAsString().equals("59899077937"));
+        assertTrue(geolocationJson.get("imsi").getAsString().equals("748026871012345"));
+        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("lmsi").getAsString().equals("2915"));
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(NotificationGT));
         assertTrue(geolocationJson.get("response_status") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals("598"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("598001"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString().equals("0"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("35.349781"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("87.754320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy") == null);
+        //assertTrue(geolocationJson.get("reference_number").getAsString().equals("3"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 437);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("109"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("8304"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("17185"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 0);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5982123007"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("MME7480001"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
+            equals("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("34.78911995887756"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("-124.90201950073242"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis").getAsString().equals("35.949729863572216"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis").getAsString().equals("18.531167061100025"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis").getAsString().equals("30.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence").getAsString().equals("0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude").getAsString().equals("1500"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude_uncertainty").getAsString().equals("487.8518112499371"));
+        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius").getAsString().equals("0"));
+        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed").getAsString().equals("101"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed").getAsString().equals("2"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed").getAsString().equals("5"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed").getAsString().equals("1"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing").getAsString().equals("3"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type").getAsString().equals(geofenceType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id").getAsString().equals(geofenceId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type").getAsString().equals(deferredLocationEventType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString().equals("Avenue2501"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude").getAsString()
-            .equals(eventGeofenceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude").getAsString()
-            .equals(eventGeofenceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
-        assertTrue(geolocationJson.get("geolocation_positioning_type") == null);
         assertTrue(geolocationJson.get("last_geolocation_response") == null);
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -809,36 +1053,49 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         // Define Geolocation attributes for this test method
-        String deviceIdentifier, eventGeofenceLatitude, eventGeofenceLongitude;
+        String deviceIdentifier;
 
         // Test create Notification type of Geolocation via POST with one missing mandatory parameter
-        // Parameter values Assignment, GeofenceEvent missing
-        MultivaluedMap<String, String> geolocationNewParams = new MultivaluedMapImpl();
-        geolocationNewParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationNewParams.add("EventGeofenceLatitude", eventGeofenceLatitude = "-43.426280");
-        geolocationNewParams.add("EventGeofenceLongitude", eventGeofenceLongitude = "170.566560");
-        geolocationNewParams.add("GeofenceRange", "200");
-        geolocationNewParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        // Parameter values Assignment, ResponseTime is not API compliant
+        MultivaluedMap<String, String> notificationGeolocationNotApiCompliantParams = new MultivaluedMapImpl();
+        notificationGeolocationNotApiCompliantParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
+        notificationGeolocationNotApiCompliantParams.add("CoreNetwork","UMTS");
+        notificationGeolocationNotApiCompliantParams.add("Priority","high");
+        notificationGeolocationNotApiCompliantParams.add("HorizontalAccuracy","500");
+        notificationGeolocationNotApiCompliantParams.add("VerticalAccuracy","100");
+        notificationGeolocationNotApiCompliantParams.add("VerticalCoordinateRequest","true");
+        notificationGeolocationNotApiCompliantParams.add("ResponseTime","verylow");
+        notificationGeolocationNotApiCompliantParams.add("LocationEstimateType","current");
+        notificationGeolocationNotApiCompliantParams.add("GeofenceEventType", "inside");
+        notificationGeolocationNotApiCompliantParams.add("GeofenceType", "locationAreaId");
+        notificationGeolocationNotApiCompliantParams.add("GeofenceId", "10");
+        notificationGeolocationNotApiCompliantParams.add("OccurrenceInfo","oneTimeEvent");
+        notificationGeolocationNotApiCompliantParams.add("ReferenceNumber","33");
+        notificationGeolocationNotApiCompliantParams.add("ServiceTypeID","0");
+        notificationGeolocationNotApiCompliantParams.add("EventIntervalTime","60");
+        notificationGeolocationNotApiCompliantParams.add("EventReportingAmount","5");
+        notificationGeolocationNotApiCompliantParams.add("EventReportingInterval","180");
+        notificationGeolocationNotApiCompliantParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         Sid rejectedGeolocationSid = null;
         // HTTP POST Geolocation creation with given parameters values
         try {
             JsonObject missingParamGeolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
-                deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationNewParams);
+                deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, notificationGeolocationNotApiCompliantParams);
             rejectedGeolocationSid = new Sid(missingParamGeolocationJson.get("sid").getAsString());
             JsonObject rejectedGeolocationJson = RestcommGeolocationsTool.getInstance().getNotificationGeolocation(
                 deploymentUrl.toString(), adminUsername, adminAuthToken, adminAccountSid,
                 rejectedGeolocationSid.toString());
-            assertTrue(rejectedGeolocationJson == null);
+            assertNull(rejectedGeolocationJson);
         } catch (Exception exception) {
             // Checking Test asserts via HTTP GET (no record found as POST returned a response status of 400 Bad Request)
             assertTrue(rejectedGeolocationSid == null);
@@ -858,30 +1115,40 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         // Define Notification Geolocation attributes
-        String deviceIdentifier, responseStatus, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode,
-            networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude, accuracy, internetAddress,
-            physicalAddress, formattedAddress, locationTimestamp, eventGeofenceLatitude, eventGeofenceLongitude, radius,
-            geolocationPositioningType, lastGeolocationResponse;
+        String deviceIdentifier, geofenceType, geofenceId, deferredLocationEventType, responseStatus, cellId, mobileCountryCode, mobileNetworkCode,
+            locationAreaCode, networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude, locationTimestamp, lastGeolocationResponse;
 
         // Create Notification type of Geolocation via POST
         // Parameter values Assignment
         MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
         geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParams.add("EventGeofenceLatitude", "-33.426280");
-        geolocationParams.add("EventGeofenceLongitude", "-70.566560");
-        geolocationParams.add("GeofenceRange", "300");
-        geolocationParams.add("GeofenceEvent", "in");
-        geolocationParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("CoreNetwork","UMTS");
+        geolocationParams.add("Priority","high");
+        geolocationParams.add("HorizontalAccuracy","500");
+        geolocationParams.add("VerticalAccuracy","100");
+        geolocationParams.add("VerticalCoordinateRequest","true");
+        geolocationParams.add("ResponseTime","low");
+        geolocationParams.add("LocationEstimateType","current");
+        geolocationParams.add("GeofenceEventType", deferredLocationEventType = "inside");
+        geolocationParams.add("GeofenceType", geofenceType = "locationAreaId");
+        geolocationParams.add("GeofenceId", geofenceId = "10");
+        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("ReferenceNumber","33");
+        geolocationParams.add("ServiceTypeID","0");
+        geolocationParams.add("EventIntervalTime","60");
+        geolocationParams.add("EventReportingAmount","5");
+        geolocationParams.add("EventReportingInterval","180");
+        geolocationParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
         JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
             deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
@@ -890,28 +1157,22 @@ public class GeolocationEndpointTest {
         // Define new values to the application attributes (POST test)
         MultivaluedMap<String, String> geolocationParamsUpdate = new MultivaluedMapImpl();
         geolocationParamsUpdate.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParamsUpdate.add("EventGeofenceLatitude", eventGeofenceLatitude = "34\u00b038'19.39''N");
-        geolocationParamsUpdate.add("EventGeofenceLongitude", eventGeofenceLongitude = "55\u00b028'59.33''E");
-        geolocationParamsUpdate.add("GeofenceRange", "200");
-        geolocationParamsUpdate.add("GeofenceEvent", "in-out");
-        geolocationParamsUpdate.add("DesiredAccuracy", "High");
+        geolocationParamsUpdate.add("CoreNetwork","UMTS");
+        geolocationParamsUpdate.add("Priority","high");
+        geolocationParamsUpdate.add("HorizontalAccuracy","1000");
+        geolocationParamsUpdate.add("VerticalAccuracy","5000");
+        geolocationParamsUpdate.add("ResponseTime","low");
         geolocationParamsUpdate.add("StatusCallback", "http://192.1.1.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "successfull");
-        geolocationParamsUpdate.add("CellId", cellId = "12345");
-        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "321");
         geolocationParamsUpdate.add("MobileCountryCode", mobileCountryCode = "749");
         geolocationParamsUpdate.add("MobileNetworkCode", mobileNetworkCode = "01");
+        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "321");
+        geolocationParamsUpdate.add("CellId", cellId = "12345");
         geolocationParamsUpdate.add("NetworkEntityAddress", networkEntityAddress = "5980042343201");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "0");
         geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "34.908134");
         geolocationParamsUpdate.add("DeviceLongitude", deviceLongitude = "-55.087134");
-        geolocationParamsUpdate.add("Accuracy", accuracy = "75");
-        geolocationParamsUpdate.add("InternetAddress", internetAddress = "2001:0:9d38:6ab8:30a5:1c9d:58c6:5898");
-        geolocationParamsUpdate.add("PhysicalAddress", physicalAddress = "D8-97-BA-19-02-D8");
-        geolocationParamsUpdate.add("FormattedAddress", formattedAddress = "Avenida Brasil 2681, 11500, Montevideo, Uruguay");
         geolocationParamsUpdate.add("LocationTimestamp", locationTimestamp = "2016-04-17T20:28:40.690-03:00");
-        geolocationParamsUpdate.add("Radius", radius = "200");
-        geolocationParamsUpdate.add("GeolocationPositioningType", geolocationPositioningType = "Network");
         geolocationParamsUpdate.add("LastGeolocationResponse", lastGeolocationResponse = "false");
         geolocationParamsUpdate.add("Cause", "Not API Compliant");
         // Update Geolocation via POST
@@ -948,32 +1209,18 @@ public class GeolocationEndpointTest {
             .equals(deviceLatitude));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString()
             .equals(deviceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy").getAsString().equals(accuracy));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address").getAsString()
-            .equals(internetAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address").getAsString()
-            .equals(physicalAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString()
-            .equals(formattedAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
             .equals(locationTimestamp));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude").getAsString()
-            .equals(eventGeofenceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude").getAsString()
-            .equals(eventGeofenceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius").getAsString().equals(radius));
-        assertTrue(geolocationJson.get("geolocation_positioning_type").getAsString().equals(geolocationPositioningType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type").getAsString().equals(geofenceType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id").getAsString().equals(geofenceId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type").getAsString().equals(deferredLocationEventType));
         assertTrue(geolocationJson.get("last_geolocation_response").getAsString().equals(lastGeolocationResponse));
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
 
         // Define new values for the Geolocation attributes (PUT test)
         geolocationParamsUpdate = new MultivaluedMapImpl();
-        geolocationParamsUpdate.add("EventGeofenceLatitude", eventGeofenceLatitude = "N172 42 62.80");
-        geolocationParamsUpdate.add("EventGeofenceLongitude", eventGeofenceLongitude = "W170 56 65.60");
-        geolocationParamsUpdate.add("GeofenceRange", "50");
-        geolocationParamsUpdate.add("GeofenceEvent", "in");
-        geolocationParamsUpdate.add("DesiredAccuracy", "Average");
+
         geolocationParamsUpdate.add("StatusCallback", "http://192.1.2.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "partially-successfull");
         geolocationParamsUpdate.add("CellId", cellId = "55777");
@@ -984,13 +1231,7 @@ public class GeolocationEndpointTest {
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "1");
         geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "172.908134");
         geolocationParamsUpdate.add("DeviceLongitude", deviceLongitude = "170.908134");
-        geolocationParamsUpdate.add("Accuracy", accuracy = "25");
-        geolocationParamsUpdate.add("InternetAddress", internetAddress = "180.7.2.141");
-        geolocationParamsUpdate.add("PhysicalAddress", physicalAddress = "A8-77-CA-29-32-D1");
-        geolocationParamsUpdate.add("FormattedAddress", formattedAddress = "Avenida Italia 2681, 11100, Montevideo, Uruguay");
         geolocationParamsUpdate.add("LocationTimestamp", locationTimestamp = "2016-04-17T20:28:42.771-03:00");
-        geolocationParamsUpdate.add("Radius", radius = "100");
-        geolocationParamsUpdate.add("GeolocationPositioningType", geolocationPositioningType = "GPS");
         geolocationParamsUpdate.add("LastGeolocationResponse", lastGeolocationResponse = "true");
         geolocationParamsUpdate.add("Cause", "API Not Compliant");
         // Update Geolocation via PUT
@@ -1025,22 +1266,11 @@ public class GeolocationEndpointTest {
             .equals(deviceLatitude));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString()
             .equals(deviceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy").getAsString().equals(accuracy));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address").getAsString()
-            .equals(internetAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address").getAsString()
-            .equals(physicalAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString()
-            .equals(formattedAddress));
-
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
             .equals(locationTimestamp));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude").getAsString()
-            .equals(eventGeofenceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude").getAsString()
-            .equals(eventGeofenceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius").getAsString().equals(radius));
-        assertTrue(geolocationJson.get("geolocation_positioning_type").getAsString().equals(geolocationPositioningType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type").getAsString().equals(geofenceType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id").getAsString().equals(geofenceId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type").getAsString().equals(deferredLocationEventType));
         assertTrue(geolocationJson.get("last_geolocation_response").getAsString().equals(lastGeolocationResponse));
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -1063,30 +1293,42 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         // Define Notification Geolocation attributes
         String deviceIdentifier, responseStatus, cellId, locationAreaCode, mobileCountryCode, mobileNetworkCode,
-            networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude, accuracy, internetAddress,
-            physicalAddress, formattedAddress, locationTimestamp = "2016-04-17T20:28:40.690-03:00", eventGeofenceLatitude,
-            eventGeofenceLongitude, radius, geolocationPositioningType, lastGeolocationResponse;
+            networkEntityAddress, ageOfLocationInfo, deviceLatitude, deviceLongitude,
+            locationTimestamp = "2016-04-17T20:28:40.690-03:00", deferredLocationEventType,
+            geofenceType, geofenceId, geolocationPositioningType, lastGeolocationResponse;
 
         // Create Notification type of Geolocation via POST
         // Parameter values Assignment
         MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
         geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParams.add("EventGeofenceLatitude", "-33.426280");
-        geolocationParams.add("EventGeofenceLongitude", "-70.566560");
-        geolocationParams.add("GeofenceRange", "300");
-        geolocationParams.add("GeofenceEvent", "in");
-        geolocationParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("CoreNetwork","UMTS");
+        geolocationParams.add("Priority","high");
+        geolocationParams.add("HorizontalAccuracy","500");
+        geolocationParams.add("VerticalAccuracy","100");
+        geolocationParams.add("VerticalCoordinateRequest","true");
+        geolocationParams.add("ResponseTime","low");
+        geolocationParams.add("LocationEstimateType","current");
+        geolocationParams.add("GeofenceEventType", deferredLocationEventType = "inside");
+        geolocationParams.add("GeofenceType", geofenceType = "locationAreaId");
+        geolocationParams.add("GeofenceId", geofenceId = "10");
+        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("ReferenceNumber","33");
+        geolocationParams.add("ServiceTypeID","0");
+        geolocationParams.add("EventIntervalTime","60");
+        geolocationParams.add("EventReportingAmount","5");
+        geolocationParams.add("EventReportingInterval","180");
+        geolocationParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
         JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
             deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
@@ -1096,7 +1338,6 @@ public class GeolocationEndpointTest {
         DateTime dateTime = dtf.parseDateTime(locationTimestamp);
         SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
         locationTimestamp = df.format(dateTime.toDate());
-
 
         // Define malformed values for the Geolocation attributes (PUT test to fail)
         MultivaluedMap<String, String> geolocationParamsUpdate = new MultivaluedMapImpl();
@@ -1125,14 +1366,10 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius") == null);
         assertTrue(geolocationJson.get("geolocation_positioning_type") == null);
         assertTrue(geolocationJson.get("last_geolocation_response") == null);
         assertTrue(geolocationJson.get("cause") != null);
@@ -1140,28 +1377,34 @@ public class GeolocationEndpointTest {
 
         // Define new values for the Geolocation attributes (PUT test)
         geolocationParamsUpdate = new MultivaluedMapImpl();
-        geolocationParamsUpdate.add("EventGeofenceLatitude", eventGeofenceLatitude = "172 42 62.80N");
-        geolocationParamsUpdate.add("EventGeofenceLongitude", eventGeofenceLongitude = "170 56 65.60E");
-        geolocationParamsUpdate.add("GeofenceRange", "50");
-        geolocationParamsUpdate.add("GeofenceEvent", "out");
-        geolocationParamsUpdate.add("DesiredAccuracy", "High");
-        geolocationParamsUpdate.add("StatusCallback", "http://192.1.2.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParamsUpdate.add("DeviceIdentifier", deviceIdentifier = msisdn);
+        geolocationParamsUpdate.add("CoreNetwork","UMTS");
+        geolocationParamsUpdate.add("Priority","high");
+        geolocationParamsUpdate.add("HorizontalAccuracy","500");
+        geolocationParamsUpdate.add("VerticalAccuracy","100");
+        geolocationParamsUpdate.add("VerticalCoordinateRequest","true");
+        geolocationParamsUpdate.add("ResponseTime","low");
+        geolocationParamsUpdate.add("LocationEstimateType","current");
+        geolocationParamsUpdate.add("GeofenceEventType", deferredLocationEventType = "inside");
+        geolocationParamsUpdate.add("GeofenceType", geofenceType = "locationAreaId");
+        geolocationParamsUpdate.add("GeofenceId", geofenceId = "10");
+        geolocationParamsUpdate.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParamsUpdate.add("ReferenceNumber","33");
+        geolocationParamsUpdate.add("ServiceTypeID","0");
+        geolocationParamsUpdate.add("EventIntervalTime","60");
+        geolocationParamsUpdate.add("EventReportingAmount","5");
+        geolocationParamsUpdate.add("EventReportingInterval","180");
+        geolocationParamsUpdate.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "successfull");
-        geolocationParamsUpdate.add("CellId", cellId = "34580");
-        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "709");
         geolocationParamsUpdate.add("MobileCountryCode", mobileCountryCode = "747");
         geolocationParamsUpdate.add("MobileNetworkCode", mobileNetworkCode = "05");
+        geolocationParamsUpdate.add("LocationAreaCode", locationAreaCode = "709");
+        geolocationParamsUpdate.add("CellId", cellId = "34580");
         geolocationParamsUpdate.add("NetworkEntityAddress", networkEntityAddress = "598003245703");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "0");
         geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "172\u00b038'19.39''N");
         geolocationParamsUpdate.add("DeviceLongitude", deviceLongitude = "169\u00b028'44.07''E");
-        geolocationParamsUpdate.add("Accuracy", accuracy = "25");
-        geolocationParamsUpdate.add("InternetAddress", internetAddress = "180.7.2.141");
-        geolocationParamsUpdate.add("PhysicalAddress", physicalAddress = "A8-77-CA-29-32-D1");
-        geolocationParamsUpdate.add("FormattedAddress", formattedAddress = "Avenida Brasil 2681, 11300, Montevideo, Uruguay");
         geolocationParamsUpdate.add("LocationTimestamp", locationTimestamp = "2016-04-17T20:32:29.488-07:00");
-        geolocationParamsUpdate.add("Radius", radius = "5");
-        geolocationParamsUpdate.add("GeolocationPositioningType", geolocationPositioningType = "GPS");
         geolocationParamsUpdate.add("LastGeolocationResponse", lastGeolocationResponse = "true");
         geolocationParamsUpdate.add("Cause", "API Not Compliant");
         // Update Geolocation via PUT
@@ -1182,37 +1425,44 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(NotificationGT));
         assertTrue(geolocationJson.get("response_status").getAsString().equals(responseStatus));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals(mobileCountryCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals(mobileNetworkCode));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals(locationAreaCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
-            .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString()
-            .equals(mobileCountryCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString()
-            .equals(mobileNetworkCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
-            .equals(networkEntityAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
-            .equals(ageOfLocationInfo));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString()
-            .equals(deviceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString()
-            .equals(deviceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("accuracy").getAsString().equals(accuracy));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address").getAsString()
-            .equals(internetAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address").getAsString()
-            .equals(physicalAddress));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("formatted_address").getAsString()
-            .equals(formattedAddress));
-
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString()
-            .equals(locationTimestamp));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_latitude").getAsString()
-            .equals(eventGeofenceLatitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("event_geofence_longitude").getAsString()
-            .equals(eventGeofenceLongitude));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("radius").getAsString().equals(radius));
-        assertTrue(geolocationJson.get("geolocation_positioning_type").getAsString().equals(geolocationPositioningType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == Integer.valueOf(ageOfLocationInfo));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ecid") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals(networkEntityAddress));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals(deviceLatitude));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals(deviceLongitude));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis")  == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence")  == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude")  == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude_uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type").getAsString().equals(geofenceType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id").getAsString().equals(geofenceId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type").getAsString().equals(deferredLocationEventType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("physical_address") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp").getAsString().endsWith(locationTimestamp));
         assertTrue(geolocationJson.get("last_geolocation_response").getAsString().equals(lastGeolocationResponse));
         assertTrue(geolocationJson.get("cause") == null);
         assertTrue(geolocationJson.get("api_version").getAsString().equals("2012-04-24"));
@@ -1233,36 +1483,36 @@ public class GeolocationEndpointTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
+                .withBody(gmlcMapLsmResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(gmlcResponse)));
-
-        String deviceIdentifier;
+                .withBody(gmlcMapLsmResponse)));
 
         // Create Notification type of Geolocation via POST
         // Parameter values Assignment
         MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
-        geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
-        geolocationParams.add("EventGeofenceLatitude", "-33.426280");
-        geolocationParams.add("EventGeofenceLongitude", "-70.566560");
-        geolocationParams.add("GeofenceRange", "300");
-        geolocationParams.add("GeofenceEvent", "in");
-        geolocationParams.add("DesiredAccuracy", "High");
-        geolocationParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
-        geolocationParams.add("ResponseStatus", "successfull");
-        geolocationParams.add("Accuracy", "5");
-        geolocationParams.add("InternetAddress", "194.87.1.127");
-        geolocationParams.add("PhysicalAddress", "D8-97-BA-19-02-D8");
-        geolocationParams.add("LocationTimestamp", "2016-04-17T20:28:40.690-03:00");
-        geolocationParams.add("Radius", "200");
-        geolocationParams.add("GeolocationPositioningType", "GPS");
-        geolocationParams.add("LastGeolocationResponse", "true");
-        geolocationParams.add("Cause", "Not API Compliant");
+        geolocationParams.add("DeviceIdentifier",  msisdn);
+        geolocationParams.add("CoreNetwork","UMTS");
+        geolocationParams.add("Priority","high");
+        geolocationParams.add("HorizontalAccuracy","500");
+        geolocationParams.add("VerticalAccuracy","100");
+        geolocationParams.add("VerticalCoordinateRequest","true");
+        geolocationParams.add("ResponseTime","low");
+        geolocationParams.add("LocationEstimateType","current");
+        geolocationParams.add("GeofenceEventType", "inside");
+        geolocationParams.add("GeofenceType", "locationAreaId");
+        geolocationParams.add("GeofenceId", "10");
+        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("ReferenceNumber","33");
+        geolocationParams.add("ServiceTypeID","0");
+        geolocationParams.add("EventIntervalTime","60");
+        geolocationParams.add("EventReportingAmount","5");
+        geolocationParams.add("EventReportingInterval","180");
+        geolocationParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
         JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
             deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);

@@ -108,15 +108,16 @@ public class GeolocationEndpoint extends AbstractEndpoint {
     private static final String NotificationGT = Geolocation.GeolocationType.Notification.toString();
     private String cause;
     private String rStatus;
+    private boolean httpBadRequest = false;
 
-    private static enum responseStatus {
+    private enum responseStatus {
         Queued("queued"), Sent("sent"), Processing("processing"), Successful("successful"), PartiallySuccessful(
                 "partially-successful"), LastKnown(
                         "last-known"), Failed("failed"), Unauthorized("unauthorized"), Rejected("rejected");
 
         private final String rs;
 
-        private responseStatus(final String rs) {
+        responseStatus(final String rs) {
             this.rs = rs;
         }
 
@@ -237,15 +238,19 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             return status(BAD_REQUEST).entity(nullPointerException.getMessage()).build();
         } catch (final IllegalArgumentException illegalArgumentException) {
             // API compliance check regarding malformed parameters
-            cause = illegalArgumentException.getMessage();
-            rStatus = responseStatus.Failed.toString();
+            if (httpBadRequest) {
+                return status(BAD_REQUEST).entity(illegalArgumentException.getMessage()).build();
+            } else {
+                cause = illegalArgumentException.getMessage();
+                rStatus = responseStatus.Failed.toString();
+            }
         } catch (final UnsupportedOperationException unsupportedOperationException) {
             // API compliance check regarding parameters not allowed for Immediate type of Geolocation
             return status(BAD_REQUEST).entity(unsupportedOperationException.getMessage()).build();
         }
 
         /***********************************************/
-        /******* Query GMLC for Location Data ********/
+        /******* Query GMLC for Location Data  ********/
         /*********************************************/
         try {
             String targetMSISDN = data.getFirst("DeviceIdentifier");
@@ -255,20 +260,236 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String gmlcUser = gmlcConf.getString("gmlc-user");
             String gmlcPassword = gmlcConf.getString("gmlc-password");
             // Credentials credentials = new UsernamePasswordCredentials(gmlcUser, gmlcPassword);
-            String psiService = data.getFirst("psiService");
-            String coreNetwork = data.getFirst("coreNetwork");
-            String httpRespType = data.getFirst("httpRespType");
+            String psiService = data.getFirst("PsiService");
+            String coreNetwork = data.getFirst("CoreNetwork");
+            String httpRespType = data.getFirst("HttpRespType");
+            String priority = data.getFirst("Priority");
+            String horizontalAccuracy = data.getFirst("HorizontalAccuracy");
+            String verticalAccuracy = data.getFirst("VerticalAccuracy");
+            String verticalCoordinateRequest = data.getFirst("VerticalCoordinateRequest");
+            String responseTimeCategory = data.getFirst("ResponseTime");
+            String locationEstimateType = data.getFirst("LocationEstimateType");
+            String deferredLocationEventType = data.getFirst("GeofenceEventType");
+            String areaType = data.getFirst("GeofenceType");
+            String areaId = data.getFirst("GeofenceId");
+            String occurrenceInfo = data.getFirst("OccurrenceInfo");
+            String lcsReferenceNumber = data.getFirst("ReferenceNumber");
+            String lcsServiceTypeID = data.getFirst("ServiceTypeID");
+            String intervalTime = data.getFirst("EventIntervalTime");
+            String reportingAmount = data.getFirst("EventReportingAmount");
+            String reportingInterval = data.getFirst("EventReportingInterval");
+            String slrCallbackUrl = data.getFirst("StatusCallback");
             URIBuilder uriBuilder = new URIBuilder(gmlcURI);
             uriBuilder.addParameter("msisdn", targetMSISDN);
-            if (coreNetwork != null) {
+
+            if (coreNetwork != null)
                 uriBuilder.addParameter("coreNetwork", coreNetwork);
-            }
-            if (psiService != null) {
+
+            if (psiService != null)
                 uriBuilder.addParameter("psiService", psiService);
-            }
-            if (httpRespType != null) {
+
+            if (httpRespType != null)
                 uriBuilder.addParameter("httpRespType", httpRespType);
+
+            if (priority != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    if (priority.equalsIgnoreCase("normal"))
+                        priority = "normalPriority";
+                    if (priority.equalsIgnoreCase("high") )
+                        priority = "highestPriority";
+                    uriBuilder.addParameter("priority", priority);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (priority.equalsIgnoreCase("normal"))
+                        priority = "0";
+                    if (priority.equalsIgnoreCase("high"))
+                        priority = "1";
+                    uriBuilder.addParameter("lcsPriority", priority);
+                }
             }
+
+            if (horizontalAccuracy != null)
+                uriBuilder.addParameter("horizontalAccuracy", horizontalAccuracy);
+
+            if (verticalAccuracy != null)
+                uriBuilder.addParameter("verticalAccuracy", verticalAccuracy);
+
+            if (verticalCoordinateRequest != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (verticalCoordinateRequest.equalsIgnoreCase("false"))
+                        verticalCoordinateRequest = "0";
+                    if (verticalCoordinateRequest.equalsIgnoreCase("true"))
+                        verticalCoordinateRequest = "1";
+                }
+                uriBuilder.addParameter("vertCoordinateRequest", verticalCoordinateRequest);
+            }
+
+            if (responseTimeCategory != null  && coreNetwork != null)
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    if (responseTimeCategory.equalsIgnoreCase("low"))
+                        responseTimeCategory = "lowdelay";
+                    if (responseTimeCategory.equalsIgnoreCase("tolerant"))
+                        responseTimeCategory = "delaytolerant";
+                    uriBuilder.addParameter("responseTimeCategory", responseTimeCategory);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (responseTimeCategory.equalsIgnoreCase("low"))
+                        responseTimeCategory = "0";
+                    if (responseTimeCategory.equalsIgnoreCase("tolerant"))
+                        responseTimeCategory = "1";
+                    uriBuilder.addParameter("responseTime", responseTimeCategory);
+                }
+
+            if (locationEstimateType != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    if (locationEstimateType.equalsIgnoreCase("lastKnown"))
+                        locationEstimateType = "currentOrLastKnownLocation";
+                    if (locationEstimateType.equalsIgnoreCase("initial"))
+                        locationEstimateType = "initialLocation";
+                    if (locationEstimateType.equalsIgnoreCase("current"))
+                        locationEstimateType = "currentLocation";
+                    if (locationEstimateType.equalsIgnoreCase("activateDeferred"))
+                        locationEstimateType = "activateDeferredLocation";
+                    if (locationEstimateType.equalsIgnoreCase("cancelDeferred"))
+                        locationEstimateType = "cancelDeferredLocation";
+                    if (locationEstimateType.equalsIgnoreCase("notificationVerificationOnly"))
+                        locationEstimateType = "notificationVerificationOnly";
+                    uriBuilder.addParameter("locationEstimateType", locationEstimateType);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (locationEstimateType.equalsIgnoreCase("lastKnown"))
+                        locationEstimateType = "CURRENT_OR_LAST_KNOWN_LOCATION";
+                    if (locationEstimateType.equalsIgnoreCase("initial"))
+                        locationEstimateType = "INITIAL_LOCATION";
+                    if (locationEstimateType.equalsIgnoreCase("current"))
+                        locationEstimateType = "CURRENT_LOCATION";
+                    if (locationEstimateType.equalsIgnoreCase("activateDeferred"))
+                        locationEstimateType = "ACTIVATE_DEFERRED_LOCATION";
+                    if (locationEstimateType.equalsIgnoreCase("cancelDeferred"))
+                        locationEstimateType = "CANCEL_DEFERRED_LOCATION";
+                    if (locationEstimateType.equalsIgnoreCase("notificationVerificationOnly"))
+                        locationEstimateType = "NOTIFICATION_VERIFICATION_ONLY";
+                    uriBuilder.addParameter("slgLocationType", locationEstimateType);
+                }
+            }
+
+            if (deferredLocationEventType != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("deferredLocationEventType", deferredLocationEventType);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (deferredLocationEventType.equalsIgnoreCase("available"))
+                        deferredLocationEventType = "0";
+                    if (deferredLocationEventType.equalsIgnoreCase("entering"))
+                        deferredLocationEventType = "1";
+                    if (deferredLocationEventType.equalsIgnoreCase("leaving"))
+                        deferredLocationEventType = "2";
+                    if (deferredLocationEventType.equalsIgnoreCase("inside"))
+                        deferredLocationEventType = "3";
+                    if (deferredLocationEventType.equalsIgnoreCase("periodic-ldr"))
+                        deferredLocationEventType = "4";
+                    if (deferredLocationEventType.equalsIgnoreCase("motion-event"))
+                        deferredLocationEventType = "5";
+                    if (deferredLocationEventType.equalsIgnoreCase("ldr-activated"))
+                        deferredLocationEventType = "6";
+                    if (deferredLocationEventType.equalsIgnoreCase("max-interval-expiration"))
+                        deferredLocationEventType = "7";
+                    uriBuilder.addParameter("lcsDeferredLocationType", deferredLocationEventType);
+
+                }
+            }
+
+            if (areaType != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("areaType", areaType);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (areaType.equalsIgnoreCase("countryCode"))
+                        areaType = "0";
+                    if (areaType.equalsIgnoreCase("plmnId"))
+                        areaType = "1";
+                    if (areaType.equalsIgnoreCase("locationAreaId"))
+                        areaType = "2";
+                    if (areaType.equalsIgnoreCase("routingAreaId"))
+                        areaType = "3";
+                    if (areaType.equalsIgnoreCase("cellGlobalId"))
+                        areaType = "4";
+                    if (areaType.equalsIgnoreCase("utranCellId"))
+                        areaType = "5";
+                    if (areaType.equalsIgnoreCase("trackingAreaId"))
+                        areaType = "6";
+                    if (areaType.equalsIgnoreCase("eUtranCellId"))
+                        areaType = "7";
+                    uriBuilder.addParameter("lcsAreaType", areaType);
+                }
+            }
+
+            if (areaId != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("areaId", areaId);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    uriBuilder.addParameter("lcsAreaId", areaId);
+                }
+            }
+
+            if (occurrenceInfo != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("occurrenceInfo", occurrenceInfo);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (occurrenceInfo.equalsIgnoreCase("oneTimeEvent"))
+                        occurrenceInfo = "0";
+                    if (occurrenceInfo.equalsIgnoreCase("multipleTimeEvent"))
+                        occurrenceInfo = "1";
+                    uriBuilder.addParameter("lcsAreaEventOccurrenceInfo", occurrenceInfo);
+                }
+            }
+
+            if (lcsReferenceNumber != null)
+                uriBuilder.addParameter("lcsReferenceNumber", lcsReferenceNumber);
+
+            if (lcsServiceTypeID != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("lcsServiceTypeID", lcsServiceTypeID);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    if (lcsServiceTypeID.equalsIgnoreCase("0"))
+                        lcsServiceTypeID = "EMERGENCY_SERVICES";
+                    if (lcsServiceTypeID.equalsIgnoreCase("1"))
+                        lcsServiceTypeID = "VALUE_ADDED_SERVICES";
+                    if (lcsServiceTypeID.equalsIgnoreCase("2"))
+                        lcsServiceTypeID = "PLMN_OPERATOR_SERVICES";
+                    if (lcsServiceTypeID.equalsIgnoreCase("3"))
+                        lcsServiceTypeID = "LAWFUL_INTERCEPT_SERVICES";
+                    uriBuilder.addParameter("slgClientType", lcsServiceTypeID);
+                }
+            }
+
+            if (intervalTime != null && coreNetwork != null)
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("intervalTime", intervalTime);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    uriBuilder.addParameter("plrAreaEventIntervalTime", intervalTime);
+                }
+
+
+            if (reportingAmount != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("reportingAmount", reportingAmount);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    uriBuilder.addParameter("lcsPeriodicReportingAmount", reportingAmount);
+                }
+            }
+
+            if (reportingInterval != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("reportingInterval", reportingInterval);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    uriBuilder.addParameter("lcsPeriodicReportingInterval", reportingInterval);
+                }
+            }
+
+            if (slrCallbackUrl != null && coreNetwork != null) {
+                if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                    uriBuilder.addParameter("slrCallbackUrl", slrCallbackUrl);
+                } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                    uriBuilder.addParameter("lcsCallbackUrl", slrCallbackUrl);
+                }
+            }
+
             URL url = uriBuilder.build().toURL();
             HttpClient client = HttpClientBuilder.create().build();
             logger.info("\ncURL URL: " + url);
@@ -320,22 +541,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                         String token = item.substring(item.lastIndexOf("=") + 1);
                                         data.putSingle("SubscriberState", token);
                                     }
-                                    if (item.contains("latitude")) {
-                                        String token = item.substring(item.lastIndexOf("=") + 1);
-                                        data.putSingle("DeviceLatitude", token);
-                                    }
-                                    if (item.contains("longitude")) {
-                                        String token = item.substring(item.lastIndexOf("=") + 1);
-                                        data.putSingle("DeviceLongitude", token);
-                                    }
-                                    if (item.contains("innerRadius")) {
-                                        String token = item.substring(item.lastIndexOf("=") + 1);
-                                        data.putSingle("Radius", token);
-                                    }
-                                    if (item.contains("civicAddress")) {
-                                        String token = item.substring(item.lastIndexOf("=") + 1);
-                                        data.putSingle("FormattedAddress", token);
-                                    }
                                 }
                             }
                         }
@@ -343,147 +548,450 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         gmlcResponse = EntityUtils.toString(entity, "UTF-8");
                         if (httpRespType == null) {
                             if (gmlcResponse != null) {
-                                if (psiService == null) {
+                                if (psiService == null && geolocationType.toString().equals(NotificationGT)) {
+                                    if (coreNetwork.equalsIgnoreCase("UMTS")) {
+                                        HashMap<String, String> sriPslResponse = parsePslJsonString(gmlcResponse);
+                                        logger.info("Data retrieved from GMLC via MAP SRIforLCS-PSL: " + gmlcResponse);
+
+                                        lcsReferenceNumber = sriPslResponse.get("lcsReferenceNumber");
+                                        if (lcsReferenceNumber != null)
+                                            data.putSingle("ReferenceNumber", lcsReferenceNumber);
+
+                                        String msisdn = sriPslResponse.get("msisdn");
+                                        if (msisdn != null)
+                                            data.putSingle("MSISDN", msisdn);
+
+                                        String imsi = sriPslResponse.get("imsi");
+                                        if (imsi != null)
+                                            data.putSingle("IMSI", imsi);
+
+                                        String lmsi = sriPslResponse.get("lmsi");
+                                        if (lmsi != null)
+                                            data.putSingle("LMSI", lmsi);
+
+                                        String networkNodeNumber = sriPslResponse.get("networkNodeNumber");
+                                        if (networkNodeNumber != null)
+                                            data.putSingle("NetworkEntityAddress", networkNodeNumber);
+
+                                        String tgppAAAServerName = sriPslResponse.get("3GPPAAAServerName");
+                                        if (tgppAAAServerName != null)
+                                            data.putSingle("NetworkEntityName", tgppAAAServerName);
+
+                                        String pprAddress = sriPslResponse.get("pprAddress");
+                                        if (pprAddress != null)
+                                            data.putSingle("NetworkEntityName", pprAddress);
+
+                                        String sgsnName = sriPslResponse.get("sgsnName");
+                                        if (sgsnName != null)
+                                            data.putSingle("NetworkEntityName", sgsnName);
+
+                                        String mmeName = sriPslResponse.get("mmeName");
+                                        if (mmeName != null)
+                                            data.putSingle("NetworkEntityName", mmeName);
+
+                                        String typeOfShape = sriPslResponse.get("typeOfShape");
+                                        if (typeOfShape != null)
+                                            data.putSingle("TypeOfShape", typeOfShape);
+
+                                        String latitude = sriPslResponse.get("latitude");
+                                        if (latitude != null)
+                                            data.putSingle("DeviceLatitude", latitude);
+
+                                        String longitude = sriPslResponse.get("longitude");
+                                        if (longitude != null)
+                                            data.putSingle("DeviceLongitude", longitude);
+
+                                        String uncertainty = sriPslResponse.get("uncertainty");
+                                        if (uncertainty != null)
+                                            data.putSingle("Uncertainty", uncertainty);
+
+                                        String uncertaintySemiMajorAxis = sriPslResponse.get("uncertaintySemiMajorAxis");
+                                        if (uncertaintySemiMajorAxis != null)
+                                            data.putSingle("UncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
+
+                                        String uncertaintySemiMinorAxis = sriPslResponse.get("uncertaintySemiMinorAxis");
+                                        if (uncertaintySemiMinorAxis != null)
+                                            data.putSingle("UncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
+
+                                        String angleOfMajorAxis = sriPslResponse.get("angleOfMajorAxis");
+                                        if (angleOfMajorAxis != null)
+                                            data.putSingle("AngleOfMajorAxis", angleOfMajorAxis);
+
+                                        String confidence = sriPslResponse.get("confidence");
+                                        if (confidence != null)
+                                            data.putSingle("Confidence", confidence);
+
+                                        String altitude = sriPslResponse.get("altitude");
+                                        if (altitude != null)
+                                            data.putSingle("DeviceAltitude", altitude);
+
+                                        String uncertaintyAltitude = sriPslResponse.get("uncertaintyAltitude");
+                                        if (uncertaintyAltitude != null)
+                                            data.putSingle("UncertaintyAltitude", uncertaintyAltitude);
+
+                                        String innerRadius = sriPslResponse.get("innerRadius");
+                                        if (innerRadius != null)
+                                            data.putSingle("InnerRadius", innerRadius);
+
+                                        String uncertaintyInnerRadius = sriPslResponse.get("uncertaintyInnerRadius");
+                                        if (uncertaintyInnerRadius != null)
+                                            data.putSingle("UncertaintyInnerRadius", uncertaintyInnerRadius);
+
+                                        String offsetAngle = sriPslResponse.get("offsetAngle");
+                                        if (offsetAngle != null)
+                                            data.putSingle("OffsetAngle", offsetAngle);
+
+                                        String includedAngle = sriPslResponse.get("includedAngle");
+                                        if (includedAngle != null)
+                                            data.putSingle("IncludedAngle", includedAngle);
+
+                                        String horizontalSpeed = sriPslResponse.get("horizontalSpeed");
+                                        if (horizontalSpeed != null)
+                                            data.putSingle("HorizontalSpeed", horizontalSpeed);
+
+                                        String verticalSpeed = sriPslResponse.get("verticalSpeed");
+                                        if (verticalSpeed != null)
+                                            data.putSingle("VerticalSpeed", verticalSpeed);
+
+                                        String uncertaintyHorizontalSpeed = sriPslResponse.get("uncertaintyHorizontalSpeed");
+                                        if (uncertaintyHorizontalSpeed != null)
+                                            data.putSingle("UncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
+
+                                        String uncertaintyVerticalSpeed = sriPslResponse.get("uncertaintyVerticalSpeed");
+                                        if (uncertaintyVerticalSpeed != null)
+                                            data.putSingle("UncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
+
+                                        String bearing = sriPslResponse.get("bearing");
+                                        if (bearing != null)
+                                            data.putSingle("Bearing", bearing);
+
+                                        String ageOfLocationEstimate = sriPslResponse.get("ageOfLocationEstimate");
+                                        if (ageOfLocationEstimate != null)
+                                            data.putSingle("LocationAge", ageOfLocationEstimate);
+
+                                        String mcc = sriPslResponse.get("mcc");
+                                        if (mcc != null)
+                                            data.putSingle("MobileCountryCode", mcc);
+
+                                        String mnc = sriPslResponse.get("mnc");
+                                        if (mnc != null)
+                                            data.putSingle("MobileNetworkCode", mnc);
+
+                                        String lac = sriPslResponse.get("lac");
+                                        if (lac != null)
+                                            data.putSingle("LocationAreaCode", lac);
+
+                                        String ci = sriPslResponse.get("ci");
+                                        if (ci != null)
+                                            data.putSingle("CellId", ci);
+
+                                        /*String gprsNodeIndicator = sriPslResponse.get("gprsNodeIndicator");
+                                        String deferredMTLRresponseIndicator = sriPslResponse.get("deferredMTLRresponseIndicator");
+                                        String geranPositioningInfo = sriPslResponse.get("geranPositioningInfo");
+                                        String geranGanssPositioningData = sriPslResponse.get("geranGanssPositioningData");
+                                        String utranPositioningInfo = sriPslResponse.get("utranPositioningInfo");
+                                        String utranGanssPositioningData = sriPslResponse.get("utranGanssPositioningData");
+                                        String velocityType = sriPslResponse.get("velocityType");*/
+
+                                    } else if (coreNetwork.equalsIgnoreCase("LTE")) {
+                                        // TODO
+                                    }
+                                }
+                                if (psiService == null && !geolocationType.toString().equals(NotificationGT)) {
                                     logger.info("Data retrieved from GMLC via MAP ATI: " + gmlcResponse);
                                     HashMap<String, String> atiResponse = parseAtiJsonString(gmlcResponse);
+
                                     String mcc = atiResponse.get("mcc");
-                                    data.putSingle("MobileCountryCode", mcc);
+                                    if (mcc != null)
+                                        data.putSingle("MobileCountryCode", mcc);
+
                                     String mnc = atiResponse.get("mnc");
-                                    data.putSingle("MobileNetworkCode", mnc);
+                                    if (mnc != null)
+                                        data.putSingle("MobileNetworkCode", mnc);
+
                                     String lac = atiResponse.get("lac");
-                                    data.putSingle("LocationAreaCode", lac);
+                                    if (lac != null)
+                                        data.putSingle("LocationAreaCode", lac);
+
                                     String ci = atiResponse.get("ci");
-                                    data.putSingle("CellId", ci);
+                                    if (ci != null)
+                                        data.putSingle("CellId", ci);
+
                                     String aol = atiResponse.get("aol");
-                                    data.putSingle("LocationAge", aol);
+                                    if (aol != null)
+                                        data.putSingle("LocationAge", aol);
+
                                     String vlrNumber = atiResponse.get("vlrNumber");
-                                    data.putSingle("NetworkEntityAddress", vlrNumber);
+                                    if (vlrNumber != null)
+                                        data.putSingle("NetworkEntityAddress", vlrNumber);
+
                                     String subscriberState = atiResponse.get("subscriberState");
-                                    data.putSingle("SubscriberState", subscriberState);
+                                    if (subscriberState != null)
+                                        data.putSingle("SubscriberState", subscriberState);
+
                                     String latitude = atiResponse.get("latitude");
                                     if (latitude != null)
                                         data.putSingle("DeviceLatitude", latitude);
+
                                     String longitude = atiResponse.get("longitude");
                                     if (longitude != null)
                                         data.putSingle("DeviceLongitude", longitude);
+
                                     String civicAddress = atiResponse.get("civicAddress");
                                     if (civicAddress != null)
-                                        data.putSingle("FormattedAddress", civicAddress);
+                                        data.putSingle("CivicAddress", civicAddress);
 
-                                } else if (psiService.equalsIgnoreCase("true")) {
-                                    logger.info("Data retrieved from GMLC via MAP PSI: " + gmlcResponse);
-                                    HashMap<String, String> psiResponse = parsePsiJsonString(gmlcResponse);
-                                    String imsi = psiResponse.get("imsi");
-                                    data.putSingle("IMSI", imsi);
-                                    String imei = psiResponse.get("imei");
-                                    data.putSingle("IMEI", imei);
-                                    String lmsi = psiResponse.get("lmsi");
-                                    data.putSingle("LMSI", lmsi);
-                                    String subscriberState = psiResponse.get("subscriberState");
-                                    data.putSingle("SubscriberState", subscriberState);
-                                    String mcc = psiResponse.get("gprsMcc");
-                                    data.putSingle("MobileCountryCode", mcc);
-                                    String mnc = psiResponse.get("gprsMnc");
-                                    data.putSingle("MobileNetworkCode", mnc);
-                                    String lac = psiResponse.get("gprsLac");
-                                    data.putSingle("LocationAreaCode", lac);
-                                    String ci = psiResponse.get("gprsCi");
-                                    data.putSingle("CellId", ci);
-                                    String latitude = psiResponse.get("gprsLatitude");
-                                    data.putSingle("DeviceLatitude", latitude);
-                                    String longitude = psiResponse.get("gprsLongitude");
-                                    data.putSingle("DeviceLongitude", longitude);
-                                    String typeOfShape = psiResponse.get("gprsTypeOfShape");
-                                    data.putSingle("TypeOfShape", typeOfShape);
-                                    String uncertainty = psiResponse.get("gprsUncertainty");
-                                    data.putSingle("Uncertainty", uncertainty);
-                                    latitude = psiResponse.get("gprsGeodLatitude");
-                                    data.putSingle("DeviceLatitude", latitude);
-                                    longitude = psiResponse.get("gprsGeodLongitude");
-                                    data.putSingle("DeviceLongitude", longitude);
-                                    typeOfShape = psiResponse.get("gprsGeodTypeOfShape");
-                                    data.putSingle("TypeOfShape", typeOfShape);
-                                    uncertainty = psiResponse.get("gprsGeodUncertainty");
-                                    data.putSingle("Uncertainty", uncertainty);
-                                    String confidence = psiResponse.get("gprsConfidence");
-                                    data.putSingle("Confidence", confidence);
-                                    String screeningAndPresInd = psiResponse.get("gprsScreeningAndPresentationIndicators");
-                                    data.putSingle("ScreeningAndPresentationIndicators", screeningAndPresInd);
-                                    String sgsnNumber = psiResponse.get("sgsnNumber");
-                                    data.putSingle("NetworkEntityAddress", sgsnNumber);
-                                    String lsaId = psiResponse.get("lsaId");
-                                    data.putSingle("LSAId", lsaId);
-                                    String routeingAreaId = psiResponse.get("routeingAreaId");
-                                    data.putSingle("RouteingAreaId", routeingAreaId);
-                                    mcc = psiResponse.get("mcc");
-                                    data.putSingle("MobileCountryCode", mcc);
-                                    mnc = psiResponse.get("mnc");
-                                    data.putSingle("MobileNetworkCode", mnc);
-                                    lac = psiResponse.get("lac");
-                                    data.putSingle("LocationAreaCode", lac);
-                                    ci = psiResponse.get("ci");
-                                    data.putSingle("CellId", ci);
-                                    String locationNumber = psiResponse.get("locationNumber");
-                                    data.putSingle("LocationNumber", locationNumber);
-                                    String aol = psiResponse.get("aol");
-                                    data.putSingle("LocationAge", aol);
-                                    String vlrNumber = psiResponse.get("vlrNumber");
-                                    data.putSingle("NetworkEntityAddress", vlrNumber);
-                                    String mscNumber = psiResponse.get("mscNumber");
-                                    data.putSingle("NetworkEntityAddress", mscNumber);
-                                    latitude = psiResponse.get("latitude");
-                                    data.putSingle("DeviceLatitude", latitude);
-                                    longitude = psiResponse.get("longitude");
-                                    data.putSingle("DeviceLongitude", longitude);
-                                    typeOfShape = psiResponse.get("typeOfShape");
-                                    data.putSingle("TypeOfShape", typeOfShape);
-                                    uncertainty = psiResponse.get("uncertainty");
-                                    data.putSingle("Uncertainty", uncertainty);
-                                    latitude = psiResponse.get("geodLatitude");
-                                    data.putSingle("DeviceLatitude", latitude);
-                                    longitude = psiResponse.get("geodLongitude");
-                                    data.putSingle("DeviceLongitude", longitude);
-                                    typeOfShape = psiResponse.get("geodTypeOfShape");
-                                    data.putSingle("TypeOfShape", typeOfShape);
-                                    uncertainty = psiResponse.get("geodUncertainty");
-                                    data.putSingle("Uncertainty", uncertainty);
-                                    confidence = psiResponse.get("confidence");
-                                    data.putSingle("Confidence", confidence);
-                                    screeningAndPresInd = psiResponse.get("screeningAndPresentationIndicators");
-                                    data.putSingle("ScreeningAndPresentationIndicators", screeningAndPresInd);
-                                    String currentLocationRetrieved = psiResponse.get("currentLocationRetrieved");
-                                    data.putSingle("CurrentLocationRetrieved", currentLocationRetrieved);
-                                    String mmeName = psiResponse.get("mmeName");
-                                    data.putSingle("NetworkEntityName", mmeName);
-                                    String eUtranCgi = psiResponse.get("eUtranCgi");
-                                    data.putSingle("CellId", eUtranCgi);
-                                    String trackingAreaId = psiResponse.get("trackingAreaId");
-                                    data.putSingle("TrackingAreaId", trackingAreaId);
-                                    String mnpStatus = psiResponse.get("mnpStatus");
-                                    data.putSingle("MNPStatus", mnpStatus);
-                                    String mnpMsisdn = psiResponse.get("mnpMsisdn");
-                                    data.putSingle("MNPMSISDN", mnpMsisdn);
-                                    String mnpImsi = psiResponse.get("mnpImsi");
-                                    data.putSingle("MNPIMSI", mnpImsi);
-                                    String mnpRouteingNumber = psiResponse.get("mnpRouteingNumber");
-                                    data.putSingle("MNPRouteingNumber", mnpRouteingNumber);
+                                } else if (psiService != null) {
+                                    if (psiService.equalsIgnoreCase("true") && !geolocationType.toString().equals(NotificationGT)) {
+                                        logger.info("Data retrieved from GMLC via MAP PSI: " + gmlcResponse);
+                                        HashMap<String, String> psiResponse = parsePsiJsonString(gmlcResponse);
+
+                                        String imsi = psiResponse.get("imsi");
+                                        if (imsi != null)
+                                            data.putSingle("IMSI", imsi);
+
+                                        String imei = psiResponse.get("imei");
+                                        if (imei != null)
+                                            data.putSingle("IMEI", imei);
+
+                                        String lmsi = psiResponse.get("lmsi");
+                                        if (lmsi != null)
+                                            data.putSingle("LMSI", lmsi);
+
+                                        String subscriberState = psiResponse.get("subscriberState");
+                                        if (subscriberState != null)
+                                            data.putSingle("SubscriberState", subscriberState);
+
+                                        // Subscriber GPRS Location Info
+                                        // GPRS CGI
+                                        String mcc = psiResponse.get("gprsMcc");
+                                        if (mcc != null)
+                                            data.putSingle("MobileCountryCode", mcc);
+
+                                        String mnc = psiResponse.get("gprsMnc");
+                                        if (mnc != null)
+                                            data.putSingle("MobileNetworkCode", mnc);
+
+                                        String lac = psiResponse.get("gprsLac");
+                                        if (lac != null)
+                                            data.putSingle("LocationAreaCode", lac);
+
+                                        String ci = psiResponse.get("gprsCi");
+                                        if (ci != null)
+                                            data.putSingle("CellId", ci);
+
+                                        // GPRS Geographic info
+                                        String latitude = psiResponse.get("gprsLatitude");
+                                        if (latitude != null)
+                                            data.putSingle("DeviceLatitude", latitude);
+
+                                        String longitude = psiResponse.get("gprsLongitude");
+                                        if (longitude != null)
+                                            data.putSingle("DeviceLongitude", longitude);
+
+                                        String typeOfShape = psiResponse.get("gprsTypeOfShape");
+                                        if (typeOfShape != null)
+                                            data.putSingle("TypeOfShape", typeOfShape);
+
+                                        String uncertainty = psiResponse.get("gprsUncertainty");
+                                        if (uncertainty != null)
+                                            data.putSingle("Uncertainty", uncertainty);
+
+                                        // GPRS Geodetic info
+                                        latitude = psiResponse.get("gprsGeodLatitude");
+                                        if (latitude != null)
+                                            data.putSingle("DeviceLatitude", latitude);
+
+                                        longitude = psiResponse.get("gprsGeodLongitude");
+                                        if (longitude != null)
+                                            data.putSingle("DeviceLongitude", longitude);
+
+                                        typeOfShape = psiResponse.get("gprsGeodTypeOfShape");
+                                        if (typeOfShape != null)
+                                            data.putSingle("TypeOfShape", typeOfShape);
+
+                                        uncertainty = psiResponse.get("gprsGeodUncertainty");
+                                        if (uncertainty != null)
+                                            data.putSingle("Uncertainty", uncertainty);
+
+                                        String confidence = psiResponse.get("gprsConfidence");
+                                        if (confidence != null)
+                                            data.putSingle("Confidence", confidence);
+
+                                        String screeningAndPresInd = psiResponse.get("gprsScreeningAndPresentationIndicators");
+                                        if (screeningAndPresInd != null)
+                                            data.putSingle("ScreeningAndPresentationIndicators", screeningAndPresInd);
+
+                                        // GPRS Location info
+                                        String sgsnNumber = psiResponse.get("sgsnNumber");
+                                        if (sgsnNumber != null)
+                                            data.putSingle("NetworkEntityAddress", sgsnNumber);
+
+                                        String lsaId = psiResponse.get("lsaId");
+                                        if (lsaId != null)
+                                            data.putSingle("LSAId", lsaId);
+
+                                        String routeingAreaId = psiResponse.get("routeingAreaId");
+                                        if (routeingAreaId != null)
+                                            data.putSingle("RouteingAreaId", routeingAreaId);
+
+                                        // Subscriber Location Info
+                                        // CGI
+                                        mcc = psiResponse.get("mcc");
+                                        if (mcc != null)
+                                            data.putSingle("MobileCountryCode", mcc);
+
+                                        mnc = psiResponse.get("mnc");
+                                        if (mnc != null)
+                                            data.putSingle("MobileNetworkCode", mnc);
+
+                                        lac = psiResponse.get("lac");
+                                        if (lac != null)
+                                            data.putSingle("LocationAreaCode", lac);
+
+                                        ci = psiResponse.get("ci");
+                                        if (ci != null)
+                                            data.putSingle("CellId", ci);
+
+                                        // Subscriber Location info
+                                        String locationNumber = psiResponse.get("locationNumber");
+                                        if (locationNumber != null)
+                                            data.putSingle("LocationNumber", locationNumber);
+
+                                        String aol = psiResponse.get("aol");
+                                        if (aol != null)
+                                            data.putSingle("LocationAge", aol);
+
+                                        String vlrNumber = psiResponse.get("vlrNumber");
+                                        if (vlrNumber != null)
+                                            data.putSingle("NetworkEntityAddress", vlrNumber);
+
+                                        String mscNumber = psiResponse.get("mscNumber");
+                                        if (mscNumber != null)
+                                            data.putSingle("NetworkEntityAddress", mscNumber);
+
+                                        // Subscriber Geographic Location Info
+                                        latitude = psiResponse.get("latitude");
+                                        if (latitude != null)
+                                            data.putSingle("DeviceLatitude", latitude);
+
+                                        longitude = psiResponse.get("longitude");
+                                        if (longitude != null)
+                                            data.putSingle("DeviceLongitude", longitude);
+
+                                        typeOfShape = psiResponse.get("typeOfShape");
+                                        if (typeOfShape != null)
+                                            data.putSingle("TypeOfShape", typeOfShape);
+
+                                        uncertainty = psiResponse.get("uncertainty");
+                                        if (uncertainty != null)
+                                            data.putSingle("Uncertainty", uncertainty);
+
+                                        // Subscriber Geodetic Location Info
+                                        latitude = psiResponse.get("geodLatitude");
+                                        if (latitude != null)
+                                            data.putSingle("DeviceLatitude", latitude);
+
+                                        longitude = psiResponse.get("geodLongitude");
+                                        if (longitude != null)
+                                            data.putSingle("DeviceLongitude", longitude);
+
+                                        typeOfShape = psiResponse.get("geodTypeOfShape");
+                                        if (typeOfShape != null)
+                                            data.putSingle("TypeOfShape", typeOfShape);
+
+                                        uncertainty = psiResponse.get("geodUncertainty");
+                                        if (uncertainty != null)
+                                            data.putSingle("Uncertainty", uncertainty);
+
+                                        confidence = psiResponse.get("confidence");
+                                        if (confidence != null)
+                                            data.putSingle("Confidence", confidence);
+
+                                        screeningAndPresInd = psiResponse.get("screeningAndPresentationIndicators");
+                                        if (screeningAndPresInd != null)
+                                            data.putSingle("ScreeningAndPresentationIndicators", screeningAndPresInd);
+
+                                        String currentLocationRetrieved = psiResponse.get("currentLocationRetrieved");
+                                        if (currentLocationRetrieved != null)
+                                            data.putSingle("CurrentLocationRetrieved", currentLocationRetrieved);
+
+                                        // EPS Location Info
+                                        String mmeName = psiResponse.get("mmeName");
+                                        if (mmeName != null)
+                                            data.putSingle("NetworkEntityName", mmeName);
+
+                                        String eUtranCgi = psiResponse.get("eUtranCgi");
+                                        if (eUtranCgi != null)
+                                            data.putSingle("LteCellId", eUtranCgi);
+
+                                        String trackingAreaId = psiResponse.get("trackingAreaId");
+                                        if (trackingAreaId != null)
+                                            data.putSingle("TrackingAreaCode", trackingAreaId);
+
+                                        // MNP Stastus Info
+                                        String mnpStatus = psiResponse.get("mnpStatus");
+                                        if (mnpStatus != null)
+                                            data.putSingle("MNPStatus", mnpStatus);
+
+                                        String mnpMsisdn = psiResponse.get("mnpMsisdn");
+                                        if (mnpMsisdn != null)
+                                            data.putSingle("MNPMSISDN", mnpMsisdn);
+
+                                        String mnpImsi = psiResponse.get("mnpImsi");
+                                        if (mnpImsi != null)
+                                            data.putSingle("MNPIMSI", mnpImsi);
+
+                                        String mnpRouteingNumber = psiResponse.get("mnpRouteingNumber");
+                                        if (mnpRouteingNumber != null)
+                                            data.putSingle("MNPRouteingNumber", mnpRouteingNumber);
+
+                                    }
                                 }
                             }
                         }
                     }
                     if (gmlcURI != null && gmlcResponse != null) {
                         // For debugging/logging purposes only
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Geolocation data of " + targetMSISDN + " retrieved from GMLC at: " + gmlcURI);
-                            logger.debug("MCC (Mobile Country Code) = " + getInteger("MobileCountryCode", data));
-                            logger.debug("MNC (Mobile Network Code) = " + data.getFirst("MobileNetworkCode"));
-                            logger.debug("LAC (Location Area Code) = " + data.getFirst("LocationAreaCode"));
-                            logger.debug("CI (Cell ID) = " + data.getFirst("CellId"));
-                            logger.debug("AOL (Age of Location) = " + getInteger("LocationAge", data));
-                            logger.debug("NNN (Network Node Number/Address) = " + +getLong("NetworkEntityAddress", data));
-                            logger.debug("Device Latitude = " + data.getFirst("DeviceLatitude"));
-                            logger.debug("Device Longitude = " + data.getFirst("DeviceLongitude"));
-                            logger.debug("Civic Address = " + data.getFirst("FormattedAddress"));
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Geolocation data of " + targetMSISDN + " retrieved from GMLC at: " + gmlcURI);
+                            logger.info("\nDevice Identifier = " + data.getFirst("DeviceIdentifier"));
+                            logger.info("\nMSISDN = " + getLong("MSISDN", data));
+                            logger.info("\nIMSI = " + getLong("IMSI", data));
+                            logger.info("\nIMEI = " + getLong("IMEI", data));
+                            logger.info("\nLMSI = " + getLong("LMSI", data));
+                            logger.info("\nMCC = " + getInteger("MobileCountryCode", data));
+                            logger.info("\nMNC = " + data.getFirst("MobileNetworkCode"));
+                            logger.info("\nLAC  = " + data.getFirst("LocationAreaCode"));
+                            logger.info("\nCI = " + data.getFirst("CellId"));
+                            logger.info("\nECID = " + getLong("LteCellId", data));
+                            logger.info("\nAOL = " + getInteger("LocationAge", data));
+                            logger.info("\nSubscriber State = " + data.getFirst("SubscriberState"));
+                            logger.info("\nNetwork Entity Address = " + getLong("NetworkEntityAddress", data));
+                            logger.info("\nNetwork Entity Name = " + data.getFirst("NetworkEntityName"));
+                            logger.info("\nTracking Area Code = " + data.getFirst("TrackingAreaCode"));
+                            logger.info("\nRouteing Area Id = " + data.getFirst("RouteingAreaId"));
+                            logger.info("\nType of Shape = " + data.getFirst("TypeOfShape"));
+                            logger.info("\nDevice Latitude = " + data.getFirst("DeviceLatitude"));
+                            logger.info("\nDevice Longitude = " + data.getFirst("DeviceLongitude"));
+                            logger.info("\nUncertainty = " + data.getFirst("Uncertainty"));
+                            logger.info("\nUncertainty Semi Major Axis = " + data.getFirst("UncertaintySemiMajorAxis"));
+                            logger.info("\nUncertainty Semi Minor Axis = " + data.getFirst("UncertaintySemiMinorAxis"));
+                            logger.info("\nAngle Of Major Axis = " + data.getFirst("AngleOfMajorAxis"));
+                            logger.info("\nConfidence = " + data.getFirst("Confidence"));
+                            logger.info("\nDevice Altitude = " + data.getFirst("DeviceAltitude"));
+                            logger.info("\nUncertaintyAltitude = " + data.getFirst("UncertaintyAltitude"));
+                            logger.info("\nInner Radius = " + data.getFirst("InnerRadius"));
+                            logger.info("\nUncertainty Inner Radius = " + data.getFirst("UncertaintyInnerRadius"));
+                            logger.info("\nOffset Angle = " + data.getFirst("OffsetAngle"));
+                            logger.info("\nIncluded Angle = " + data.getFirst("IncludedAngle"));
+                            logger.info("\nHorizontal Speed = " + data.getFirst("HorizontalSpeed"));
+                            logger.info("\nVertical Speed = " + data.getFirst("VerticalSpeed"));
+                            logger.info("\nUncertainty Horizontal Speed = " + data.getFirst("UncertaintyHorizontalSpeed"));
+                            logger.info("\nUncertainty Vertical Speed = " + data.getFirst("UncertaintyVerticalSpeed"));
+                            logger.info("\nBearing = " + data.getFirst("Bearing"));
+                            logger.info("\nCivic Address = " + data.getFirst("CivicAddress"));
+                            logger.info("\nBarometric Pressure = " + getLong("BarometricPressure", data));
                         }
                     }
 
@@ -494,6 +1002,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             if (logger.isInfoEnabled()) {
                 logger.info("Problem while trying to retrieve data from GMLC, exception: "+ex);
             }
@@ -535,26 +1044,113 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             throw new NullPointerException("Geolocation Type can not be null, but either \"Immediate\" or \"Notification\".");
         }
 
-        // *** DeviceIdentifier can not be null ***/
+        /*** DeviceIdentifier can not be null ***/
         if (!data.containsKey("DeviceIdentifier")) {
             throw new NullPointerException("DeviceIdentifier value can not be null");
         }
 
-        // *** StatusCallback can not be null ***/
+        /*** StatusCallback can not be null ***/
         if (!data.containsKey("StatusCallback")) {
             throw new NullPointerException("StatusCallback value can not be null");
         }
 
-        // *** DesiredAccuracy must be API compliant: High, Average or Low***/
-        if (data.containsKey("DesiredAccuracy")) {
-            String desiredAccuracy = data.getFirst("DesiredAccuracy");
-            if (!desiredAccuracy.equalsIgnoreCase("High") && !desiredAccuracy.equalsIgnoreCase("Average")
-                    && !desiredAccuracy.equalsIgnoreCase("Low")) {
-                throw new IllegalArgumentException("DesiredAccuracy value not API compliant");
+        /*** CoreNetwork must not be null or different than GSM or LTE for Notification type of Geolocation ***/
+        if (!data.containsKey("CoreNetwork") && glType.toString().equals(NotificationGT)) {
+            throw new NullPointerException("CoreNetwork value con not be null for Notification type of Geolocation");
+        } else if (data.containsKey("CoreNetwork") && glType.toString().equals(NotificationGT)) {
+            String coreNetwork = data.getFirst("CoreNetwork");
+            if (!coreNetwork.equalsIgnoreCase("umts") && !coreNetwork.equalsIgnoreCase("lte")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("CoreNetwork value not API compliant, must be UMTS or LTE for Notification type of Geolocation");
             }
         }
 
-        // *** DeviceLatitude must be API compliant***/
+        /*** Priority must be API compliant: normal or high for Notification type of Geolocation only ***/
+        if (data.containsKey("Priority") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("Priority only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("Priority") && glType.toString().equals(NotificationGT)) {
+            String priority = data.getFirst("Priority");
+            if (!priority.equalsIgnoreCase("normal") && !priority.equalsIgnoreCase("high")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Priority value not API compliant, must be normal or high");
+            }
+        }
+
+        /*** HorizontalAccuracy must be API compliant: a positive integer value for Notification type of Geolocation only ***/
+        if (data.containsKey("HorizontalAccuracy") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("HorizontalAccuracy only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("HorizontalAccuracy") && glType.toString().equals(NotificationGT)) {
+            Integer horizontalAccuracy = Integer.valueOf(data.getFirst("HorizontalAccuracy"));
+            try {
+                if (horizontalAccuracy > Integer.MAX_VALUE || horizontalAccuracy < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("HorizontalAccuracy value not API compliant, must be a positive integer value");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("HorizontalAccuracy value not API compliant, must be a positive integer value");
+            }
+        }
+
+        /*** VerticalAccuracy must be API compliant: a positive integer value for Notification type of Geolocation only***/
+        if (data.containsKey("VerticalAccuracy") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("VerticalAccuracy only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("VerticalAccuracy") && glType.toString().equals(NotificationGT)) {
+            Integer verticalAccuracy = Integer.valueOf(data.getFirst("VerticalAccuracy"));
+            try {
+                if (verticalAccuracy > Integer.MAX_VALUE || verticalAccuracy < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("VerticalAccuracy value not API compliant, must be a positive integer value");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("VerticalAccuracy value not API compliant, must be a positive integer value");
+            }
+        }
+
+        /*** VerticalCoordinateRequest must be API compliant: a boolean value for Notification type of Geolocation only***/
+        if (data.containsKey("VerticalCoordinateRequest") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("VerticalAccuracy only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("VerticalCoordinateRequest") && glType.toString().equals(NotificationGT)) {
+            String verticalCoordinateRequest = data.getFirst("VerticalCoordinateRequest");
+            if (!verticalCoordinateRequest.equalsIgnoreCase("true") && !verticalCoordinateRequest.equalsIgnoreCase("false")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("VerticalCoordinateRequest value not API compliant, must be true or false");
+            }
+        }
+
+        /*** ResponseTime must be API compliant: fast or slow for Notification type of Geolocation***/
+        if (data.containsKey("ResponseTime") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("ResponseTime only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("ResponseTime") && glType.toString().equals(NotificationGT)) {
+            String priority = data.getFirst("ResponseTime");
+            if (!priority.equalsIgnoreCase("low") && !priority.equalsIgnoreCase("tolerant")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("ResponseTime value not API compliant, must be low or tolerant");
+            }
+        }
+
+        /*** LocationEstimateType must be API compliant: fast or slow for Notification type of Geolocation only ***/
+        if (data.containsKey("LocationEstimateType") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("LocationEstimateType only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("LocationEstimateType") && glType.toString().equals(NotificationGT)) {
+            String locationEstimateType = data.getFirst("LocationEstimateType");
+            if (!locationEstimateType.equalsIgnoreCase("lastKnown") && !locationEstimateType.equalsIgnoreCase("initial")
+                && !locationEstimateType.equalsIgnoreCase("current") && !locationEstimateType.equalsIgnoreCase("activateDeferred")
+                && !locationEstimateType.equalsIgnoreCase("cancelDeferred") && !locationEstimateType.equalsIgnoreCase("notificationVerificationOnly")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("LocationEstimateType value not API compliant, must be lastKnown, initial, current, activateDeferred," +
+                    " cancelDeferred or notificationVerificationOnly");
+            }
+        }
+
+        /*** DeviceLatitude must be API compliant***/
         if (data.containsKey("DeviceLatitude")) {
             String deviceLat = data.getFirst("DeviceLatitude");
             Boolean devLatWGS84 = validateGeoCoordinatesFormat(deviceLat);
@@ -563,7 +1159,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             }
         }
 
-        // *** DeviceLongitude must be API compliant***/
+        /*** DeviceLongitude must be API compliant ***/
         if (data.containsKey("DeviceLongitude")) {
             String deviceLong = data.getFirst("DeviceLongitude");
             Boolean devLongWGS84 = validateGeoCoordinatesFormat(deviceLong);
@@ -572,53 +1168,155 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             }
         }
 
-        // *** GeofenceEvent must belong to Notification type of Geolocation, not null and API compliant: in, out or in-out***/
-        if (!data.containsKey("GeofenceEvent") && glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("GeofenceEvent value con not be null for Notification type of Geolocation");
-        } else if (data.containsKey("GeofenceEvent") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("GeofenceEvent only applies for Notification type of Geolocation");
-        } else if (data.containsKey("GeofenceEvent") && glType.toString().equals(NotificationGT)) {
-            String geofenceEvent = data.getFirst("GeofenceEvent");
-            if (!geofenceEvent.equalsIgnoreCase("in") && !geofenceEvent.equalsIgnoreCase("out")
-                    && !geofenceEvent.equalsIgnoreCase("in-out")) {
-                throw new IllegalArgumentException("GeofenceEvent value not API compliant");
+        /*** GeofenceType must belong to to Notification type of Geolocation and API compliant ***/
+        if (data.containsKey("GeofenceType") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("GeofenceType only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("GeofenceType") && glType.toString().equals(NotificationGT)) {
+            String eventGeofenceType = data.getFirst("GeofenceType");
+            if (!eventGeofenceType.equalsIgnoreCase("locationAreaId") && !eventGeofenceType.equalsIgnoreCase("cellGlobalId")
+                && !eventGeofenceType.equalsIgnoreCase("countryCode") && !eventGeofenceType.equalsIgnoreCase("plmnId")
+                && !eventGeofenceType.equalsIgnoreCase("routingAreaId") && !eventGeofenceType.equalsIgnoreCase("utranCellId")
+                && !eventGeofenceType.equalsIgnoreCase("trackingAreaId") && !eventGeofenceType.equalsIgnoreCase("eUtranCellId")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("GeofenceType value not API compliant, " +
+                    "must be one of locationAreaId, cellGlobalId, countryCode, plmnId, routingAreaId, utranCellId, trackingAreaId or eUtranCellId");
             }
         }
 
-        // *** EventGeofenceLatitude must belong to Notification type of Geolocation, not null and API compliant ***/
-        if (!data.containsKey("EventGeofenceLatitude") && glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("EventGeofenceLatitude value con not be null for Notification type of Geolocation");
-        } else if (data.containsKey("EventGeofenceLatitude") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("EventGeofenceLatitude only applies for Notification type of Geolocation");
-        } else if (data.containsKey("EventGeofenceLatitude") && glType.toString().equals(NotificationGT)) {
-            String eventGeofenceLat = data.getFirst("EventGeofenceLatitude");
-            Boolean eventGeofenceLongWGS84 = validateGeoCoordinatesFormat(eventGeofenceLat);
-            if (!eventGeofenceLongWGS84) {
-                throw new IllegalArgumentException("EventGeofenceLatitude format not API compliant");
+
+        /*** GeofenceId must belong to Notification type of Geolocation only ***/
+        if (data.containsKey("GeofenceId") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("GeofenceId only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("GeofenceId") && !glType.toString().equals(NotificationGT)) {
+            Long geofenceId = Long.valueOf(data.getFirst("GeofenceId"));
+            try {
+                if (geofenceId > Long.MAX_VALUE || geofenceId < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("GeofenceId value not API compliant, must be a positive integer value");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("GeofenceId value not API compliant, must be a positive integer value");
             }
         }
 
-        // *** EventGeofenceLongitude must belong to Notification type of Geolocation and must be API compliant ***/
-        if (!data.containsKey("EventGeofenceLongitude") && glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("EventGeofenceLongitude value con not be null for Notification type of Geolocation");
-        } else if (data.containsKey("EventGeofenceLongitude") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("EventGeofenceLongitude only applies for Notification type of Geolocation");
-        } else if (data.containsKey("EventGeofenceLongitude") && glType.toString().equals(NotificationGT)) {
-            String eventGeofenceLong = data.getFirst("EventGeofenceLongitude");
-            Boolean eventGeofenceLongWGS84 = validateGeoCoordinatesFormat(eventGeofenceLong);
-            if (!eventGeofenceLongWGS84) {
-                throw new IllegalArgumentException("EventGeofenceLongitude format not API compliant");
+        /*** GeofenceEventType must belong to Notification type of Geolocation and API compliant ***/
+        if (data.containsKey("GeofenceEventType") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("GeofenceEventType only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("GeofenceEventType") && glType.toString().equals(NotificationGT)) {
+            String eventGeofenceType = data.getFirst("GeofenceEventType");
+            if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
+                && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")
+                && !eventGeofenceType.equalsIgnoreCase("periodic-ldr") && !eventGeofenceType.equalsIgnoreCase("motion-event")
+                && !eventGeofenceType.equalsIgnoreCase("ldr-activated") && !eventGeofenceType.equalsIgnoreCase("max-interval-expiration")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("GeofenceEventType value not API compliant, " +
+                    "must be one of available, inside, entering, leaving, periodic-ldr, motion-event, ldr-activated or max-interval-expiration");
             }
         }
 
-        // *** GeofenceRange can not be null in Notification type of Geolocation***/
-        if (!data.containsKey("GeofenceRange") && glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("GeofenceRange value con not be null for Notification type of Geolocation");
-        } else if (data.containsKey("GeofenceRange") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("GeofenceRange only applies for Notification type of Geolocation");
+        /*** EventRange must belong to Notification type of Geolocation only ***/
+        if (data.containsKey("EventRange") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("EventRange only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("EventRange") && !glType.toString().equals(NotificationGT)) {
+            Long eventRange = Long.valueOf(data.getFirst("EventRange"));
+            try {
+                if (eventRange > Long.MAX_VALUE || eventRange < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("EventRange value not API compliant, must be a positive integer value");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("EventRange value not API compliant, must be a positive integer value");
+            }
         }
 
-        // *** LocationTimestamp must be API compliant: DateTime format only***/
+        /*** OccurrenceInfo ***/
+        if (data.containsKey("OccurrenceInfo") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("GeofenceEventType only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("OccurrenceInfo") && glType.toString().equals(NotificationGT)) {
+            String occurrenceInfo = data.getFirst("OccurrenceInfo");
+            if (!occurrenceInfo.equalsIgnoreCase("oneTimeEvent") && !occurrenceInfo.equalsIgnoreCase("multipleTimeEvent")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("OccurrenceInfo value not API compliant, " +
+                    "must be one of oneTimeEvent or multipleTimeEvent");
+            }
+        }
+
+        /*** ServiceTypeID must belong to Notification type of Geolocation only and API compliant ***/
+        if (data.containsKey("ServiceTypeID") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("ServiceTypeID only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("ServiceTypeID") && glType.toString().equals(NotificationGT)) {
+            Integer lcsServiceTypeId = Integer.valueOf(data.getFirst("ServiceTypeID"));
+            try {
+                if (lcsServiceTypeId > 127 || lcsServiceTypeId < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("ServiceTypeID value not API compliant, must be a positive integer value not greater than 128");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("ServiceTypeID value not API compliant, must be a positive integer value not greater than 128");
+            }
+        }
+
+        /*** EventIntervalTime must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
+        if (data.containsKey("EventIntervalTime") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("EventIntervalTime only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("EventIntervalTime") && glType.toString().equals(NotificationGT)) {
+            Long eventIntervalTime = Long.valueOf(data.getFirst("EventIntervalTime"));
+            try {
+                if (eventIntervalTime > 32767 || eventIntervalTime < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("EventIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("EventIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
+            }
+        }
+
+        /*** EventReportingAmount must be API compliant if present for Notification Geolocation only: integer value between 1 and 8639999 ***/
+        if (data.containsKey("EventReportingAmount") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("EventReportingAmount only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("EventReportingAmount") && glType.toString().equals(NotificationGT)) {
+            Long eventReportingAmount = Long.valueOf(data.getFirst("EventReportingAmount"));
+            try {
+                if (eventReportingAmount > 8639999 || eventReportingAmount < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("EventReportingAmount value not API compliant, must be a positive integer value not greater than 8639999");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("EventReportingAmount value not API compliant, must be a positive integer value not greater than 8639999");
+            }
+        }
+
+        /*** EventReportingInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 8639999 ***/
+        if (data.containsKey("EventReportingInterval") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("EventReportingInterval only applies for Notification type of Geolocation");
+        }
+        if (data.containsKey("EventReportingInterval") && glType.toString().equals(NotificationGT)) {
+            Long eventReportingInterval = Long.valueOf(data.getFirst("EventReportingInterval"));
+            try {
+                if (eventReportingInterval > 8639999 || eventReportingInterval < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("EventReportingInterval value not API compliant, must be a positive integer value not greater than 8639999");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("EventReportingInterval value not API compliant, must be a positive integer value not greater than 8639999");
+            }
+        }
+
+        /*** LocationTimestamp must be API compliant: DateTime format only ***/
         try {
             if (data.containsKey("LocationTimestamp")) {
                 @SuppressWarnings("unused")
@@ -652,26 +1350,53 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setAccountSid(accountSid);
         builder.setSource(data.getFirst("Source"));
         builder.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
+        builder.setMsisdn(getLong("MSISDN", data));
+        builder.setImsi(getLong("IMSI", data));
+        builder.setImei(getLong("IMEI", data));
+        builder.setLmsi(getLong("LMSI", data));
+        builder.setReferenceNumber(getLong("ReferenceNumber", data));
         builder.setGeolocationType(glType);
         builder.setResponseStatus(data.getFirst("ResponseStatus"));
         builder.setCause(data.getFirst("Cause"));
-        builder.setCellId(data.getFirst("CellId"));
-        builder.setLocationAreaCode(data.getFirst("LocationAreaCode"));
         builder.setMobileCountryCode(getInteger("MobileCountryCode", data));
         builder.setMobileNetworkCode(data.getFirst("MobileNetworkCode"));
-        builder.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
+        builder.setLocationAreaCode(data.getFirst("LocationAreaCode"));
+        builder.setCellId(data.getFirst("CellId"));
+        builder.setEcid(getLong("LteCellId", data));
         builder.setAgeOfLocationInfo(getInteger("LocationAge", data));
+        builder.setSubscriberState(data.getFirst("SubscriberState"));
+        builder.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
+        builder.setNetworkEntityName(data.getFirst("NetworkEntityName"));
+        builder.setTac(data.getFirst("TrackingAreaCode"));
+        builder.setRai(data.getFirst("RouteingAreaId"));
+        builder.setLocationTimestamp(getDateTime("LocationTimestamp", data));
+        builder.setTypeOfShape(data.getFirst("TypeOfShape"));
         builder.setDeviceLatitude(data.getFirst("DeviceLatitude"));
         builder.setDeviceLongitude(data.getFirst("DeviceLongitude"));
-        builder.setAccuracy(getLong("Accuracy", data));
+        builder.setUncertainty(data.getFirst("Uncertainty"));
+        builder.setUncertaintySemiMajorAxis(data.getFirst("UncertaintySemiMajorAxis"));
+        builder.setUncertaintySemiMinorAxis(data.getFirst("UncertaintySemiMinorAxis"));
+        builder.setAngleOfMajorAxis(data.getFirst("AngleOfMajorAxis"));
+        builder.setConfidence(data.getFirst("Confidence"));
+        builder.setAltitude(data.getFirst("DeviceAltitude"));
+        builder.setUncertaintyAltitude(data.getFirst("UncertaintyAltitude"));
+        builder.setInnerRadius(data.getFirst("InnerRadius"));
+        builder.setUncertaintyInnerRadius(data.getFirst("UncertaintyInnerRadius"));
+        builder.setOffsetAngle(data.getFirst("OffsetAngle"));
+        builder.setIncludedAngle(data.getFirst("IncludedAngle"));
+        builder.setHorizontalSpeed(data.getFirst("HorizontalSpeed"));
+        builder.setVerticalSpeed(data.getFirst("VerticalSpeed"));
+        builder.setUncertaintyHorizontalSpeed(data.getFirst("UncertaintyHorizontalSpeed"));
+        builder.setUncertaintyVerticalSpeed(data.getFirst("UncertaintyVerticalSpeed"));
+        builder.setBearing(data.getFirst("Bearing"));
+        builder.setGeofenceType(data.getFirst("GeofenceType"));
+        builder.setGeofenceId(data.getFirst("GeofenceId"));
+        builder.setGeofenceEventType(data.getFirst("GeofenceEventType"));
+        builder.setEventRange(getLong("EventRange", data));
+        builder.setCivicAddress(data.getFirst("CivicAddress"));
+        builder.setBarometricPressure(getLong("BarometricPressure", data));
         builder.setPhysicalAddress(data.getFirst("PhysicalAddress"));
         builder.setInternetAddress(data.getFirst("InternetAddress"));
-        builder.setFormattedAddress(data.getFirst("FormattedAddress"));
-        builder.setLocationTimestamp(getDateTime("LocationTimestamp", data));
-        builder.setEventGeofenceLatitude(data.getFirst("EventGeofenceLatitude"));
-        builder.setEventGeofenceLongitude(data.getFirst("EventGeofenceLongitude"));
-        builder.setRadius(getLong("Radius", data));
-        builder.setGeolocationPositioningType(data.getFirst("GeolocationPositioningType"));
         builder.setLastGeolocationResponse(data.getFirst("LastGeolocationResponse"));
         builder.setApiVersion(getApiVersion(data));
         String rootUri = configuration.getString("root-uri");
@@ -695,8 +1420,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setSource(data.getFirst("Source"));
         builder.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
         builder.setResponseStatus(rStatus);
+        rStatus = null;
         builder.setGeolocationType(glType);
         builder.setCause(cause);
+        cause = null;
         builder.setApiVersion(getApiVersion(data));
         String rootUri = configuration.getString("root-uri");
         rootUri = StringUtils.addSuffixIfNotPresent(rootUri, "/");
@@ -747,11 +1474,59 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         // *** Set of parameters with provided data for Geolocation update***//
         if (data.containsKey("Source")) {
             updatedGeolocation = updatedGeolocation.setSource(data.getFirst("Source"));
-
         }
 
         if (data.containsKey("DeviceIdentifier")) {
             updatedGeolocation = updatedGeolocation.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
+        }
+
+        if (data.containsKey("MSISDN")) {
+            String msisdn = data.getFirst("MSISDN");
+            Long digits = Long.valueOf(msisdn);
+            try {
+                if (msisdn.length() > 15) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("MSISDN amount of digits must not be greater than 15");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("MSISDN must be a number with an amount of digits not greater than 15");
+            }
+            updatedGeolocation = updatedGeolocation.setMsisdn(getLong("MSISDN", data));
+        }
+
+        if (data.containsKey("IMSI")) {
+            String imsi = data.getFirst("IMSI");
+            Long digits = Long.valueOf(imsi);
+            try {
+                if (imsi.length() > 15) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("IMSI amount of digits must not be greater than 15");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("IMSI must be a number with an amount of digits not greater than 15");
+            }
+            updatedGeolocation = updatedGeolocation.setImsi(getLong("IMSI", data));
+        }
+
+        if (data.containsKey("IMEI")) {
+            String imei = data.getFirst("IMEI");
+            Long digits = Long.valueOf(imei);
+            try {
+                if (imei.length() > 15) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("IMEI amount of digits must not be greater than 15");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("IMEI must be a number with an amount of digits not greater than 15");
+            }
+            updatedGeolocation = updatedGeolocation.setImei(getLong("IMEI", data));
+        }
+
+        if (data.containsKey("ReferenceNumber")) {
+            updatedGeolocation = updatedGeolocation.setReferenceNumber(getLong("ReferenceNumber", data));
         }
 
         if (data.containsKey("ResponseStatus")) {
@@ -778,28 +1553,164 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             // "Cause" is set to null if "ResponseStatus" is not null and is neither "rejected", "unauthorized" nor "failed"
         }
 
-        if (data.containsKey("CellId")) {
-            updatedGeolocation = updatedGeolocation.setCellId(data.getFirst("CellId"));
-        }
-
-        if (data.containsKey("LocationAreaCode")) {
-            updatedGeolocation = updatedGeolocation.setLocationAreaCode(data.getFirst("LocationAreaCode"));
-        }
-
         if (data.containsKey("MobileCountryCode")) {
+            String mcc = data.getFirst("MobileCountryCode");
+            Integer digits = Integer.valueOf(mcc);
+            try {
+                if (mcc.length() > 3) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("MobileCountryCode amount of digits must not be greater than 3");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("MobileCountryCode must be a number with an amount of digits not greater than 3");
+            }
             updatedGeolocation = updatedGeolocation.setMobileCountryCode(getInteger("MobileCountryCode", data));
         }
 
         if (data.containsKey("MobileNetworkCode")) {
-            updatedGeolocation = updatedGeolocation.setMobileNetworkCode(data.getFirst("MobileNetworkCode"));
+            String mnc = data.getFirst("MobileNetworkCode");
+            if (mnc.length() > 3) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("MobileNetworkCode amount of digits must not be greater than 3");
+            } else {
+                updatedGeolocation = updatedGeolocation.setMobileNetworkCode(data.getFirst("MobileNetworkCode"));
+
+            }
+        }
+
+        if (data.containsKey("LocationAreaCode")) {
+            String lac = data.getFirst("LocationAreaCode");
+            Integer digits = Integer.valueOf(lac);
+            try {
+                if (digits > 65535) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("LocationAreaCode must be a number not greater than 65535");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("LocationAreaCode must be a number not greater than 65535");
+            }
+            updatedGeolocation = updatedGeolocation.setLocationAreaCode(data.getFirst("LocationAreaCode"));
+        }
+
+        if (data.containsKey("CellId")) {
+            String ci = data.getFirst("CellId");
+            Long digits = Long.valueOf(ci);
+            try {
+                if (digits > 268435455) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("CellId must be a number not greater than 268435455");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("CellId must be a number not greater than 268435455");
+            }
+            updatedGeolocation = updatedGeolocation.setCellId(data.getFirst("CellId"));
+        }
+
+        if (data.containsKey("LteCellId")) {
+            String ecid = data.getFirst("LteCellId");
+            Long digits = Long.valueOf(ecid);
+            try {
+                if (digits > 268435455) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("LteCellId must be a number not greater than 268435455");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("LteCellId must be a number not greater than 268435455");
+            }
+            updatedGeolocation = updatedGeolocation.setCellId(data.getFirst("LteCellId"));
         }
 
         if (data.containsKey("NetworkEntityAddress")) {
+            String gt = data.getFirst("NetworkEntityAddress");
+            Long digits = Long.valueOf(gt);
+            try {
+                if (digits > Long.MAX_VALUE) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("NetworkEntityAddress must be a number compliant with Long data type");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("NetworkEntityAddress must be a number compliant with Long data type");
+            }
             updatedGeolocation = updatedGeolocation.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
         }
 
+        if (data.containsKey("NetworkEntityName")) {
+            String entityName = data.getFirst("NetworkEntityName");
+            if (entityName.length() > 20) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("NetworkEntityName length must not be greater than 20 characters");
+            } else {
+                updatedGeolocation = updatedGeolocation.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
+            }
+        }
+
         if (data.containsKey("LocationAge")) {
+            String aol = data.getFirst("LocationAge");
+            Integer digits = Integer.valueOf(aol);
+            try {
+                if (digits > Long.MAX_VALUE) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("LocationAge must be a number compliant with Integer data type");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("LocationAge must be a number compliant with Integer data type");
+            }
             updatedGeolocation = updatedGeolocation.setAgeOfLocationInfo(getInteger("LocationAge", data));
+        }
+
+        if (data.containsKey("SubscriberState")) {
+            String state = data.getFirst("SubscriberState");
+            if (!state.equalsIgnoreCase("assumedIdle") || !state.equalsIgnoreCase("camelBusy") ||
+                !state.equalsIgnoreCase("netDetNotReachable") || !state.equalsIgnoreCase("notProvidedFromVLR")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("SubscriberState must be one of assumedIdle, camelBusy, netDetNotReachable, notProvidedFromVLR");
+            } else {
+                updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("SubscriberState"));
+
+            }
+        }
+
+        if (data.containsKey("TrackingAreaCode")) {
+            String tac = data.getFirst("TrackingAreaCode");
+            Integer digits = Integer.valueOf(tac);
+            try {
+                if (digits > 65535) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+            }
+            updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("TrackingAreaCode"));
+        }
+
+        if (data.containsKey("RouteingAreaId")) {
+            String routeingAreaId = data.getFirst("RouteingAreaId");
+            if (routeingAreaId.length() > 20) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("RouteingAreaId length must not be greater than 20 characters");
+            } else {
+                updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("RouteingAreaId"));
+            }
+        }
+
+        if (data.containsKey("TypeOfShape")) {
+            String typeOfShape = data.getFirst("TypeOfShape");
+            if (typeOfShape.equalsIgnoreCase("ellipsoidPoint") || typeOfShape.equalsIgnoreCase("ellipsoidPointWithUncertaintyCircle")
+                || typeOfShape.equalsIgnoreCase("ellipsoidPointWithUncertaintyEllipse") || typeOfShape.equalsIgnoreCase("polygon")
+                || typeOfShape.equalsIgnoreCase("ellipsoidPointWithAltitude") || typeOfShape.equalsIgnoreCase("getEllipsoidPointWithAltitudeAndUncertaintyEllipsoid")
+                || typeOfShape.equalsIgnoreCase("ellipsoidArc"))
+                updatedGeolocation = updatedGeolocation.setTypeOfShape(data.getFirst("TypeOfShape"));
+            else
+                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(),
+                    responseStatus.Failed.toString(), "TypeOfShape parameter not API compliant");
         }
 
         if (data.containsKey("DeviceLatitude")) {
@@ -825,58 +1736,190 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             }
         }
 
-        if (data.containsKey("Accuracy")) {
-            updatedGeolocation = updatedGeolocation.setAccuracy(getLong("Accuracy", data));
+        if (data.containsKey("Uncertainty")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Uncertainty value can not be updated");
         }
 
-        if (data.containsKey("PhysicalAddress")) {
-            updatedGeolocation = updatedGeolocation.setPhysicalAddress(data.getFirst("PhysicalAddress"));
+        if (data.containsKey("UncertaintySemiMajorAxis")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintySemiMajorAxis value can not be updated");
         }
 
-        if (data.containsKey("InternetAddress")) {
-            updatedGeolocation = updatedGeolocation.setInternetAddress(data.getFirst("InternetAddress"));
+        if (data.containsKey("UncertaintySemiMinorAxis")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintySemiMinorAxis value can not be updated");
         }
 
-        if (data.containsKey("FormattedAddress")) {
-            updatedGeolocation = updatedGeolocation.setFormattedAddress(data.getFirst("FormattedAddress"));
+        if (data.containsKey("AngleOfMajorAxis")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("AngleOfMajorAxis value can not be updated");
+        }
+
+        if (data.containsKey("Confidence")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Confidence value can not be updated");
+        }
+
+        if (data.containsKey("DeviceAltitude")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("DeviceAltitude value can not be updated");
+        }
+
+        if (data.containsKey("UncertaintyAltitude")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintyAltitude value can not be updated");
+        }
+
+        if (data.containsKey("InnerRadius")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("InnerRadius value can not be updated");
+        }
+
+        if (data.containsKey("UncertaintyInnerRadius")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintyInnerRadius value can not be updated");
+        }
+
+        if (data.containsKey("UncertaintyInnerRadius")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintyInnerRadius value can not be updated");
+        }
+
+        if (data.containsKey("OffsetAngle")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("OffsetAngle value can not be updated");
+        }
+
+        if (data.containsKey("IncludedAngle")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("IncludedAngle value can not be updated");
+        }
+
+        if (data.containsKey("HorizontalSpeed")) {
+            String horizontalSpeed = data.getFirst("HorizontalSpeed");
+            if (horizontalSpeed.length() > 30) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("HorizontalSpeed length must not be greater than 30 digits");
+            } else {
+                updatedGeolocation = updatedGeolocation.setHorizontalSpeed(data.getFirst("HorizontalSpeed"));
+            }
+        }
+
+        if (data.containsKey("VerticalSpeed")) {
+            String verticalSpeed = data.getFirst("VerticalSpeed");
+            if (verticalSpeed.length() > 30) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("VerticalSpeed length must not be greater than 30 digits");
+            } else {
+                updatedGeolocation = updatedGeolocation.setHorizontalSpeed(data.getFirst("VerticalSpeed"));
+            }
+        }
+
+        if (data.containsKey("UncertaintyHorizontalSpeed")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintyHorizontalSpeed value can not be updated");
+        }
+
+        if (data.containsKey("UncertaintyVerticalSpeed")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("UncertaintyVerticalSpeed value can not be updated");
+        }
+
+        if (data.containsKey("Bearing")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Bearing value can not be updated");
         }
 
         if (data.containsKey("LocationTimestamp")) {
             updatedGeolocation = updatedGeolocation.setLocationTimestamp(getDateTime("LocationTimestamp", data));
         }
 
-        if (data.containsKey("EventGeofenceLatitude") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            String eventGeofenceLat = data.getFirst("EventGeofenceLatitude");
-            Boolean eventGeofenceLatWGS84 = validateGeoCoordinatesFormat(eventGeofenceLat);
-            if (!eventGeofenceLatWGS84) {
-                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(),
-                        responseStatus.Failed.toString(), "EventGeofenceLatitude format not API compliant");
+        if (data.containsKey("GeofenceType") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
+            String eventGeofenceType = data.getFirst("GeofenceType");
+            if (!eventGeofenceType.equalsIgnoreCase("locationAreaId") && !eventGeofenceType.equalsIgnoreCase("cellGlobalId")
+                && !eventGeofenceType.equalsIgnoreCase("countryCode") && !eventGeofenceType.equalsIgnoreCase("plmnId")
+                && !eventGeofenceType.equalsIgnoreCase("routingAreaId") && !eventGeofenceType.equalsIgnoreCase("utranCellId")
+                && !eventGeofenceType.equalsIgnoreCase("trackingAreaId") && !eventGeofenceType.equalsIgnoreCase("eUtranCellId")) {
+                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(), responseStatus.Failed.toString(),
+                    "GeofenceEventType value not API compliant, must be one of available, inside, entering, leaving, periodic-ldr, " +
+                        "motion-event, ldr-activated or max-interval-expiration");
             } else {
-                updatedGeolocation = updatedGeolocation.setEventGeofenceLatitude(eventGeofenceLat);
+                updatedGeolocation = updatedGeolocation.setGeofenceType(data.getFirst("GeofenceType"));
             }
         }
 
-        if (data.containsKey("EventGeofenceLongitude") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            String eventGeofenceLong = data.getFirst("EventGeofenceLongitude");
-            Boolean eventGeofenceLongWGS84 = validateGeoCoordinatesFormat(eventGeofenceLong);
-            if (!eventGeofenceLongWGS84) {
-                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(),
-                        responseStatus.Failed.toString(), "EventGeofenceLongitude format not API compliant");
+        if (data.containsKey("GeofenceId") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
+            String eventGeofenceId = data.getFirst("GeofenceId");
+            updatedGeolocation = updatedGeolocation.setGeofenceId(eventGeofenceId);
+        }
+
+        if (data.containsKey("GeofenceEventType") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
+            String eventGeofenceType = data.getFirst("GeofenceEventType");
+            if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
+                && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")
+                && !eventGeofenceType.equalsIgnoreCase("periodic-ldr") && !eventGeofenceType.equalsIgnoreCase("motion-event")
+                && !eventGeofenceType.equalsIgnoreCase("ldr-activated") && !eventGeofenceType.equalsIgnoreCase("max-interval-expiration")) {
+                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(), responseStatus.Failed.toString(),
+                    "GeofenceEventType value not API compliant, must be one of available, inside, entering, leaving, periodic-ldr, motion-event, " +
+                        "ldr-activated or max-interval-expiration");
             } else {
-                updatedGeolocation = updatedGeolocation.setEventGeofenceLongitude(eventGeofenceLong);
+                updatedGeolocation = updatedGeolocation.setGeofenceEventType(eventGeofenceType);
             }
         }
 
-        if (data.containsKey("Radius") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            updatedGeolocation = updatedGeolocation.setRadius(getLong("Radius", data));
+        if (data.containsKey("EventRange") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
+            updatedGeolocation = updatedGeolocation.setEventRange(getLong("EventRange", data));
         }
 
-        if (data.containsKey("GeolocationPositioningType")) {
-            updatedGeolocation = updatedGeolocation.setGeolocationPositioningType(data.getFirst("GeolocationPositioningType"));
+        if (data.containsKey("CivicAddress")) {
+            String civicAddress = data.getFirst("CivicAddress");
+            if (civicAddress.length() > 200) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("CivicAddress length must not be greater than 200 digits");
+            } else {
+                updatedGeolocation = updatedGeolocation.setCivicAddress(data.getFirst("CivicAddress"));
+            }
+        }
+
+        if (data.containsKey("BarometricPressure")) {
+            Long barometricPressure = Long.valueOf(data.getFirst("BarometricPressure"));
+            if (barometricPressure > Long.MAX_VALUE) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("BarometricPressure must not be a number not greater than maximum value for Long data type");
+            } else {
+                updatedGeolocation = updatedGeolocation.setBarometricPressure(getLong("BarometricPressure", data));
+            }
+        }
+
+        if (data.containsKey("PhysicalAddress")) {
+            String physicalAddress = data.getFirst("PhysicalAddress");
+            if (physicalAddress.length() > 50) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("PhysicalAddress length must not be greater than 50 characters");
+            } else {
+                updatedGeolocation = updatedGeolocation.setPhysicalAddress(data.getFirst("PhysicalAddress"));
+            }
+        }
+
+        if (data.containsKey("InternetAddress")) {
+            String internetAddress = data.getFirst("InternetAddress");
+            if (internetAddress.length() > 50) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("InternetAddress length must not be greater than 50 characters");
+            } else {
+                updatedGeolocation = updatedGeolocation.setInternetAddress(data.getFirst("InternetAddress"));
+            }
         }
 
         if (data.containsKey("LastGeolocationResponse")) {
-            updatedGeolocation = updatedGeolocation.setLastGeolocationResponse(data.getFirst("LastGeolocationResponse"));
+            String lastGeolocationResponse = data.getFirst("LastGeolocationResponse");
+            if (lastGeolocationResponse.equalsIgnoreCase("true") || lastGeolocationResponse.equalsIgnoreCase("false")) {
+                updatedGeolocation = updatedGeolocation.setLastGeolocationResponse(data.getFirst("LastGeolocationResponse"));
+            } else {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("LastGeolocationResponse value must be true or false");
+            }
         }
 
         DateTime thisDateTime = DateTime.now();
