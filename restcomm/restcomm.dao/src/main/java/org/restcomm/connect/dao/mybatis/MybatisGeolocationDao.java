@@ -176,7 +176,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("altitude", gl.getAltitude());
         map.put("uncertainty_altitude", gl.getUncertaintyAltitude());
         map.put("inner_radius", gl.getInnerRadius());
-        map.put("uncertainty_radius", gl.getUncertaintyInnerRadius());
+        map.put("uncertainty_inner_radius", gl.getUncertaintyInnerRadius());
         map.put("offset_angle", gl.getOffsetAngle());
         map.put("included_angle", gl.getIncludedAngle());
         map.put("horizontal_speed", gl.getHorizontalSpeed());
@@ -238,7 +238,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String altitude = readString(map.get("altitude"));
         final String uncertainty_altitude = readString(map.get("uncertainty_altitude"));
         final String inner_radius = readString(map.get("inner_radius"));
-        final String uncertainty_radius = readString(map.get("uncertainty_radius"));
+        final String uncertainty_inner_radius = readString(map.get("uncertainty_inner_radius"));
         final String offset_angle = readString(map.get("offset_angle"));
         final String included_angle = readString(map.get("included_angle"));
         final String horizontal_speed = readString(map.get("horizontal_speed"));
@@ -262,7 +262,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
             imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, cell_id, ecid,
             network_entity_address, network_entity_name, age_of_location_info, subscriber_state, tac, rai, type_of_shape, device_latitude, device_longitude,
             uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis, confidence, altitude, uncertainty_altitude,
-            inner_radius, uncertainty_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,
+            inner_radius, uncertainty_inner_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,
             uncertainty_vertical_speed, bearing, geofence_type, geofence_id, geofence_event_type, event_range, civic_address, barometric_pressure,
             physical_address, internet_address, last_geolocation_response, cause, api_version, uri);
     }

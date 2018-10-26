@@ -8,7 +8,7 @@
     "reference_number", "geolocation_type", "response_status", "mobile_country_code", "mobile_network_code", "location_area_code",  "cell_id",
     "ecid", "network_entity_address", "network_entity_name", "age_of_location_info", "subscriber_state", "tac", "rai",
     "type_of_shape", "device_latitude", "device_longitude", "uncertainty", "uncertainty_semi_major_axis", "uncertainty_semi_minor_axis", "angle_of_major_axis",
-    "confidence", "altitude", "uncertainty_altitude", "inner_radius", "uncertainty_radius", "offset_angle", "included_angle",
+    "confidence", "altitude", "uncertainty_altitude", "inner_radius", "uncertainty_inner_radius", "offset_angle", "included_angle",
     "horizontal_speed", "vertical_speed", "uncertainty_horizontal_speed", "uncertainty_vertical_speed", "bearing",
     "geofence_type", "geofence_id", "geofence_event_type", "event_range", "civic_address", "barometric_pressure",
     "physical_address", "internet_address", "last_geolocation_response", "cause", "api_version", "uri")
@@ -17,7 +17,7 @@
     #{reference_number}, #{geolocation_type}, #{response_status}, #{mobile_country_code}, #{mobile_network_code}, #{location_area_code}, #{cell_id},
     #{ecid}, #{network_entity_address}, #{network_entity_name}, #{age_of_location_info}, #{subscriber_state}, #{tac}, #{rai},
     #{type_of_shape}, #{device_latitude}, #{device_longitude}, #{uncertainty}, #{uncertainty_semi_major_axis}, #{uncertainty_semi_minor_axis}, #{angle_of_major_axis},
-    #{confidence},  #{altitude},  #{uncertainty_altitude}, #{inner_radius}, #{uncertainty_radius}, #{offset_angle}, #{included_angle},
+    #{confidence},  #{altitude},  #{uncertainty_altitude}, #{inner_radius}, #{uncertainty_inner_radius}, #{offset_angle}, #{included_angle},
     #{horizontal_speed}, #{vertical_speed}, #{uncertainty_horizontal_speed}, #{uncertainty_vertical_speed}, #{bearing},
     #{geofence_type}, #{geofence_id}, #{geofence_event_type}, #{event_range}, #{civic_address}, #{barometric_pressure},
     #{physical_address}, #{internet_address}, #{last_geolocation_response}, #{cause}, #{api_version}, #{uri});
@@ -44,7 +44,7 @@
     "type_of_shape"=#{type_of_shape}, "device_latitude"=#{device_latitude}, "device_longitude"=#{device_longitude},
     "uncertainty"=#{uncertainty}, "uncertainty_semi_major_axis"=#{uncertainty_semi_major_axis}, "uncertainty_semi_minor_axis"=#{uncertainty_semi_minor_axis},
     "angle_of_major_axis"=#{angle_of_major_axis}, "confidence"=#{confidence}, "altitude"=#{altitude}, "uncertainty_altitude"=#{uncertainty_altitude},
-    "inner_radius"=#{inner_radius}, "uncertainty_radius"=#{uncertainty_radius}, "offset_angle"=#{offset_angle}, "included_angle"=#{included_angle}, "horizontal_speed"=#{horizontal_speed}, "vertical_speed"=#{vertical_speed}, "uncertainty_horizontal_speed"=#{uncertainty_horizontal_speed}, "uncertainty_vertical_speed"=#{uncertainty_vertical_speed}, "bearing"=#{bearing}, "geofence_type"=#{geofence_type}, "geofence_id"=#{geofence_id}, "geofence_event_type"=#{geofence_event_type}, "event_range"=#{event_range}, "civic_address"=#{civic_address}, "barometric_pressure"=#{barometric_pressure},
+    "inner_radius"=#{inner_radius}, "uncertainty_inner_radius"=#{uncertainty_inner_radius}, "offset_angle"=#{offset_angle}, "included_angle"=#{included_angle}, "horizontal_speed"=#{horizontal_speed}, "vertical_speed"=#{vertical_speed}, "uncertainty_horizontal_speed"=#{uncertainty_horizontal_speed}, "uncertainty_vertical_speed"=#{uncertainty_vertical_speed}, "bearing"=#{bearing}, "geofence_type"=#{geofence_type}, "geofence_id"=#{geofence_id}, "geofence_event_type"=#{geofence_event_type}, "event_range"=#{event_range}, "civic_address"=#{civic_address}, "barometric_pressure"=#{barometric_pressure},
     "physical_address"=#{physical_address}, "internet_address"=#{internet_address}, "last_geolocation_response"=#{last_geolocation_response}, "cause"=#{cause}
     WHERE "sid"=#{sid};
   </update>

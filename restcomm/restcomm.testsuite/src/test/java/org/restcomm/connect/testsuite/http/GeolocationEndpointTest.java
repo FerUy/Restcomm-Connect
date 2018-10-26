@@ -99,7 +99,6 @@ public class GeolocationEndpointTest {
         Thread.sleep(1000);
     }
 
-    //String gmlcResponse = "mcc=598,mnc=1,lac=320,cellid=521,aol=0,vlrNumber=598001,latitude=35.349781,longitude=87.754320,civicAddress=Avenue2501";
     String gmlcMapAtiResponse = "{\n" +
         "  \"network\": \"GSM\",\n" +
         "  \"protocol\": \"MAP\",\n" +
@@ -146,7 +145,7 @@ public class GeolocationEndpointTest {
         "      \"altitude\": \"1500\",\n" +
         "      \"uncertaintyAltitude\": \"487.8518112499371\",\n" +
         "      \"innerRadius\": \"0\",\n" +
-        "      \"uncertaintyRadius\": \"0.0\",\n" +
+        "      \"uncertaintyInnerRadius\": \"0.0\",\n" +
         "      \"offsetAngle\": \"0.0\",\n" +
         "      \"includedAngle\": \"0.0\"\n" +
         "    },\n" +
@@ -176,6 +175,74 @@ public class GeolocationEndpointTest {
         "      \"uncertaintyVerticalSpeed\": \"1\",\n" +
         "      \"velocityType\": \"HorizontalWithVerticalVelocityAndUncertainty\"\n" +
         "    }\n" +
+        "  }\n" +
+        "}";
+
+    String gmlcLteLcsResponse = "{\n" +
+        "  \"network\": \"LTE\",\n" +
+        "  \"protocol\": \"Diameter\",\n" +
+        "  \"operation\": \"RIR-RIA-PLR-PLA\",\n" +
+        "  \"lcsReferenceNumber\": \"359\",\n" +
+        "  \"gmlcTransactionId\": \"5\",\n" +
+        "  \"Routing-Info-Answer\": {\n" +
+        "    \"msisdn\": \"59899077937\",\n" +
+        "    \"imsi\": \"748026871012345\",\n" +
+        "    \"lmsi\": \"4294967295\",\n" +
+        "    \"mmeName\": \"mme7480001\",\n" +
+        "    \"mmeRealm\": \"02.com.uy\",\n" +
+        "    \"sgsnNumber\": \"598990123\",\n" +
+        "    \"sgsnName\": \"sgsn\",\n" +
+        "    \"sgsnRealm\": \"02.com.uy\",\n" +
+        "    \"3GPPAAAServerName\": \"aaa321\",\n" +
+        "    \"gmlcAddress\": \"598999047\"\n" +
+        "  },\n" +
+        "  \"Provide-Location-Answer\": {\n" +
+        "    \"LocationEstimate\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithAltitudeAndUncertaintyEllipsoid\",\n" +
+        "      \"latitude\": \"33.99999260902405\",\n" +
+        "      \"longitude\": \"55.99999666213989\",\n" +
+        "      \"uncertainty\": \"0.0\",\n" +
+        "      \"uncertaintySemiMajorAxis\": \"1.0000000000000009\",\n" +
+        "      \"uncertaintySemiMinorAxis\": \"2.100000000000002\",\n" +
+        "      \"angleOfMajorAxis\": \"4.0\",\n" +
+        "      \"confidence\": \"80\",\n" +
+        "      \"altitude\": \"200\",\n" +
+        "      \"uncertaintyAltitude\": \"11.435888100000016\",\n" +
+        "      \"innerRadius\": \"0\",\n" +
+        "      \"uncertaintyRadius\": \"0.0\",\n" +
+        "      \"offsetAngle\": \"0.0\",\n" +
+        "      \"includedAngle\": \"0.0\"\n" +
+        "    },\n" +
+        "    \"accuracyFulfilmentIndicator\": \"-1\",\n" +
+        "    \"ageOfLocationEstimate\": \"0\",\n" +
+        "    \"CGIorSAIorESMLCCellInfo\": {\n" +
+        "      \"cellGlobalIdentity\": \"54108\",\n" +
+        "      \"serviceAreaIdentity\": \"2718\",\n" +
+        "      \"eUtranCgi\": \"7890104\",\n" +
+        "      \"cellPortionId\": \"3\"\n" +
+        "    },\n" +
+        "    \"GERANPositioningInfo\": {\n" +
+        "      \"geranPositioningInfo\": \"0\",\n" +
+        "      \"geranGanssPositioningData\": \"0\"\n" +
+        "    },\n" +
+        "    \"UTRANPositioningInfo\": {\n" +
+        "      \"utranPositioningInfo\": \"81\",\n" +
+        "      \"utranGanssPositioningData\": \"403\",\n" +
+        "      \"utranAdditionalPositioningData\": \"0\"\n" +
+        "    },\n" +
+        "    \"E-UTRANPositioningInfo\": {\n" +
+        "      \"eUtranPositioningData\": \"\"\n" +
+        "    },\n" +
+        "    \"VelocityEstimate\": {\n" +
+        "      \"horizontalSpeed\": \"20\",\n" +
+        "      \"bearing\": \"0\",\n" +
+        "      \"verticalSpeed\": \"0\",\n" +
+        "      \"uncertaintyHorizontalSpeed\": \"0\",\n" +
+        "      \"uncertaintyVerticalSpeed\": \"0\",\n" +
+        "      \"velocityType\": \"HorizontalVelocity\"\n" +
+        "    },\n" +
+        "    \"civicAddress\": \"DowningStreet2915\",\n" +
+        "    \"barometricPressure\": \"1013\"\n" +
         "  }\n" +
         "}";
 
@@ -904,7 +971,7 @@ public class GeolocationEndpointTest {
         geolocationParams.add("GeofenceEventType", deferredLocationEventType = "inside");
         geolocationParams.add("GeofenceType", geofenceType = "locationAreaId");
         geolocationParams.add("GeofenceId", geofenceId = "10");
-        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("OccurrenceInfo","once");
         geolocationParams.add("ReferenceNumber","33");
         geolocationParams.add("ServiceTypeID","0");
         geolocationParams.add("EventIntervalTime","60");
@@ -955,8 +1022,8 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence").getAsString().equals("0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude").getAsString().equals("1500"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude_uncertainty").getAsString().equals("487.8518112499371"));
-        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius").getAsString().equals("0"));
-        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius").getAsString().equals("0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius").getAsString().equals("0.0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle").getAsString().equals("0.0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle").getAsString().equals("0.0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed").getAsString().equals("101"));
@@ -1014,8 +1081,8 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence").getAsString().equals("0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude").getAsString().equals("1500"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude_uncertainty").getAsString().equals("487.8518112499371"));
-        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius").getAsString().equals("0"));
-        //assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius").getAsString().equals("0.0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius").getAsString().equals("0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_inner_radius").getAsString().equals("0.0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("offset_angle").getAsString().equals("0.0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("included_angle").getAsString().equals("0.0"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_horizontal_speed").getAsString().equals("101"));
@@ -1079,7 +1146,7 @@ public class GeolocationEndpointTest {
         notificationGeolocationNotApiCompliantParams.add("GeofenceEventType", "inside");
         notificationGeolocationNotApiCompliantParams.add("GeofenceType", "locationAreaId");
         notificationGeolocationNotApiCompliantParams.add("GeofenceId", "10");
-        notificationGeolocationNotApiCompliantParams.add("OccurrenceInfo","oneTimeEvent");
+        notificationGeolocationNotApiCompliantParams.add("OccurrenceInfo","once");
         notificationGeolocationNotApiCompliantParams.add("ReferenceNumber","33");
         notificationGeolocationNotApiCompliantParams.add("ServiceTypeID","0");
         notificationGeolocationNotApiCompliantParams.add("EventIntervalTime","60");
@@ -1142,7 +1209,7 @@ public class GeolocationEndpointTest {
         geolocationParams.add("GeofenceEventType", deferredLocationEventType = "inside");
         geolocationParams.add("GeofenceType", geofenceType = "locationAreaId");
         geolocationParams.add("GeofenceId", geofenceId = "10");
-        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("OccurrenceInfo","multiple");
         geolocationParams.add("ReferenceNumber","33");
         geolocationParams.add("ServiceTypeID","0");
         geolocationParams.add("EventIntervalTime","60");
@@ -1322,7 +1389,7 @@ public class GeolocationEndpointTest {
         geolocationParams.add("GeofenceEventType", deferredLocationEventType = "inside");
         geolocationParams.add("GeofenceType", geofenceType = "locationAreaId");
         geolocationParams.add("GeofenceId", geofenceId = "10");
-        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("OccurrenceInfo","once");
         geolocationParams.add("ReferenceNumber","33");
         geolocationParams.add("ServiceTypeID","0");
         geolocationParams.add("EventIntervalTime","60");
@@ -1388,7 +1455,7 @@ public class GeolocationEndpointTest {
         geolocationParamsUpdate.add("GeofenceEventType", deferredLocationEventType = "inside");
         geolocationParamsUpdate.add("GeofenceType", geofenceType = "locationAreaId");
         geolocationParamsUpdate.add("GeofenceId", geofenceId = "10");
-        geolocationParamsUpdate.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParamsUpdate.add("OccurrenceInfo","once");
         geolocationParamsUpdate.add("ReferenceNumber","33");
         geolocationParamsUpdate.add("ServiceTypeID","0");
         geolocationParamsUpdate.add("EventIntervalTime","60");
@@ -1506,7 +1573,7 @@ public class GeolocationEndpointTest {
         geolocationParams.add("GeofenceEventType", "inside");
         geolocationParams.add("GeofenceType", "locationAreaId");
         geolocationParams.add("GeofenceId", "10");
-        geolocationParams.add("OccurrenceInfo","oneTimeEvent");
+        geolocationParams.add("OccurrenceInfo","once");
         geolocationParams.add("ReferenceNumber","33");
         geolocationParams.add("ServiceTypeID","0");
         geolocationParams.add("EventIntervalTime","60");
