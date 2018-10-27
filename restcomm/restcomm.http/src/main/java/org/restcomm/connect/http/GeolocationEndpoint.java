@@ -628,9 +628,21 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                         if (sgsnName != null)
                                             data.putSingle("NetworkEntityName", sgsnName);
 
+                                        String sgsnRealm = sriPslResponse.get("sgsnRealm");
+                                        if (sgsnRealm != null) {
+                                            sgsnName = sgsnName.concat("@").concat(sgsnRealm);
+                                            data.putSingle("NetworkEntityName", sgsnName);
+                                        }
+
                                         String mmeName = sriPslResponse.get("mmeName");
                                         if (mmeName != null)
                                             data.putSingle("NetworkEntityName", mmeName);
+
+                                        String mmeRealm = sriPslResponse.get("mmeRealm");
+                                        if (mmeRealm != null) {
+                                            mmeName = mmeName.concat("@").concat(mmeRealm);
+                                            data.putSingle("NetworkEntityName", mmeName);
+                                        }
 
                                         String typeOfShape = sriPslResponse.get("typeOfShape");
                                         if (typeOfShape != null)
@@ -757,14 +769,32 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                             data.putSingle("LMSI", lmsi);
 
                                         String sgsnName = rirPlrResponse.get("sgsnName");
-                                        if (sgsnName != null) {
-                                            if (!sgsnName.isEmpty())
-                                                data.putSingle("NetworkEntityName", sgsnName);
+                                        if (sgsnName != null)
+                                            data.putSingle("NetworkEntityName", sgsnName);
+
+                                        String sgsnRealm = rirPlrResponse.get("sgsnRealm");
+                                        if (sgsnRealm != null) {
+                                            sgsnName = sgsnName.concat("@").concat(sgsnRealm);
+                                            data.putSingle("NetworkEntityName", sgsnName);
                                         }
 
                                         String mmeName = rirPlrResponse.get("mmeName");
                                         if (mmeName != null)
                                             data.putSingle("NetworkEntityName", mmeName);
+
+                                        String mmeRealm = rirPlrResponse.get("mmeRealm");
+                                        if (mmeRealm != null) {
+                                            mmeName = mmeName.concat("@").concat(mmeRealm);
+                                            data.putSingle("NetworkEntityName", mmeName);
+                                        }
+
+                                        String mscNumber = rirPlrResponse.get("mscNumber");
+                                        if (mscNumber != null)
+                                            data.putSingle("NetworkEntityAddress", mscNumber);
+
+                                        String sgsnNumber = rirPlrResponse.get("sgsnNumber");
+                                        if (sgsnNumber != null)
+                                            data.putSingle("NetworkEntityAddress", sgsnNumber);
 
                                         String typeOfShape = rirPlrResponse.get("typeOfShape");
                                         if (typeOfShape != null)
@@ -857,6 +887,14 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                         ci = rirPlrResponse.get("eUtranCgi");
                                         if (ci != null)
                                             data.putSingle("CellId", ci);
+
+                                        String civicAddress = rirPlrResponse.get("civicAddress");
+                                        if (civicAddress != null)
+                                            data.putSingle("CivicAddress", civicAddress);
+
+                                        String barometricPressure = rirPlrResponse.get("barometricPressure");
+                                        if (barometricPressure != null)
+                                            data.putSingle("BarometricPressure", barometricPressure);
 
                                     }
                                 }
@@ -2832,6 +2870,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (!mmeRealm.isEmpty())
                     rirPlrResponse.put("mmeRealm", mmeRealm);
             }
+            if (ria.get("mscNumber") != null) {
+                String mscNumber = ria.get("mscNumber").getAsString();
+                if (!mscNumber.isEmpty())
+                    rirPlrResponse.put("mscNumber", mscNumber);
+            }
             if (ria.get("sgsnNumber") != null) {
                 String sgsnNumber = ria.get("sgsnNumber").getAsString();
                 if (!sgsnNumber.isEmpty())
@@ -2841,6 +2884,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 String sgsnName = ria.get("sgsnName").getAsString();
                 if (!sgsnName.isEmpty())
                     rirPlrResponse.put("sgsnName", sgsnName);
+            }
+            if (ria.get("sgsnRealm") != null) {
+                String sgsnRealm = ria.get("sgsnRealm").getAsString();
+                if (!sgsnRealm.isEmpty())
+                    rirPlrResponse.put("sgsnRealm", sgsnRealm);
             }
             if (ria.get("3GPPAAAServerName") != null) {
                 String tgppAAAServerName = ria.get("3GPPAAAServerName").getAsString();
