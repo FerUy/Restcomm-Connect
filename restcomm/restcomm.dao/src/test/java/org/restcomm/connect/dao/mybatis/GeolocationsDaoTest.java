@@ -79,7 +79,7 @@ public class GeolocationsDaoTest {
         builder.setDeviceIdentifier("device1");
         builder.setMsisdn(Long.valueOf("59899077937"));
         builder.setImsi(Long.valueOf("748026871012345"));
-        builder.setImei(Long.valueOf("01171400466105"));
+        builder.setImei("01171400466105");
         builder.setLmsi(Long.valueOf("2915"));
         builder.setReferenceNumber((long) 5471);
         builder.setGeolocationType(GeolocationType.Notification);
@@ -89,6 +89,7 @@ public class GeolocationsDaoTest {
         builder.setMobileNetworkCode("03");
         builder.setLocationAreaCode("978");
         builder.setCellId("12345");
+        builder.setSai("2718");
         builder.setEcid((long) 50921710);
         builder.setNetworkEntityAddress((long) 59848779);
         builder.setNetworkEntityName("msc59801");
@@ -156,6 +157,7 @@ public class GeolocationsDaoTest {
         assertTrue(result.getMobileNetworkCode().equals(geolocation.getMobileNetworkCode()));
         assertTrue(result.getLocationAreaCode().equals(geolocation.getLocationAreaCode()));
         assertTrue(result.getCellId().equals(geolocation.getCellId()));
+        assertTrue(result.getSai().equals(geolocation.getSai()));
         assertTrue(result.getEcid().equals(geolocation.getEcid()));
         assertTrue(result.getNetworkEntityAddress().equals(geolocation.getNetworkEntityAddress()));
         assertTrue(result.getNetworkEntityName().equals(geolocation.getNetworkEntityName()));
@@ -198,7 +200,7 @@ public class GeolocationsDaoTest {
         geolocation = geolocation.setSource("ble001");
         geolocation = geolocation.setMsisdn(Long.valueOf("59899077939"));
         geolocation = geolocation.setImsi(Long.valueOf("748026871012347"));
-        geolocation = geolocation.setImei(Long.valueOf("01171400466101"));
+        geolocation = geolocation.setImei("01171400466101");
         geolocation = geolocation.setLmsi(Long.valueOf("2918"));
         geolocation = geolocation.setResponseStatus("failed");
         geolocation = geolocation.setCause("API not compliant");
@@ -206,6 +208,7 @@ public class GeolocationsDaoTest {
         geolocation = geolocation.setMobileNetworkCode("33");
         geolocation = geolocation.setLocationAreaCode("0A1");
         geolocation = geolocation.setCellId("00010");
+        geolocation = geolocation.setSai("3971");
         geolocation = geolocation.setEcid((long) 79891010);
         geolocation = geolocation.setAgeOfLocationInfo(1);
         geolocation = geolocation.setNetworkEntityAddress((long) 59848778);
@@ -271,6 +274,7 @@ public class GeolocationsDaoTest {
         assertTrue(result.getMobileNetworkCode().equals(geolocation.getMobileNetworkCode()));
         assertTrue(result.getLocationAreaCode().equals(geolocation.getLocationAreaCode()));
         assertTrue(result.getCellId().equals(geolocation.getCellId()));
+        assertTrue(result.getSai().equals(geolocation.getSai()));
         assertTrue(result.getEcid().equals(geolocation.getEcid()));
         assertTrue(result.getNetworkEntityAddress().equals(geolocation.getNetworkEntityAddress()));
         assertTrue(result.getNetworkEntityName().equals(geolocation.getNetworkEntityName()));
@@ -329,7 +333,7 @@ public class GeolocationsDaoTest {
         builder.setDeviceIdentifier("device1");
         builder.setMsisdn(Long.valueOf("59899077937"));
         builder.setImsi(Long.valueOf("748026871012345"));
-        builder.setImei(Long.valueOf("01171400466105"));
+        builder.setImei("01171400466105");
         builder.setLmsi(Long.valueOf("2915"));
         builder.setReferenceNumber((long) 5471);
         builder.setGeolocationType(GeolocationType.Immediate);
@@ -339,6 +343,7 @@ public class GeolocationsDaoTest {
         builder.setMobileNetworkCode("03");
         builder.setLocationAreaCode("978");
         builder.setCellId("12345");
+        builder.setSai("2718");
         builder.setEcid((long) 50921710);
         builder.setNetworkEntityAddress((long) 59848779);
         builder.setNetworkEntityName("msc59801");

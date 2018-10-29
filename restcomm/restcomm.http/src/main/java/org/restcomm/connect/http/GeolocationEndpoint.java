@@ -880,13 +880,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                         if (ci != null)
                                             data.putSingle("CellId", ci);
 
-                                        ci = rirPlrResponse.get("serviceAreaIdentity");
-                                        if (ci != null)
-                                            data.putSingle("CellId", ci);
+                                        String sai = rirPlrResponse.get("serviceAreaIdentity");
+                                        if (sai != null)
+                                            data.putSingle("Sai", sai);
 
-                                        ci = rirPlrResponse.get("eUtranCgi");
-                                        if (ci != null)
-                                            data.putSingle("CellId", ci);
+                                        String eUtranCgi = rirPlrResponse.get("eUtranCgi");
+                                        if (eUtranCgi != null)
+                                            data.putSingle("LteCellId", eUtranCgi);
 
                                         String civicAddress = rirPlrResponse.get("civicAddress");
                                         if (civicAddress != null)
@@ -1147,12 +1147,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                             logger.info("\nDevice Identifier = " + data.getFirst("DeviceIdentifier"));
                             logger.info("\nMSISDN = " + getLong("MSISDN", data));
                             logger.info("\nIMSI = " + getLong("IMSI", data));
-                            logger.info("\nIMEI = " + getLong("IMEI", data));
+                            logger.info("\nIMEI = " + data.getFirst("IMEI"));
                             logger.info("\nLMSI = " + getLong("LMSI", data));
                             logger.info("\nMCC = " + getInteger("MobileCountryCode", data));
                             logger.info("\nMNC = " + data.getFirst("MobileNetworkCode"));
                             logger.info("\nLAC  = " + data.getFirst("LocationAreaCode"));
                             logger.info("\nCI = " + data.getFirst("CellId"));
+                            logger.info("\nSAI = " + data.getFirst("Sai"));
                             logger.info("\nECID = " + getLong("LteCellId", data));
                             logger.info("\nAOL = " + getInteger("LocationAge", data));
                             logger.info("\nSubscriber State = " + data.getFirst("SubscriberState"));
@@ -1630,7 +1631,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
         builder.setMsisdn(getLong("MSISDN", data));
         builder.setImsi(getLong("IMSI", data));
-        builder.setImei(getLong("IMEI", data));
+        builder.setImei(data.getFirst("IMEI"));
         builder.setLmsi(getLong("LMSI", data));
         builder.setReferenceNumber(getLong("ReferenceNumber", data));
         builder.setGeolocationType(glType);
@@ -1640,6 +1641,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setMobileNetworkCode(data.getFirst("MobileNetworkCode"));
         builder.setLocationAreaCode(data.getFirst("LocationAreaCode"));
         builder.setCellId(data.getFirst("CellId"));
+        builder.setSai(data.getFirst("Sai"));
         builder.setEcid(getLong("LteCellId", data));
         builder.setAgeOfLocationInfo(getInteger("LocationAge", data));
         builder.setSubscriberState(data.getFirst("SubscriberState"));
@@ -1760,7 +1762,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("MSISDN")) {
             String msisdn = data.getFirst("MSISDN");
-            Long digits = Long.valueOf(msisdn);
             try {
                 if (msisdn.length() > 15) {
                     httpBadRequest = true;
@@ -1775,7 +1776,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("IMSI")) {
             String imsi = data.getFirst("IMSI");
-            Long digits = Long.valueOf(imsi);
             try {
                 if (imsi.length() > 15) {
                     httpBadRequest = true;
@@ -1790,17 +1790,16 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("IMEI")) {
             String imei = data.getFirst("IMEI");
-            Long digits = Long.valueOf(imei);
             try {
                 if (imei.length() > 15) {
                     httpBadRequest = true;
                     throw new IllegalArgumentException("IMEI amount of digits must not be greater than 15");
                 }
-            } catch (NumberFormatException nfe) {
+            } catch (Exception e) {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("IMEI must be a number with an amount of digits not greater than 15");
             }
-            updatedGeolocation = updatedGeolocation.setImei(getLong("IMEI", data));
+            updatedGeolocation = updatedGeolocation.setImei(data.getFirst("IMEI"));
         }
 
         if (data.containsKey("ReferenceNumber")) {
@@ -1885,6 +1884,21 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("CellId must be a number not greater than 268435455");
             }
             updatedGeolocation = updatedGeolocation.setCellId(data.getFirst("CellId"));
+        }
+
+        if (data.containsKey("Sai")) {
+            String sai = data.getFirst("SZai");
+            Long digits = Long.valueOf(sai);
+            try {
+                if (digits > 268435455) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("SAI must be a number not greater than 268435455");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("SAI must be a number not greater than 268435455");
+            }
+            updatedGeolocation = updatedGeolocation.setSai(data.getFirst("Sai"));
         }
 
         if (data.containsKey("LteCellId")) {

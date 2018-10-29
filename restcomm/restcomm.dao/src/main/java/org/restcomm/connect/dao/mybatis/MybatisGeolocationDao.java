@@ -158,6 +158,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("mobile_network_code", gl.getMobileNetworkCode());
         map.put("location_area_code", gl.getLocationAreaCode());
         map.put("cell_id", gl.getCellId());
+        map.put("sai", gl.getSai());
         map.put("ecid", gl.getEcid());
         map.put("network_entity_address", gl.getNetworkEntityAddress());
         map.put("network_entity_name", gl.getNetworkEntityName());
@@ -184,7 +185,6 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("uncertainty_horizontal_speed", gl.getUncertaintyHorizontalSpeed());
         map.put("uncertainty_vertical_speed", gl.getUncertaintyVerticalSpeed());
         map.put("bearing", gl.getBearing());
-        map.put("vertical_speed", gl.getVerticalSpeed());
         map.put("geofence_type", gl.getGeofenceType());
         map.put("geofence_id", gl.getGeofenceId());
         map.put("geofence_event_type", gl.getGeofenceEventType());
@@ -211,7 +211,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String device_identifier = readString(map.get("device_identifier"));
         final Long msisdn = readLong(map.get("msisdn"));
         final Long imsi = readLong(map.get("imsi"));
-        final Long imei = readLong(map.get("imei"));
+        final String imei = readString(map.get("imei"));
         final Long lmsi = readLong(map.get("lmsi"));
         final Long reference_number = readLong(map.get("reference_number"));
         final Geolocation.GeolocationType geolocation_type = readGeolocationType(map.get("geolocation_type"));
@@ -220,6 +220,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String mobile_network_code = readString(map.get("mobile_network_code"));
         final String location_area_code = readString(map.get("location_area_code"));
         final String cell_id = readString(map.get("cell_id"));
+        final String sai = readString(map.get("sai"));
         final Long ecid = readLong(map.get("ecid"));
         final Long network_entity_address = readLong(map.get("network_entity_address"));
         final String network_entity_name = readString(map.get("network_entity_name"));
@@ -259,7 +260,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String api_version = readString(map.get("api_version"));
         final URI uri = readUri(map.get("uri"));
         return new Geolocation(sid, date_created, date_updated, date_executed, location_timestamp, account_sid, source, device_identifier, msisdn, imsi,
-            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, cell_id, ecid,
+            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, cell_id, sai, ecid,
             network_entity_address, network_entity_name, age_of_location_info, subscriber_state, tac, rai, type_of_shape, device_latitude, device_longitude,
             uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis, confidence, altitude, uncertainty_altitude,
             inner_radius, uncertainty_inner_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,

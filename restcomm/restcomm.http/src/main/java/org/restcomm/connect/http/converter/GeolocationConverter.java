@@ -181,15 +181,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeImei(final Long imei, final HierarchicalStreamWriter writer) {
+    protected void writeImei(final String imei, final HierarchicalStreamWriter writer) {
         if (imei != null) {
             writer.startNode("IMEI");
-            writer.setValue(imei.toString());
+            writer.setValue(imei);
             writer.endNode();
         }
     }
 
-    protected void writeImei(final Long imei, final JsonObject object) {
+    protected void writeImei(final String imei, final JsonObject object) {
         if (imei != null) {
             object.addProperty("imei", imei);
         } else {
@@ -270,6 +270,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), writer);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), writer);
             writeCellId(geolocation.getCellId(), writer);
+            writeSai(geolocation.getSai(), writer);
             writeEcid(geolocation.getEcid(), writer);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), writer);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), writer);
@@ -315,6 +316,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), locationDataJsonObject);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), locationDataJsonObject);
             writeCellId(geolocation.getCellId(), locationDataJsonObject);
+            writeSai(geolocation.getSai(), locationDataJsonObject);
             writeEcid(geolocation.getEcid(), locationDataJsonObject);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), locationDataJsonObject);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), locationDataJsonObject);
@@ -355,38 +357,6 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeCellId(final String cellId, final HierarchicalStreamWriter writer) {
-        if (cellId != null) {
-            writer.startNode("CellId");
-            writer.setValue(cellId);
-            writer.endNode();
-        }
-    }
-
-    protected void writeCellId(final String cellId, final JsonObject object) {
-        if (cellId != null) {
-            object.addProperty("cell_id", cellId);
-        } else {
-            object.add("cell_id", JsonNull.INSTANCE);
-        }
-    }
-
-    protected void writeLocationAreaCode(final String locationAreaCode, final HierarchicalStreamWriter writer) {
-        if (locationAreaCode != null) {
-            writer.startNode("LocationAreaCode");
-            writer.setValue(locationAreaCode);
-            writer.endNode();
-        }
-    }
-
-    protected void writeLocationAreaCode(final String locationAreaCode, final JsonObject object) {
-        if (locationAreaCode != null) {
-            object.addProperty("location_area_code", locationAreaCode);
-        } else {
-            object.add("location_area_code", JsonNull.INSTANCE);
-        }
-    }
-
     protected void writeMobileCountryCode(final Integer mobileCountryCode, final HierarchicalStreamWriter writer) {
         if (mobileCountryCode != null) {
             writer.startNode("MobileCountryCode");
@@ -416,6 +386,54 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             object.addProperty("mobile_network_code", mobileNetworkCode);
         } else {
             object.add("mobile_network_code", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeLocationAreaCode(final String locationAreaCode, final HierarchicalStreamWriter writer) {
+        if (locationAreaCode != null) {
+            writer.startNode("LocationAreaCode");
+            writer.setValue(locationAreaCode);
+            writer.endNode();
+        }
+    }
+
+    protected void writeLocationAreaCode(final String locationAreaCode, final JsonObject object) {
+        if (locationAreaCode != null) {
+            object.addProperty("location_area_code", locationAreaCode);
+        } else {
+            object.add("location_area_code", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeCellId(final String cellId, final HierarchicalStreamWriter writer) {
+        if (cellId != null) {
+            writer.startNode("CellId");
+            writer.setValue(cellId);
+            writer.endNode();
+        }
+    }
+
+    protected void writeCellId(final String cellId, final JsonObject object) {
+        if (cellId != null) {
+            object.addProperty("cell_id", cellId);
+        } else {
+            object.add("cell_id", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeSai(final String sai, final HierarchicalStreamWriter writer) {
+        if (sai != null) {
+            writer.startNode("Sai");
+            writer.setValue(sai);
+            writer.endNode();
+        }
+    }
+
+    protected void writeSai(final String sai, final JsonObject object) {
+        if (sai != null) {
+            object.addProperty("sai", sai);
+        } else {
+            object.add("sai", JsonNull.INSTANCE);
         }
     }
 
