@@ -1802,6 +1802,20 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             updatedGeolocation = updatedGeolocation.setImei(data.getFirst("IMEI"));
         }
 
+        if (data.containsKey("LMSI")) {
+            Long lmsi = Long.valueOf(data.getFirst("LMSI"));
+            try {
+                if (lmsi > 4294967295L) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("IMEI value must not be greater than 4294967295");
+                }
+            } catch (Exception e) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("IMEI must be a number with a value not greater than 4294967295");
+            }
+            updatedGeolocation = updatedGeolocation.setLmsi(getLong("LMSI", data));
+        }
+
         if (data.containsKey("ReferenceNumber")) {
             updatedGeolocation = updatedGeolocation.setReferenceNumber(getLong("ReferenceNumber", data));
         }
@@ -1887,7 +1901,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         }
 
         if (data.containsKey("Sai")) {
-            String sai = data.getFirst("SZai");
+            String sai = data.getFirst("Sai");
             Long digits = Long.valueOf(sai);
             try {
                 if (digits > 268435455) {
@@ -1913,7 +1927,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("LteCellId must be a number not greater than 268435455");
             }
-            updatedGeolocation = updatedGeolocation.setCellId(data.getFirst("LteCellId"));
+            updatedGeolocation = updatedGeolocation.setEcid(getLong("LteCellId", data));
         }
 
         if (data.containsKey("NetworkEntityAddress")) {
@@ -1933,11 +1947,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("NetworkEntityName")) {
             String entityName = data.getFirst("NetworkEntityName");
-            if (entityName.length() > 20) {
+            if (entityName.length() > 254) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("NetworkEntityName length must not be greater than 20 characters");
+                throw new IllegalArgumentException("NetworkEntityName length must not be greater than 254 characters");
             } else {
-                updatedGeolocation = updatedGeolocation.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
+                updatedGeolocation = updatedGeolocation.setNetworkEntityName(data.getFirst("NetworkEntityName"));
             }
         }
 
@@ -1958,13 +1972,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("SubscriberState")) {
             String state = data.getFirst("SubscriberState");
-            if (!state.equalsIgnoreCase("assumedIdle") || !state.equalsIgnoreCase("camelBusy") ||
-                !state.equalsIgnoreCase("netDetNotReachable") || !state.equalsIgnoreCase("notProvidedFromVLR")) {
+            if (!state.equalsIgnoreCase("assumedIdle") && !state.equalsIgnoreCase("camelBusy") &&
+                !state.equalsIgnoreCase("netDetNotReachable") && !state.equalsIgnoreCase("notProvidedFromVLR")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("SubscriberState must be one of assumedIdle, camelBusy, netDetNotReachable, notProvidedFromVLR");
+                throw new IllegalArgumentException("SubscriberState must be one of assumedIdle, camelBusy, netDetNotReachable or notProvidedFromVLR," +
+                    " but it is actually set to:"+state);
             } else {
                 updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("SubscriberState"));
-
             }
         }
 
@@ -1980,7 +1994,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("TrackingAreaCode"));
+            updatedGeolocation = updatedGeolocation.setTac(data.getFirst("TrackingAreaCode"));
         }
 
         if (data.containsKey("RouteingAreaId")) {
@@ -1989,7 +2003,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("RouteingAreaId length must not be greater than 20 characters");
             } else {
-                updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("RouteingAreaId"));
+                updatedGeolocation = updatedGeolocation.setRai(data.getFirst("RouteingAreaId"));
             }
         }
 
@@ -2104,7 +2118,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("VerticalSpeed length must not be greater than 30 digits");
             } else {
-                updatedGeolocation = updatedGeolocation.setHorizontalSpeed(data.getFirst("VerticalSpeed"));
+                updatedGeolocation = updatedGeolocation.setVerticalSpeed(data.getFirst("VerticalSpeed"));
             }
         }
 
@@ -2128,11 +2142,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         }
 
         if (data.containsKey("GeofenceType") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            String eventGeofenceType = data.getFirst("GeofenceType");
-            if (!eventGeofenceType.equalsIgnoreCase("locationAreaId") && !eventGeofenceType.equalsIgnoreCase("cellGlobalId")
-                && !eventGeofenceType.equalsIgnoreCase("countryCode") && !eventGeofenceType.equalsIgnoreCase("plmnId")
-                && !eventGeofenceType.equalsIgnoreCase("routingAreaId") && !eventGeofenceType.equalsIgnoreCase("utranCellId")
-                && !eventGeofenceType.equalsIgnoreCase("trackingAreaId") && !eventGeofenceType.equalsIgnoreCase("eUtranCellId")) {
+            String geofenceType = data.getFirst("GeofenceType");
+            if (!geofenceType.equalsIgnoreCase("locationAreaId") && !geofenceType.equalsIgnoreCase("cellGlobalId")
+                && !geofenceType.equalsIgnoreCase("countryCode") && !geofenceType.equalsIgnoreCase("plmnId")
+                && !geofenceType.equalsIgnoreCase("routingAreaId") && !geofenceType.equalsIgnoreCase("utranCellId")
+                && !geofenceType.equalsIgnoreCase("trackingAreaId") && !geofenceType.equalsIgnoreCase("eUtranCellId")) {
                 return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(), responseStatus.Failed.toString(),
                     "GeofenceEventType value not API compliant, must be one of available, inside, entering, leaving, periodic-ldr, " +
                         "motion-event, ldr-activated or max-interval-expiration");
