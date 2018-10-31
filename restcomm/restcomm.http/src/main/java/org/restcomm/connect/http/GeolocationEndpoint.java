@@ -1022,7 +1022,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
                                         String routeingAreaId = psiResponse.get("routeingAreaId");
                                         if (routeingAreaId != null)
-                                            data.putSingle("RouteingAreaId", routeingAreaId);
+                                            data.putSingle("RoutingAreaId", routeingAreaId);
 
                                         // Subscriber Location Info
                                         // CGI
@@ -1160,7 +1160,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                             logger.info("\nNetwork Entity Address = " + getLong("NetworkEntityAddress", data));
                             logger.info("\nNetwork Entity Name = " + data.getFirst("NetworkEntityName"));
                             logger.info("\nTracking Area Code = " + data.getFirst("TrackingAreaCode"));
-                            logger.info("\nRouteing Area Id = " + data.getFirst("RouteingAreaId"));
+                            logger.info("\nRouteing Area Id = " + data.getFirst("RoutingAreaId"));
                             logger.info("\nType of Shape = " + data.getFirst("TypeOfShape"));
                             logger.info("\nDevice Latitude = " + data.getFirst("DeviceLatitude"));
                             logger.info("\nDevice Longitude = " + data.getFirst("DeviceLongitude"));
@@ -1252,6 +1252,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             if (!coreNetwork.equalsIgnoreCase("umts") && !coreNetwork.equalsIgnoreCase("lte")) {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("CoreNetwork value not API compliant, must be UMTS or LTE for Notification type of Geolocation");
+            }
+        }
+
+        /*** PsiService must be API compliant: true or false values only for Immediate type of Geolocation***/
+        if (data.containsKey("PsiService") && glType.toString().equals(ImmediateGT)) {
+            String psiService = data.getFirst("PsiService");
+            if (!psiService.equalsIgnoreCase("true") && !psiService.equalsIgnoreCase("false")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("PsiService values can be only true or false");
             }
         }
 
@@ -1648,7 +1657,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
         builder.setNetworkEntityName(data.getFirst("NetworkEntityName"));
         builder.setTac(data.getFirst("TrackingAreaCode"));
-        builder.setRai(data.getFirst("RouteingAreaId"));
+        builder.setRai(data.getFirst("RoutingAreaId"));
         builder.setLocationTimestamp(getDateTime("LocationTimestamp", data));
         builder.setTypeOfShape(data.getFirst("TypeOfShape"));
         builder.setDeviceLatitude(data.getFirst("DeviceLatitude"));
@@ -1997,13 +2006,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             updatedGeolocation = updatedGeolocation.setTac(data.getFirst("TrackingAreaCode"));
         }
 
-        if (data.containsKey("RouteingAreaId")) {
-            String routeingAreaId = data.getFirst("RouteingAreaId");
+        if (data.containsKey("RoutingAreaId")) {
+            String routeingAreaId = data.getFirst("RoutingAreaId");
             if (routeingAreaId.length() > 20) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("RouteingAreaId length must not be greater than 20 characters");
+                throw new IllegalArgumentException("RoutingAreaId length must not be greater than 20 characters");
             } else {
-                updatedGeolocation = updatedGeolocation.setRai(data.getFirst("RouteingAreaId"));
+                updatedGeolocation = updatedGeolocation.setRai(data.getFirst("RoutingAreaId"));
             }
         }
 
@@ -2141,37 +2150,19 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             updatedGeolocation = updatedGeolocation.setLocationTimestamp(getDateTime("LocationTimestamp", data));
         }
 
-        if (data.containsKey("GeofenceType") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            String geofenceType = data.getFirst("GeofenceType");
-            if (!geofenceType.equalsIgnoreCase("locationAreaId") && !geofenceType.equalsIgnoreCase("cellGlobalId")
-                && !geofenceType.equalsIgnoreCase("countryCode") && !geofenceType.equalsIgnoreCase("plmnId")
-                && !geofenceType.equalsIgnoreCase("routingAreaId") && !geofenceType.equalsIgnoreCase("utranCellId")
-                && !geofenceType.equalsIgnoreCase("trackingAreaId") && !geofenceType.equalsIgnoreCase("eUtranCellId")) {
-                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(), responseStatus.Failed.toString(),
-                    "GeofenceEventType value not API compliant, must be one of available, inside, entering, leaving, periodic-ldr, " +
-                        "motion-event, ldr-activated or max-interval-expiration");
-            } else {
-                updatedGeolocation = updatedGeolocation.setGeofenceType(data.getFirst("GeofenceType"));
-            }
+        if (data.containsKey("GeofenceType")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("GeofenceType value can not be updated");
         }
 
-        if (data.containsKey("GeofenceId") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            String eventGeofenceId = data.getFirst("GeofenceId");
-            updatedGeolocation = updatedGeolocation.setGeofenceId(eventGeofenceId);
+        if (data.containsKey("GeofenceId")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("GeofenceId value can not be updated");
         }
 
-        if (data.containsKey("GeofenceEventType") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {
-            String eventGeofenceType = data.getFirst("GeofenceEventType");
-            if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
-                && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")
-                && !eventGeofenceType.equalsIgnoreCase("periodic-ldr") && !eventGeofenceType.equalsIgnoreCase("motion-event")
-                && !eventGeofenceType.equalsIgnoreCase("ldr-activated") && !eventGeofenceType.equalsIgnoreCase("max-interval-expiration")) {
-                return buildFailedGeolocationUpdate(geolocation, data, geolocation.getGeolocationType(), responseStatus.Failed.toString(),
-                    "GeofenceEventType value not API compliant, must be one of available, inside, entering, leaving, periodic-ldr, motion-event, " +
-                        "ldr-activated or max-interval-expiration");
-            } else {
-                updatedGeolocation = updatedGeolocation.setGeofenceEventType(eventGeofenceType);
-            }
+        if (data.containsKey("GeofenceEventType")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("GeofenceEventType value can not be updated");
         }
 
         if (data.containsKey("EventRange") && geolocation.getGeolocationType().toString().equals(NotificationGT)) {

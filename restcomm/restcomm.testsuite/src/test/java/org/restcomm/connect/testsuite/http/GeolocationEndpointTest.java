@@ -1553,9 +1553,6 @@ public class GeolocationEndpointTest {
         geolocationParamsUpdate.add("VerticalCoordinateRequest","true");
         geolocationParamsUpdate.add("ResponseTime","low");
         geolocationParamsUpdate.add("LocationEstimateType","current");
-        geolocationParamsUpdate.add("GeofenceEventType", deferredLocationEventType = "inside");
-        geolocationParamsUpdate.add("GeofenceType", geofenceType = "locationAreaId");
-        geolocationParamsUpdate.add("GeofenceId", geofenceId = "10");
         geolocationParamsUpdate.add("OccurrenceInfo","once");
         geolocationParamsUpdate.add("ReferenceNumber","33");
         geolocationParamsUpdate.add("ServiceTypeID","0");
@@ -1624,9 +1621,9 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_horizontal_speed") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_vertical_speed") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("bearing") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type").getAsString().equals(geofenceType));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id").getAsString().equals(geofenceId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type").getAsString().equals(deferredLocationEventType));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_type") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("geofence_event_type") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("civic_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("barometric_pressure") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("internet_address") == null);
@@ -1912,7 +1909,7 @@ public class GeolocationEndpointTest {
         geolocationParamsUpdate.add("NetworkEntityName", networkEntityName = "mme74800021");
         geolocationParamsUpdate.add("SubscriberState", subscriberState = "camelBusy");
         geolocationParamsUpdate.add("TrackingAreaCode", tac = "13295");
-        geolocationParamsUpdate.add("RouteingAreaId", rai = "132952");
+        geolocationParamsUpdate.add("RoutingAreaId", rai = "132952");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "0");
         geolocationParamsUpdate.add("TypeOfShape", typeOfShape = "ellipsoidArc");
         geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "34.908134");
@@ -2017,7 +2014,7 @@ public class GeolocationEndpointTest {
         geolocationParamsUpdate.add("NetworkEntityName", networkEntityName = "mme74800024");
         geolocationParamsUpdate.add("SubscriberState", subscriberState = "assumedIdle");
         geolocationParamsUpdate.add("TrackingAreaCode", tac = "13295");
-        geolocationParamsUpdate.add("RouteingAreaId", rai = "132952");
+        geolocationParamsUpdate.add("RoutingAreaId", rai = "132952");
         geolocationParamsUpdate.add("LocationAge", ageOfLocationInfo = "0");
         geolocationParamsUpdate.add("TypeOfShape", typeOfShape = "ellipsoidArc");
         geolocationParamsUpdate.add("DeviceLatitude", deviceLatitude = "34.908134");
@@ -2115,10 +2112,143 @@ public class GeolocationEndpointTest {
     }
 
     @Test
+    @Category(FeatureAltTests.class)
+    public void testMapPsiCreateNotApiCompliantImmediateGeolocation()
+        throws ParseException, IllegalArgumentException, ClientProtocolException, IOException {
+
+        String msisdn = "5989738292";
+
+        //This is for POST requests
+        stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "text/xml")
+                .withBody(gmlcMapPsiResponse)));
+
+        //This is for GET requests - REMOVE if not needed
+        stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcMapPsiResponse)));
+
+        // Define Immediate Geolocation attributes for this method
+        String deviceIdentifier;
+
+        // Test create Immediate type of Geolocation via POST with one wrong mandatory parameter
+        // Parameter values Assignment, PsiService is not API compliant
+        MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
+        geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
+        geolocationParams.add("StatusCallback", "http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("PsiService", "yes");
+        Sid rejectedGeolocationSid = null;
+        // HTTP POST Geolocation creation with given parameters values
+        try {
+            JsonObject missingParamGeolocationJson = RestcommGeolocationsTool.getInstance().createImmediateGeolocation(
+                deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
+            rejectedGeolocationSid = new Sid(missingParamGeolocationJson.get("sid").getAsString());
+            JsonObject rejectedGeolocationJson = RestcommGeolocationsTool.getInstance().getImmediateGeolocation(
+                deploymentUrl.toString(), adminUsername, adminAuthToken, adminAccountSid,
+                rejectedGeolocationSid.toString());
+            assertTrue(rejectedGeolocationJson == null);
+        } catch (Exception exception) {
+            // Checking Test asserts via HTTP GET (no record found as POST returned a response status of 400 Bad Request)
+            assertTrue(rejectedGeolocationSid == null);
+            logger.info("Exception during HTTP POST: " + exception.getMessage());
+        }
+
+        // Test create Immediate type of Geolocation via POST with one prohibited parameter
+        @SuppressWarnings("unused")
+        String geofenceId = null;
+        geolocationParams.add("GeofenceId", geofenceId = "21"); // "GeofenceId"
+        // applicable only for Notification
+        // type of Geolocation
+        // HTTP POST Geolocation creation with given parameters values
+        try {
+            JsonObject prohibitedParamGeolocationJson = RestcommGeolocationsTool.getInstance().createImmediateGeolocation(
+                deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
+            rejectedGeolocationSid = new Sid(prohibitedParamGeolocationJson.get("sid").getAsString());
+            JsonObject rejectedGeolocationJson = RestcommGeolocationsTool.getInstance().getImmediateGeolocation(
+                deploymentUrl.toString(), adminUsername, adminAuthToken, adminAccountSid,
+                rejectedGeolocationSid.toString());
+            assertTrue(rejectedGeolocationJson == null);
+        } catch (Exception exception) {
+            // Checking Test asserts via HTTP GET (no record found as POST is rejected)
+            assertTrue(rejectedGeolocationSid == null);
+            logger.info("Exception during HTTP POST: " + exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testMapPsiDeleteImmediateGeolocation() throws IllegalArgumentException, ClientProtocolException, IOException {
+
+        String msisdn = "5989738292";
+
+        //This is for POST requests
+        stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcMapPsiResponse)));
+
+        //This is for GET requests - REMOVE if not needed
+        stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcMapPsiResponse)));
+
+        // Define Immediate Geolocation attributes for this method
+        String deviceIdentifier;
+
+        // Create Immediate type of Geolocation via POST
+        // Parameter values Assignment
+        MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
+        geolocationParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
+        geolocationParams.add("StatusCallback", "http://192.1.1.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("PsiService", "true");
+        geolocationParams.add("ResponseStatus", "successful");
+        geolocationParams.add("MSISDN", "59899077937");
+        geolocationParams.add("IMSI", "124356871012345");
+        geolocationParams.add("IMEI", "01171400466105");
+        geolocationParams.add("LMSI", "2915");
+        geolocationParams.add("MobileCountryCode", "749");
+        geolocationParams.add("MobileNetworkCode", "03");
+        geolocationParams.add("LocationAreaCode", "321");
+        geolocationParams.add("CellId", "3579");
+        geolocationParams.add("LteCellId", "5092171");
+        geolocationParams.add("NetworkEntityAddress", "5980042343201");
+        geolocationParams.add("NetworkEntityName", "mme74800021");
+        geolocationParams.add("SubscriberState", "camelBusy");
+        geolocationParams.add("TrackingAreaCode", "13295");
+        geolocationParams.add("RoutingAreaId", "132952");
+        geolocationParams.add("LocationAge", "0");
+        geolocationParams.add("TypeOfShape", "ellipsoidArc");
+        geolocationParams.add("DeviceLatitude", "34.908134");
+        geolocationParams.add("DeviceLongitude", "-55.087134");
+        geolocationParams.add("LocationTimestamp", "2016-04-17T20:28:40.690-03:00");
+        geolocationParams.add("LastGeolocationResponse", "true");
+        geolocationParams.add("Cause", "Not API Compliant");
+        // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
+        JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createImmediateGeolocation(deploymentUrl.toString(),
+            adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
+        Sid geolocationSid = new Sid(geolocationJson.get("sid").getAsString());
+
+        // Remove created Geolocation via HTTP DELETE
+        RestcommGeolocationsTool.getInstance().deleteImmediateGeolocation(deploymentUrl.toString(), adminUsername,
+            adminAuthToken, adminAccountSid, geolocationSid.toString());
+        // Remove checking Test asserts via HTTP GET
+        geolocationJson = RestcommGeolocationsTool.getInstance().getImmediateGeolocation(deploymentUrl.toString(),
+            adminUsername, adminAuthToken, adminAccountSid, geolocationSid.toString());
+
+        assertTrue(geolocationJson == null);
+    }
+
+    @Test
     public void testLteLcsCreateAndGetNotificationGeolocation()
         throws ParseException, IllegalArgumentException, ClientProtocolException, IOException {
 
-        String imsi = "59899077937";
+        String imsi = "748026871012345";
 
         //This is for POST requests
         stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
@@ -2354,7 +2484,7 @@ public class GeolocationEndpointTest {
         // Define new values to the application attributes (POST test)
         MultivaluedMap<String, String> geolocationParamsUpdate = new MultivaluedMapImpl();
         geolocationParamsUpdate.add("CoreNetwork","LTE");
-        geolocationParamsUpdate.add("Priority","low");
+        geolocationParamsUpdate.add("Priority","normal");
         geolocationParamsUpdate.add("MSISDN", msisdn = "59898999012");
         geolocationParamsUpdate.add("IMSI", imsi = "124356871054321");
         geolocationParamsUpdate.add("IMEI", imei = "01171400466104");
@@ -2362,7 +2492,7 @@ public class GeolocationEndpointTest {
         geolocationParamsUpdate.add("ReferenceNumber", referenceNumber = "239");
         geolocationParamsUpdate.add("HorizontalAccuracy","1000");
         geolocationParamsUpdate.add("VerticalAccuracy","5000");
-        geolocationParamsUpdate.add("ResponseTime","high");
+        geolocationParamsUpdate.add("ResponseTime","low");
         geolocationParamsUpdate.add("StatusCallback", "http://192.1.1.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
         geolocationParamsUpdate.add("ResponseStatus", responseStatus = "successful");
         geolocationParamsUpdate.add("MobileCountryCode", mobileCountryCode = "749");
@@ -2460,7 +2590,7 @@ public class GeolocationEndpointTest {
         // Define new values for the Geolocation attributes (PUT test)
         geolocationParamsUpdate = new MultivaluedMapImpl();
         geolocationParamsUpdate.add("CoreNetwork","LTE");
-        geolocationParamsUpdate.add("Priority","low");
+        geolocationParamsUpdate.add("Priority","normal");
         geolocationParamsUpdate.add("MSISDN", msisdn = "5989899936");
         geolocationParamsUpdate.add("IMSI", imsi = "432156871054321");
         geolocationParamsUpdate.add("IMEI", imei = "011714004661041");
@@ -2566,6 +2696,132 @@ public class GeolocationEndpointTest {
         RestcommGeolocationsTool.getInstance().deleteNotificationGeolocation(deploymentUrl.toString(), adminUsername,
             adminAuthToken, adminAccountSid, geolocationSid.toString());
 
+    }
+
+    @Test
+    @Category(FeatureAltTests.class)
+    public void testLteLcsCreateNotApiCompliantNotificationGeolocation()
+        throws ParseException, IllegalArgumentException, ClientProtocolException, IOException {
+
+        String msisdn = "5989738292";
+
+        //This is for POST requests
+        stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcLteLcsResponse)));
+
+        //This is for GET requests - REMOVE if not needed
+        stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcLteLcsResponse)));
+
+        // Define Geolocation attributes for this test method
+        String deviceIdentifier, deferredLocationEventType, geofenceType, geofenceId;
+
+        // Test create Notification type of Geolocation via POST
+        // Parameter values Assignment, OccurrenceInfo is not API compliant
+        MultivaluedMap<String, String> notificationGeolocationNotApiCompliantParams = new MultivaluedMapImpl();
+        notificationGeolocationNotApiCompliantParams.add("DeviceIdentifier", deviceIdentifier = msisdn);
+        notificationGeolocationNotApiCompliantParams.add("CoreNetwork","LTE");
+        notificationGeolocationNotApiCompliantParams.add("Priority","high");
+        notificationGeolocationNotApiCompliantParams.add("HorizontalAccuracy","500");
+        notificationGeolocationNotApiCompliantParams.add("VerticalAccuracy","100");
+        notificationGeolocationNotApiCompliantParams.add("VerticalCoordinateRequest","true");
+        notificationGeolocationNotApiCompliantParams.add("ResponseTime","low");
+        notificationGeolocationNotApiCompliantParams.add("LocationEstimateType","current");
+        notificationGeolocationNotApiCompliantParams.add("GeofenceEventType", deferredLocationEventType = "inside");
+        notificationGeolocationNotApiCompliantParams.add("GeofenceType", geofenceType = "locationAreaId");
+        notificationGeolocationNotApiCompliantParams.add("GeofenceId", geofenceId = "456");
+        notificationGeolocationNotApiCompliantParams.add("OccurrenceInfo","twice");
+        notificationGeolocationNotApiCompliantParams.add("ReferenceNumber","371");
+        notificationGeolocationNotApiCompliantParams.add("ServiceTypeID","0");
+        notificationGeolocationNotApiCompliantParams.add("EventIntervalTime","60");
+        notificationGeolocationNotApiCompliantParams.add("EventReportingAmount","5");
+        notificationGeolocationNotApiCompliantParams.add("EventReportingInterval","180");
+        notificationGeolocationNotApiCompliantParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        notificationGeolocationNotApiCompliantParams.add("ClientName","Beconnect");
+        notificationGeolocationNotApiCompliantParams.add("ClientNameFormat","msisdn");
+        notificationGeolocationNotApiCompliantParams.add("ClientType","emergency");
+        Sid rejectedGeolocationSid = null;
+        // HTTP POST Geolocation creation with given parameters values
+        try {
+            JsonObject missingParamGeolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
+                deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, notificationGeolocationNotApiCompliantParams);
+            rejectedGeolocationSid = new Sid(missingParamGeolocationJson.get("sid").getAsString());
+            JsonObject rejectedGeolocationJson = RestcommGeolocationsTool.getInstance().getNotificationGeolocation(
+                deploymentUrl.toString(), adminUsername, adminAuthToken, adminAccountSid,
+                rejectedGeolocationSid.toString());
+            assertNull(rejectedGeolocationJson);
+        } catch (Exception exception) {
+            // Checking Test asserts via HTTP GET (no record found as POST returned a response status of 400 Bad Request)
+            assertTrue(rejectedGeolocationSid == null);
+            logger.info("Exception during HTTP POST: " + exception.getMessage());
+        }
+
+    }
+
+    @Test
+    public void testLteLcsDeleteNotificationGeolocation() throws IllegalArgumentException, ClientProtocolException, IOException {
+
+        String imsi = "748026871012345";
+
+        //This is for POST requests
+        stubFor(post(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcLteLcsResponse)));
+
+        //This is for GET requests - REMOVE if not needed
+        stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody(gmlcLteLcsResponse)));
+
+        // Define Geolocation attributes for this test method
+        String deviceIdentifier, geofenceType, geofenceId, deferredLocationEventType;
+        // Test create Notification type of Geolocation via POST
+        // Parameter values Assignment
+        MultivaluedMap<String, String> geolocationParams = new MultivaluedMapImpl();
+        geolocationParams.add("DeviceIdentifier", deviceIdentifier = imsi);
+        geolocationParams.add("CoreNetwork","LTE");
+        geolocationParams.add("Priority","normal");
+        geolocationParams.add("HorizontalAccuracy","500");
+        geolocationParams.add("VerticalAccuracy","100");
+        geolocationParams.add("VerticalCoordinateRequest","true");
+        geolocationParams.add("ResponseTime","tolerant");
+        geolocationParams.add("LocationEstimateType","notificationVerificationOnly");
+        geolocationParams.add("GeofenceEventType", deferredLocationEventType = "max-interval-expiration");
+        geolocationParams.add("GeofenceType", geofenceType = "eUtranCellId");
+        geolocationParams.add("GeofenceId", geofenceId = "406");
+        geolocationParams.add("OccurrenceInfo","multiple");
+        geolocationParams.add("ReferenceNumber","371");
+        geolocationParams.add("ServiceTypeID","1");
+        geolocationParams.add("EventIntervalTime","90");
+        geolocationParams.add("EventReportingAmount","2");
+        geolocationParams.add("EventReportingInterval","360");
+        geolocationParams.add("StatusCallback","http://192.1.0.19:8080/ACae6e420f425248d6a26948c17a9e2acf");
+        geolocationParams.add("ClientName","Trg");
+        geolocationParams.add("ClientNameFormat","sip");
+        geolocationParams.add("ClientType","vas");
+        // HTTP POST Geolocation creation with given parameters values and those returned via GMLC stub
+        JsonObject geolocationJson = RestcommGeolocationsTool.getInstance().createNotificationGeolocation(
+            deploymentUrl.toString(), adminAccountSid, adminUsername, adminAuthToken, geolocationParams);
+        Sid geolocationSid = new Sid(geolocationJson.get("sid").getAsString());
+
+        // Remove created Geolocation via HTTP DELETE
+        RestcommGeolocationsTool.getInstance().deleteNotificationGeolocation(deploymentUrl.toString(), adminUsername,
+            adminAuthToken, adminAccountSid, geolocationSid.toString());
+        // Remove checking Test asserts via HTTP GET
+        geolocationJson = RestcommGeolocationsTool.getInstance().getNotificationGeolocation(deploymentUrl.toString(),
+            adminUsername, adminAuthToken, adminAccountSid, geolocationSid.toString());
+
+        assertTrue(geolocationJson == null);
     }
 
     @Deployment(name = "GeolocationsEndpointTest", managed = true, testable = false)

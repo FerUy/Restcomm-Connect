@@ -277,7 +277,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), writer);
             writeSubscriberState(geolocation.getSubscriberState(), writer);
             writeTrackingAreaCode(geolocation.getTac(), writer);
-            writeRouteingAreaId(geolocation.getRai(), writer);
+            writeRoutingAreaId(geolocation.getRai(), writer);
             writeTypeOfShape(geolocation.getTypeOfShape(), writer);
             writeDeviceLatitude(geolocation.getDeviceLatitude(), writer);
             writeDeviceLongitude(geolocation.getDeviceLongitude(), writer);
@@ -323,7 +323,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), locationDataJsonObject);
             writeSubscriberState(geolocation.getSubscriberState(), locationDataJsonObject);
             writeTrackingAreaCode(geolocation.getTac(), locationDataJsonObject);
-            writeRouteingAreaId(geolocation.getRai(), locationDataJsonObject);
+            writeRoutingAreaId(geolocation.getRai(), locationDataJsonObject);
             writeTypeOfShape(geolocation.getTypeOfShape(), locationDataJsonObject);
             writeDeviceLatitude(geolocation.getDeviceLatitude(), locationDataJsonObject);
             writeDeviceLongitude(geolocation.getDeviceLongitude(), locationDataJsonObject);
@@ -533,15 +533,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeRouteingAreaId(final String tac, final HierarchicalStreamWriter writer) {
+    protected void writeRoutingAreaId(final String tac, final HierarchicalStreamWriter writer) {
         if (tac != null) {
-            writer.startNode("TAC");
+            writer.startNode("RAC");
             writer.setValue(tac.toString());
             writer.endNode();
         }
     }
 
-    protected void writeRouteingAreaId(final String rai, final JsonObject object) {
+    protected void writeRoutingAreaId(final String rai, final JsonObject object) {
         if (rai != null) {
             object.addProperty("rai", rai);
         } else {
