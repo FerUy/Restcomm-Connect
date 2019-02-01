@@ -22,6 +22,7 @@
 package org.restcomm.connect.dao.mybatis;
 
 import static org.restcomm.connect.dao.DaoUtils.readDateTime;
+import static org.restcomm.connect.dao.DaoUtils.readDouble;
 import static org.restcomm.connect.dao.DaoUtils.readInteger;
 import static org.restcomm.connect.dao.DaoUtils.readSid;
 import static org.restcomm.connect.dao.DaoUtils.readString;
@@ -157,15 +158,16 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("mobile_country_code", gl.getMobileCountryCode());
         map.put("mobile_network_code", gl.getMobileNetworkCode());
         map.put("location_area_code", gl.getLocationAreaCode());
-        map.put("cell_id", gl.getCellId());
-        map.put("sai", gl.getSai());
-        map.put("ecid", gl.getEcid());
+        map.put("ci", gl.getCi());
+        map.put("sac", gl.getSac());
+        map.put("enbid", gl.getEnbid());
         map.put("network_entity_address", gl.getNetworkEntityAddress());
         map.put("network_entity_name", gl.getNetworkEntityName());
         map.put("age_of_location_info", gl.getAgeOfLocationInfo());
         map.put("subscriber_state", gl.getSubscriberState());
+        map.put("not_reachable_reason", gl.getNotReachableReason());
         map.put("tac", gl.getTac());
-        map.put("rai", gl.getRai());
+        map.put("rac", gl.getRac());
         map.put("type_of_shape", gl.getTypeOfShape());
         map.put("device_latitude", gl.getDeviceLatitude());
         map.put("device_longitude", gl.getDeviceLongitude());
@@ -211,42 +213,43 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String device_identifier = readString(map.get("device_identifier"));
         final Long msisdn = readLong(map.get("msisdn"));
         final Long imsi = readLong(map.get("imsi"));
-        final String imei = readString(map.get("imei"));
+        final Long imei = readLong(map.get("imei"));
         final Long lmsi = readLong(map.get("lmsi"));
         final Long reference_number = readLong(map.get("reference_number"));
         final Geolocation.GeolocationType geolocation_type = readGeolocationType(map.get("geolocation_type"));
         final String response_status = readString(map.get("response_status"));
         final Integer mobile_country_code = readInteger(map.get("mobile_country_code"));
-        final String mobile_network_code = readString(map.get("mobile_network_code"));
-        final String location_area_code = readString(map.get("location_area_code"));
-        final String cell_id = readString(map.get("cell_id"));
-        final String sai = readString(map.get("sai"));
-        final Long ecid = readLong(map.get("ecid"));
+        final Integer mobile_network_code = readInteger(map.get("mobile_network_code"));
+        final Integer location_area_code = readInteger(map.get("location_area_code"));
+        final Integer ci = readInteger(map.get("ci"));
+        final Integer sac = readInteger(map.get("sac"));
+        final Integer enbid = readInteger(map.get("enbid"));
         final Long network_entity_address = readLong(map.get("network_entity_address"));
         final String network_entity_name = readString(map.get("network_entity_name"));
         final Integer age_of_location_info = readInteger(map.get("age_of_location_info"));
         final String subscriber_state = readString(map.get("subscriber_state"));
-        final String tac = readString(map.get("tac"));
-        final String rai = readString(map.get("rai"));
+        final String not_reachable_reason = readString(map.get("not_reachable_reason"));
+        final Integer tac = readInteger(map.get("tracking_area_code"));
+        final Integer rac = readInteger(map.get("routing_area_code"));
         final String type_of_shape = readString(map.get("type_of_shape"));
         final String device_latitude = readString(map.get("device_latitude"));
         final String device_longitude = readString(map.get("device_longitude"));
-        final String uncertainty = readString(map.get("uncertainty"));
-        final String uncertainty_semi_major_axis = readString(map.get("uncertainty_semi_major_axis"));
-        final String uncertainty_semi_minor_axis = readString(map.get("uncertainty_semi_minor_axis"));
-        final String angle_of_major_axis = readString(map.get("angle_of_major_axis"));
-        final String confidence = readString(map.get("confidence"));
-        final String altitude = readString(map.get("altitude"));
-        final String uncertainty_altitude = readString(map.get("uncertainty_altitude"));
-        final String inner_radius = readString(map.get("inner_radius"));
-        final String uncertainty_inner_radius = readString(map.get("uncertainty_inner_radius"));
-        final String offset_angle = readString(map.get("offset_angle"));
-        final String included_angle = readString(map.get("included_angle"));
-        final String horizontal_speed = readString(map.get("horizontal_speed"));
-        final String vertical_speed = readString(map.get("vertical_speed"));
-        final String uncertainty_horizontal_speed = readString(map.get("uncertainty_horizontal_speed"));
-        final String uncertainty_vertical_speed = readString(map.get("uncertainty_vertical_speed"));
-        final String bearing = readString(map.get("bearing"));
+        final Double uncertainty = readDouble(map.get("uncertainty"));
+        final Double uncertainty_semi_major_axis = readDouble(map.get("uncertainty_semi_major_axis"));
+        final Double uncertainty_semi_minor_axis = readDouble(map.get("uncertainty_semi_minor_axis"));
+        final Double angle_of_major_axis = readDouble(map.get("angle_of_major_axis"));
+        final Integer confidence = readInteger(map.get("confidence"));
+        final Integer altitude = readInteger(map.get("altitude"));
+        final Double uncertainty_altitude = readDouble(map.get("uncertainty_altitude"));
+        final Integer inner_radius = readInteger(map.get("inner_radius"));
+        final Double uncertainty_inner_radius = readDouble(map.get("uncertainty_inner_radius"));
+        final Double offset_angle = readDouble(map.get("offset_angle"));
+        final Double included_angle = readDouble(map.get("included_angle"));
+        final Integer horizontal_speed = readInteger(map.get("horizontal_speed"));
+        final Integer vertical_speed = readInteger(map.get("vertical_speed"));
+        final Integer uncertainty_horizontal_speed = readInteger(map.get("uncertainty_horizontal_speed"));
+        final Integer uncertainty_vertical_speed = readInteger(map.get("uncertainty_vertical_speed"));
+        final Integer bearing = readInteger(map.get("bearing"));
         final String geofence_type = readString(map.get("geofence_type"));
         final String geofence_id = readString(map.get("geofence_id"));
         final String geofence_event_type = readString(map.get("geofence_event_type"));
@@ -260,8 +263,8 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String api_version = readString(map.get("api_version"));
         final URI uri = readUri(map.get("uri"));
         return new Geolocation(sid, date_created, date_updated, date_executed, location_timestamp, account_sid, source, device_identifier, msisdn, imsi,
-            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, cell_id, sai, ecid,
-            network_entity_address, network_entity_name, age_of_location_info, subscriber_state, tac, rai, type_of_shape, device_latitude, device_longitude,
+            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, ci, sac, enbid,
+            network_entity_address, network_entity_name, age_of_location_info, subscriber_state, not_reachable_reason, tac, rac, type_of_shape, device_latitude, device_longitude,
             uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis, confidence, altitude, uncertainty_altitude,
             inner_radius, uncertainty_inner_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,
             uncertainty_vertical_speed, bearing, geofence_type, geofence_id, geofence_event_type, event_range, civic_address, barometric_pressure,

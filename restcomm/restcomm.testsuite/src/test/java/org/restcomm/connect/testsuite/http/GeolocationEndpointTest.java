@@ -99,6 +99,206 @@ public class GeolocationEndpointTest {
         Thread.sleep(1000);
     }
 
+    String gmlcMapAtiCsResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"ATI\",\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {\n" +
+        "      \"oddFlag\": false,\n" +
+        "      \"natureOfAddressIndicator\": 4,\n" +
+        "      \"internalNetworkNumberIndicator\": 1,\n" +
+        "      \"numberingPlanIndicator\": 1,\n" +
+        "      \"addressRepresentationRestrictedIndicator\": 1,\n" +
+        "      \"screeningIndicator\": 3,\n" +
+        "      \"address\": \"819203961904\"\n" +
+        "    },\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 21,\n" +
+        "      \"lac\": 32005,\n" +
+        "      \"sac\": 38221\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"latitude\": -44.72101807594299,\n" +
+        "      \"longitude\": 105.99341154098511,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 9.487171000000012\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"latitude\": -45.002102851867676,\n" +
+        "      \"longitude\": 110.10006666183472,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 4.641000000000004,\n" +
+        "      \"confidence\": 1,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    },\n" +
+        "    \"EPSLocationInformation\": {\n" +
+        "      \"TAI\": {\n" +
+        "        \"mcc\": 732,\n" +
+        "        \"mnc\": 103,\n" +
+        "        \"tac\": 14649\n" +
+        "      },\n" +
+        "      \"ECGI\": {\n" +
+        "        \"mcc\": 732,\n" +
+        "        \"mnc\": 103,\n" +
+        "        \"eNBId\": 334,\n" +
+        "        \"ci\": 74\n" +
+        "      },\n" +
+        "      \"GeographicalInformation\": {\n" +
+        "        \"latitude\": -44.72101807594299,\n" +
+        "        \"longitude\": 105.99341154098511,\n" +
+        "        \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "        \"uncertainty\": 9.487171000000012\n" +
+        "      },\n" +
+        "      \"GeodeticInformation\": {\n" +
+        "        \"latitude\": -45.002102851867676,\n" +
+        "        \"longitude\": 110.10006666183472,\n" +
+        "        \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "        \"uncertainty\": 4.641000000000004,\n" +
+        "        \"confidence\": 1,\n" +
+        "        \"screeningAndPresentationIndicators\": 3\n" +
+        "      }\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"LSA\": {},\n" +
+        "    \"RAI\": {},\n" +
+        "    \"CGIorSAIorLAI\": {},\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {}\n" +
+        "  },\n" +
+        "  \"GPRSMSClass\": {},\n" +
+        "  \"MNPInfoResult\": {\n" +
+        "    \"mnpStatus\": 4,\n" +
+        "    \"mnpMsisdn\": \"59899077937\",\n" +
+        "    \"mnpImsi\": \"748026871012345\",\n" +
+        "    \"mnpRouteingNumber\": \"598123\"\n" +
+        "  },\n" +
+        "  \"saiPresent\": true,\n" +
+        "  \"ageOfLocationInformation\": 5,\n" +
+        "  \"currentLocationRetrieved\": true,\n" +
+        "  \"imei\": \"011714004661050\",\n" +
+        "  \"vlrNumber\": \"59899000231\",\n" +
+        "  \"mscNumber\": \"5982123007\",\n" +
+        "  \"mmeName\": \"MME7480001\",\n" +
+        "  \"subscriberState\": \"assumedIdle\",\n" +
+        "  \"msClassmark\": \"003\"\n" +
+        "}";
+
+    String gmlcMapAtiPsResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"ATI\",\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {},\n" +
+        "    \"CGIorSAIorLAI\": {},\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {},\n" +
+        "    \"EPSLocationInformation\": {\n" +
+        "      \"TAI\": {},\n" +
+        "      \"ECGI\": {},\n" +
+        "      \"GeographicalInformation\": {},\n" +
+        "      \"GeodeticInformation\": {}\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"LSA\": {\n" +
+        "      \"lsaIdType\": \"Universal\",\n" +
+        "      \"lsaId\": \"131\"\n" +
+        "    },\n" +
+        "    \"RAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 1,\n" +
+        "      \"lac\": 14645,\n" +
+        "      \"rac\": 50\n" +
+        "    },\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 23,\n" +
+        "      \"lac\": 32006,\n" +
+        "      \"sac\": 38222\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"latitude\": -44.72101807594299,\n" +
+        "      \"longitude\": 105.99341154098511,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 9.487171000000012\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"latitude\": -45.002102851867676,\n" +
+        "      \"longitude\": 110.10006666183472,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 4.641000000000004,\n" +
+        "      \"confidence\": 1,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"GPRSMSClass\": {\n" +
+        "    \"msNetworkCapability\": \"43879748\",\n" +
+        "    \"msRadioAccessCapability\": \"8549839852932239493928\"\n" +
+        "  },\n" +
+        "  \"MNPInfoResult\": {\n" +
+        "    \"mnpStatus\": 4,\n" +
+        "    \"mnpMsisdn\": \"59899077937\",\n" +
+        "    \"mnpImsi\": \"748026871012345\",\n" +
+        "    \"mnpRouteingNumber\": \"598123\"\n" +
+        "  },\n" +
+        "  \"saiPresent\": true,\n" +
+        "  \"ageOfLocationInformation\": 5,\n" +
+        "  \"currentLocationRetrieved\": true,\n" +
+        "  \"imei\": \"011714004661051\",\n" +
+        "  \"sgsnNumber\": \"5982133021\",\n" +
+        "  \"subscriberState\": \"psAttachedReachableForPaging\"\n" +
+        "}";
+
+    String getGmlcMapAtiCsNotReachableResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"ATI\",\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {\n" +
+        "      \"oddFlag\": false,\n" +
+        "      \"natureOfAddressIndicator\": 4,\n" +
+        "      \"internalNetworkNumberIndicator\": 1,\n" +
+        "      \"numberingPlanIndicator\": 1,\n" +
+        "      \"addressRepresentationRestrictedIndicator\": 1,\n" +
+        "      \"screeningIndicator\": 3,\n" +
+        "      \"address\": \"819203961904\"\n" +
+        "    },\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 21,\n" +
+        "      \"lac\": 32005,\n" +
+        "      \"sac\": 38221\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {},\n" +
+        "    \"EPSLocationInformation\": {\n" +
+        "      \"TAI\": {},\n" +
+        "      \"ECGI\": {},\n" +
+        "      \"GeographicalInformation\": {},\n" +
+        "      \"GeodeticInformation\": {}\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"LSA\": {},\n" +
+        "    \"RAI\": {},\n" +
+        "    \"CGIorSAIorLAI\": {},\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {}\n" +
+        "  },\n" +
+        "  \"GPRSMSClass\": {},\n" +
+        "  \"MNPInfoResult\": {},\n" +
+        "  \"saiPresent\": true,\n" +
+        "  \"ageOfLocationInformation\": 1575,\n" +
+        "  \"currentLocationRetrieved\": false,\n" +
+        "  \"vlrNumber\": \"59899000231\",\n" +
+        "  \"subscriberState\": \"netDetNotReachable\",\n" +
+        "  \"notReachableReason\": \"imsiDetached\"\n" +
+        "}";
+
+    // TODO delete this one (obsolete)
     String gmlcMapAtiResponse = "{\n" +
         "  \"network\": \"GSM\",\n" +
         "  \"protocol\": \"MAP\",\n" +
@@ -114,6 +314,7 @@ public class GeolocationEndpointTest {
         "  \"subscriberState\": \"assumedIdle\"\n" +
         "}";
 
+    // TODO delete this one (obsolete)
     String gmlcMapLsmResponse = "{\n" +
         "  \"network\": \"UMTS\",\n" +
         "  \"protocol\": \"MAP\",\n" +
@@ -178,6 +379,124 @@ public class GeolocationEndpointTest {
         "  }\n" +
         "}";
 
+    String getGmlcMapLsmResponse1 = "{\n" +
+        "  \"network\": \"UMTS\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"SRIforLCS-PSL\",\n" +
+        "  \"lcsReferenceNumber\": 153,\n" +
+        "  \"gmlcTransactionId\": 13,\n" +
+        "  \"SRIforLCS\": {\n" +
+        "    \"msisdn\": \"59899077937\",\n" +
+        "    \"imsi\": \"748026871012345\",\n" +
+        "    \"lmsi\": \"2915\",\n" +
+        "    \"networkNodeNumber\": \"5982123007\",\n" +
+        "    \"gprsNodeIndicator\": false,\n" +
+        "    \"mmeName\": \"MME7480001\",\n" +
+        "    \"3GPPAAAServerName\": \"AAA74800017\",\n" +
+        "    \"hGmlcAddress\": \"134570\",\n" +
+        "    \"vGmlcAddress\": \"157003\",\n" +
+        "    \"pprAddress\": \"938012\"\n" +
+        "  },\n" +
+        "  \"PSL\": {\n" +
+        "    \"LocationEstimate\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithAltitudeAndUncertaintyEllipsoid\",\n" +
+        "      \"latitude\": 45.907005071640015,\n" +
+        "      \"longitude\": -99.00022745132446,\n" +
+        "      \"altitude\": 570,\n" +
+        "      \"uncertaintySemiMajorAxis\": 24.522712143931038,\n" +
+        "      \"uncertaintySemiMinorAxis\": 11.435888100000016,\n" +
+        "      \"angleOfMajorAxis\": 30.0,\n" +
+        "      \"uncertaintyAltitude\": 79.5430243255239,\n" +
+        "      \"confidence\": 5\n" +
+        "    },\n" +
+        "    \"ageOfLocationEstimate\": 0,\n" +
+        "    \"accuracyFulfilmentIndicator\": 0,\n" +
+        "    \"deferredMTLRresponseIndicator\": true,\n" +
+        "    \"moLrShortCircuitIndicator\": true,\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 437,\n" +
+        "      \"mnc\": 109,\n" +
+        "      \"lac\": 8304,\n" +
+        "      \"sac\": 17185\n" +
+        "    },\n" +
+        "    \"GERANPositioningInfo\": {\n" +
+        "      \"geranPositioningInfo\": \"29152\",\n" +
+        "      \"geranGanssPositioningData\": \"820135\"\n" +
+        "    },\n" +
+        "    \"UTRANPositioningInfo\": {\n" +
+        "      \"utranPositioningInfo\": \"933601\",\n" +
+        "      \"utranGanssPositioningData\": \"933600\"\n" +
+        "    },\n" +
+        "    \"VelocityEstimate\": {\n" +
+        "      \"horizontalSpeed\": 101,\n" +
+        "      \"bearing\": 3,\n" +
+        "      \"verticalSpeed\": 2,\n" +
+        "      \"uncertaintyHorizontalSpeed\": 5,\n" +
+        "      \"uncertaintyVerticalSpeed\": 1,\n" +
+        "      \"velocityType\": \"HorizontalWithVerticalVelocityAndUncertainty\"\n" +
+        "    }\n" +
+        "  }\n" +
+        "}";
+
+    String gmlcMapLsmResponse2 = "{\n" +
+        "  \"network\": \"UMTS\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"SRIforLCS-PSL\",\n" +
+        "  \"lcsReferenceNumber\": 153,\n" +
+        "  \"gmlcTransactionId\": 6,\n" +
+        "  \"SRIforLCS\": {\n" +
+        "    \"msisdn\": \"59899077937\",\n" +
+        "    \"imsi\": \"748026871012345\",\n" +
+        "    \"lmsi\": \"2915\",\n" +
+        "    \"networkNodeNumber\": \"5982123007\",\n" +
+        "    \"gprsNodeIndicator\": false,\n" +
+        "    \"mmeName\": \"MME7480001\",\n" +
+        "    \"3GPPAAAServerName\": \"AAA74800017\",\n" +
+        "    \"hGmlcAddress\": \"134570\",\n" +
+        "    \"vGmlcAddress\": \"157003\",\n" +
+        "    \"pprAddress\": \"938012\"\n" +
+        "  },\n" +
+        "  \"PSL\": {\n" +
+        "    \"LocationEstimate\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidArc\",\n" +
+        "      \"latitude\": 45.907005071640015,\n" +
+        "      \"longitude\": -99.00022745132446,\n" +
+        "      \"innerRadius\": 5,\n" +
+        "      \"uncertaintyInnerRadius\": 1.0000000000000009,\n" +
+        "      \"offsetAngle\": 20.0,\n" +
+        "      \"includedAngle\": 20.0,\n" +
+        "      \"confidence\": 2\n" +
+        "    },\n" +
+        "    \"ageOfLocationEstimate\": 0,\n" +
+        "    \"accuracyFulfilmentIndicator\": 0,\n" +
+        "    \"deferredMTLRresponseIndicator\": true,\n" +
+        "    \"moLrShortCircuitIndicator\": true,\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 437,\n" +
+        "      \"mnc\": 109,\n" +
+        "      \"lac\": 8304,\n" +
+        "      \"ci\": 17185\n" +
+        "    },\n" +
+        "    \"GERANPositioningInfo\": {\n" +
+        "      \"geranPositioningInfo\": \"29152\",\n" +
+        "      \"geranGanssPositioningData\": \"820135\"\n" +
+        "    },\n" +
+        "    \"UTRANPositioningInfo\": {\n" +
+        "      \"utranPositioningInfo\": \"933601\",\n" +
+        "      \"utranGanssPositioningData\": \"933600\"\n" +
+        "    },\n" +
+        "    \"VelocityEstimate\": {\n" +
+        "      \"horizontalSpeed\": 101,\n" +
+        "      \"bearing\": 3,\n" +
+        "      \"verticalSpeed\": 2,\n" +
+        "      \"uncertaintyHorizontalSpeed\": 5,\n" +
+        "      \"uncertaintyVerticalSpeed\": 1,\n" +
+        "      \"velocityType\": \"HorizontalWithVerticalVelocityAndUncertainty\"\n" +
+        "    }\n" +
+        "  }\n" +
+        "}";
+
+    // TODO delete this one (obsolete)
     String gmlcMapPsiResponse = "{\n" +
         "  \"network\": \"GSM\",\n" +
         "  \"protocol\": \"MAP\",\n" +
@@ -252,48 +571,214 @@ public class GeolocationEndpointTest {
         "  \"subscriberState\": \"assumedIdle\"\n" +
         "}";
 
+    String gmlcMapPsiCsResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"PSI\",\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {\n" +
+        "      \"oddFlag\": false,\n" +
+        "      \"natureOfAddressIndicator\": 4,\n" +
+        "      \"internalNetworkNumberIndicator\": 1,\n" +
+        "      \"numberingPlanIndicator\": 1,\n" +
+        "      \"addressRepresentationRestrictedIndicator\": 1,\n" +
+        "      \"screeningIndicator\": 3,\n" +
+        "      \"address\": \"819203961904\"\n" +
+        "    },\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 2,\n" +
+        "      \"lac\": 53201,\n" +
+        "      \"sac\": 23479\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"latitude\": -23.29102635383606,\n" +
+        "      \"longitude\": 109.97780084609985,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 18.531167061100025\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"latitude\": -24.010008573532104,\n" +
+        "      \"longitude\": 110.00985860824585,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 9.487171000000012,\n" +
+        "      \"confidence\": 1,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    },\n" +
+        "    \"EPSLocationInformation\": {\n" +
+        "      \"TAI\": {\n" +
+        "        \"mcc\": 732,\n" +
+        "        \"mnc\": 103,\n" +
+        "        \"tac\": 14649\n" +
+        "      },\n" +
+        "      \"ECGI\": {\n" +
+        "        \"mcc\": 732,\n" +
+        "        \"mnc\": 103,\n" +
+        "        \"eNBId\": 334,\n" +
+        "        \"ci\": 74\n" +
+        "      },\n" +
+        "      \"GeographicalInformation\": {\n" +
+        "        \"latitude\": -23.29102635383606,\n" +
+        "        \"longitude\": 109.97780084609985,\n" +
+        "        \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "        \"uncertainty\": 18.531167061100025\n" +
+        "      },\n" +
+        "      \"GeodeticInformation\": {\n" +
+        "        \"latitude\": -24.010008573532104,\n" +
+        "        \"longitude\": 110.00985860824585,\n" +
+        "        \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "        \"uncertainty\": 9.487171000000012,\n" +
+        "        \"confidence\": 1,\n" +
+        "        \"screeningAndPresentationIndicators\": 3\n" +
+        "      }\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"LSA\": {},\n" +
+        "    \"RAI\": {},\n" +
+        "    \"CGIorSAIorLAI\": {},\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {}\n" +
+        "  },\n" +
+        "  \"GPRSMSClass\": {},\n" +
+        "  \"MNPInfoResult\": {\n" +
+        "    \"mnpStatus\": 4,\n" +
+        "    \"mnpMsisdn\": \"59899077937\",\n" +
+        "    \"mnpImsi\": \"748026871012345\",\n" +
+        "    \"mnpRouteingNumber\": \"598123\"\n" +
+        "  },\n" +
+        "  \"saiPresent\": true,\n" +
+        "  \"ageOfLocationInformation\": 1,\n" +
+        "  \"currentLocationRetrieved\": true,\n" +
+        "  \"imsi\": \"124356871012345\",\n" +
+        "  \"imei\": \"011714004661050\",\n" +
+        "  \"lmsi\": \"2915\",\n" +
+        "  \"vlrNumber\": \"59899000231\",\n" +
+        "  \"mscNumber\": \"5982123007\",\n" +
+        "  \"mmeName\": \"MME7480001\",\n" +
+        "  \"subscriberState\": \"camelBusy\",\n" +
+        "  \"msClassmark\": \"003\"\n" +
+        "}";
+
+    String gmlcMapPsiPsResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"PSI\",\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {},\n" +
+        "    \"CGIorSAIorLAI\": {},\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {},\n" +
+        "    \"EPSLocationInformation\": {\n" +
+        "      \"TAI\": {},\n" +
+        "      \"ECGI\": {},\n" +
+        "      \"GeographicalInformation\": {},\n" +
+        "      \"GeodeticInformation\": {}\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"LSA\": {\n" +
+        "      \"lsaIdType\": \"Universal\",\n" +
+        "      \"lsaId\": \"131\"\n" +
+        "    },\n" +
+        "    \"RAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 1,\n" +
+        "      \"lac\": 14645,\n" +
+        "      \"rac\": 50\n" +
+        "    },\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 23,\n" +
+        "      \"lac\": 32006,\n" +
+        "      \"sac\": 38222\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": 48.00009369850159,\n" +
+        "      \"longitude\": -121.40008449554443,\n" +
+        "      \"uncertainty\": 9.487171000000012\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"latitude\": 24.010008573532104,\n" +
+        "      \"longitude\": -99.00179386138916,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 4.641000000000004,\n" +
+        "      \"confidence\": 2,\n" +
+        "      \"screeningAndPresentationIndicators\": 2\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"GPRSMSClass\": {\n" +
+        "    \"msNetworkCapability\": \"43879748\",\n" +
+        "    \"msRadioAccessCapability\": \"8549839852932239493928\"\n" +
+        "  },\n" +
+        "  \"MNPInfoResult\": {\n" +
+        "    \"mnpStatus\": 4,\n" +
+        "    \"mnpMsisdn\": \"59899077937\",\n" +
+        "    \"mnpImsi\": \"748026871012345\",\n" +
+        "    \"mnpRouteingNumber\": \"598123\"\n" +
+        "  },\n" +
+        "  \"saiPresent\": true,\n" +
+        "  \"ageOfLocationInformation\": 14571,\n" +
+        "  \"currentLocationRetrieved\": false,\n" +
+        "  \"imsi\": \"124356871012345\",\n" +
+        "  \"imei\": \"011714004661051\",\n" +
+        "  \"lmsi\": \"2915\",\n" +
+        "  \"sgsnNumber\": \"5982133021\",\n" +
+        "  \"subscriberState\": \"psAttachedReachableForPaging\"\n" +
+        "}";
+
     String gmlcLteLcsResponse = "{\n" +
         "  \"network\": \"LTE\",\n" +
         "  \"protocol\": \"Diameter\",\n" +
         "  \"operation\": \"RIR-RIA-PLR-PLA\",\n" +
-        "  \"lcsReferenceNumber\": \"371\",\n" +
-        "  \"gmlcTransactionId\": \"3\",\n" +
+        "  \"lcsReferenceNumber\": 359,\n" +
+        "  \"gmlcTransactionId\": 14,\n" +
         "  \"Routing-Info-Answer\": {\n" +
-        "    \"msisdn\": \"59899077937\",\n" +
-        "    \"imsi\": \"748026871012345\",\n" +
-        "    \"lmsi\": \"4294967295\",\n" +
+        "    \"msisdn\": \"573195897484\",\n" +
+        "    \"imsi\": \"732101509580853\",\n" +
+        "    \"lmsi\": \"7213917157\",\n" +
         "    \"mmeName\": \"simulator.be-connect.us\",\n" +
         "    \"mmeRealm\": \"be-connect.us\",\n" +
-        "    \"sgsnNumber\": \"5989900021\",\n" +
+        "    \"sgsnNumber\": \"5730100028\",\n" +
         "    \"sgsnName\": \"simulator.be-connect.us\",\n" +
         "    \"sgsnRealm\": \"be-connect.us\",\n" +
-        "    \"3GPPAAAServerName\": \"aaa003\",\n" +
-        "    \"gmlcAddress\": \"\"\n" +
+        "    \"3GPPAAAServerName\": \"aaa001\",\n" +
+        "    \"gmlcAddress\": \"?*\\u0015?\"\n" +
         "  },\n" +
         "  \"Provide-Location-Answer\": {\n" +
         "    \"LocationEstimate\": {\n" +
         "      \"typeOfShape\": \"EllipsoidPointWithAltitudeAndUncertaintyEllipsoid\",\n" +
-        "      \"latitude\": \"33.99999260902405\",\n" +
-        "      \"longitude\": \"55.99999666213989\",\n" +
-        "      \"uncertainty\": \"0.0\",\n" +
-        "      \"uncertaintySemiMajorAxis\": \"1.0000000000000009\",\n" +
-        "      \"uncertaintySemiMinorAxis\": \"2.100000000000002\",\n" +
-        "      \"angleOfMajorAxis\": \"4.0\",\n" +
-        "      \"confidence\": \"80\",\n" +
-        "      \"altitude\": \"200\",\n" +
-        "      \"uncertaintyAltitude\": \"11.435888100000016\",\n" +
-        "      \"innerRadius\": \"0\",\n" +
-        "      \"uncertaintyInnerRadius\": \"0.0\",\n" +
-        "      \"offsetAngle\": \"0.0\",\n" +
-        "      \"includedAngle\": \"0.0\"\n" +
+        "      \"latitude\": 33.99999260902405,\n" +
+        "      \"longitude\": 55.99999666213989,\n" +
+        "      \"altitude\": 200,\n" +
+        "      \"uncertaintySemiMajorAxis\": 1.0000000000000009,\n" +
+        "      \"uncertaintySemiMinorAxis\": 2.100000000000002,\n" +
+        "      \"angleOfMajorAxis\": 4.0,\n" +
+        "      \"uncertaintyAltitude\": 11.435888100000016,\n" +
+        "      \"confidence\": 80\n" +
         "    },\n" +
-        "    \"accuracyFulfilmentIndicator\": \"-1\",\n" +
-        "    \"ageOfLocationEstimate\": \"0\",\n" +
+        "    \"ageOfLocationEstimate\": 0,\n" +
         "    \"CGIorSAIorESMLCCellInfo\": {\n" +
-        "      \"cellGlobalIdentity\": \"54108\",\n" +
-        "      \"serviceAreaIdentity\": \"2718\",\n" +
-        "      \"eUtranCgi\": \"7890104\",\n" +
-        "      \"cellPortionId\": \"3\"\n" +
+        "      \"CGI\": {\n" +
+        "        \"mcc\": 733,\n" +
+        "        \"mnc\": 233,\n" +
+        "        \"lac\": 12336,\n" +
+        "        \"ci\": 12344\n" +
+        "      },\n" +
+        "      \"SAI\": {\n" +
+        "        \"mcc\": 733,\n" +
+        "        \"mnc\": 233,\n" +
+        "        \"lac\": 12336,\n" +
+        "        \"sac\": 12344\n" +
+        "      },\n" +
+        "      \"ECGI\": {\n" +
+        "        \"mcc\": 733,\n" +
+        "        \"mnc\": 233,\n" +
+        "        \"eNBId\": 3158064,\n" +
+        "        \"ci\": 52,\n" +
+        "        \"cellPortionId\": 197\n" +
+        "      }\n" +
         "    },\n" +
         "    \"GERANPositioningInfo\": {\n" +
         "      \"geranPositioningInfo\": \"0\",\n" +
@@ -308,18 +793,126 @@ public class GeolocationEndpointTest {
         "      \"eUtranPositioningData\": \"313233\"\n" +
         "    },\n" +
         "    \"VelocityEstimate\": {\n" +
-        "      \"horizontalSpeed\": \"20\",\n" +
-        "      \"bearing\": \"0\",\n" +
-        "      \"verticalSpeed\": \"0\",\n" +
-        "      \"uncertaintyHorizontalSpeed\": \"0\",\n" +
-        "      \"uncertaintyVerticalSpeed\": \"0\",\n" +
+        "      \"horizontalSpeed\": 20,\n" +
+        "      \"bearing\": 0,\n" +
+        "      \"verticalSpeed\": 0,\n" +
+        "      \"uncertaintyHorizontalSpeed\": 0,\n" +
+        "      \"uncertaintyVerticalSpeed\": 0,\n" +
         "      \"velocityType\": \"HorizontalVelocity\"\n" +
         "    },\n" +
-        "    \"civicAddress\": \"Avenida Italia 8973, 11500, Montevideo, Uruguay\",\n" +
-        "    \"barometricPressure\": \"1013\"\n" +
+        "    \"civicAddress\": \"Calle 2 Sur 20-185, 050022, Medellin, Colombia\",\n" +
+        "    \"barometricPressure\": 1012\n" +
         "  }\n" +
         "}";
 
+    String getGetGmlcLteLcsResponse2 = "";
+
+    String gmlcDiameterShUdrResponse = "{\n" +
+        "  \"network\": \"IMS\",\n" +
+        "  \"protocol\": \"Diameter\",\n" +
+        "  \"operation\": \"UDR-UDA\",\n" +
+        "  \"PublicIdentifiers\": {\n" +
+        "    \"msisdn\": \"59899077937\",\n" +
+        "    \"imsPublicIdentity\": \"sip:john.doe@hp.com\"\n" +
+        "  },\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {\n" +
+        "      \"oddFlag\": true,\n" +
+        "      \"natureOfAddressIndicator\": 4,\n" +
+        "      \"internalNetworkNumberIndicator\": 1,\n" +
+        "      \"numberingPlanIndicator\": 1,\n" +
+        "      \"addressRepresentationRestrictedIndicator\": 1,\n" +
+        "      \"screeningIndicator\": 3,\n" +
+        "      \"address\": \"56034254999\"\n" +
+        "    },\n" +
+        "    \"CGI\": {\n" +
+        "      \"mcc\": 732,\n" +
+        "      \"mnc\": 103,\n" +
+        "      \"lac\": 1,\n" +
+        "      \"ci\": 20042\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": 19.484424591064453,\n" +
+        "      \"longitude\": -99.23969507217407,\n" +
+        "      \"uncertainty\": 0.0\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": -24.010008573532104,\n" +
+        "      \"longitude\": 110.00985860824585,\n" +
+        "      \"uncertainty\": 98.34705943388394,\n" +
+        "      \"confidence\": 1,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    },\n" +
+        "    \"mscNumber\": \"59897901234\",\n" +
+        "    \"vlrNumber\": \"59897901234\",\n" +
+        "    \"currentLocationRetrieved\": true,\n" +
+        "    \"ageOfLocationInformation\": 100\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"RAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 1,\n" +
+        "      \"lac\": 14645,\n" +
+        "      \"rac\": 50\n" +
+        "    },\n" +
+        "    \"CGI\": {\n" +
+        "      \"mcc\": 732,\n" +
+        "      \"mnc\": 103,\n" +
+        "      \"lac\": 1,\n" +
+        "      \"ci\": 20042\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": -23.29102635383606,\n" +
+        "      \"longitude\": 109.97780084609985,\n" +
+        "      \"uncertainty\": 45.599173134922395\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": -24.010008573532104,\n" +
+        "      \"longitude\": 110.00985860824585,\n" +
+        "      \"uncertainty\": 98.34705943388394,\n" +
+        "      \"confidence\": 0,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    },\n" +
+        "    \"sgsnNumber\": \"59897904322\",\n" +
+        "    \"currentLocationRetrieved\": false,\n" +
+        "    \"ageOfLocationInformation\": 100\n" +
+        "  },\n" +
+        "  \"EPSLocationInformation\": {\n" +
+        "    \"TAI\": {\n" +
+        "      \"mcc\": 732,\n" +
+        "      \"mnc\": 103,\n" +
+        "      \"tac\": 14649\n" +
+        "    },\n" +
+        "    \"ECGI\": {\n" +
+        "      \"mcc\": 732,\n" +
+        "      \"mnc\": 103,\n" +
+        "      \"eNBId\": 334,\n" +
+        "      \"ci\": 74\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": -23.29102635383606,\n" +
+        "      \"longitude\": 109.97780084609985,\n" +
+        "      \"uncertainty\": 45.599173134922395\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"latitude\": -24.010008573532104,\n" +
+        "      \"longitude\": 110.00985860824585,\n" +
+        "      \"uncertainty\": 98.34705943388394,\n" +
+        "      \"confidence\": 0,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    },\n" +
+        "    \"mmeName\": \"mme742@be-connect.us\",\n" +
+        "    \"currentLocationRetrieved\": false,\n" +
+        "    \"ageOfLocationInformation\": 100,\n" +
+        "    \"csgId\": \"8191\"\n" +
+        "  }\n" +
+        "}";
 
     @Test
     public void testMapAtiCreateAndGetImmediateGeolocation()
@@ -332,14 +925,14 @@ public class GeolocationEndpointTest {
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(gmlcMapAtiResponse)));
+                        .withBody(gmlcMapAtiCsResponse)));
 
         //This is for GET requests - REMOVE if not needed
         stubFor(get(urlPathEqualTo("/restcomm/gmlc/rest"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(gmlcMapAtiResponse)));
+                        .withBody(gmlcMapAtiCsResponse)));
 
         // Define Immediate Geolocation attributes for this method
         String deviceIdentifier;
@@ -357,7 +950,94 @@ public class GeolocationEndpointTest {
         // Test asserts via GET to a single Geolocation
         geolocationJson = RestcommGeolocationsTool.getInstance().getImmediateGeolocation(deploymentUrl.toString(),
             adminUsername, adminAuthToken, adminAccountSid, geolocationSid.toString());
-
+/*
+String gmlcMapAtiCsResponse = "{\n" +
+        "  \"network\": \"GSM\",\n" +
+        "  \"protocol\": \"MAP\",\n" +
+        "  \"operation\": \"ATI\",\n" +
+        "  \"CSLocationInformation\": {\n" +
+        "    \"LocationNumber\": {\n" +
+        "      \"oddFlag\": false,\n" +
+        "      \"natureOfAddressIndicator\": 4,\n" +
+        "      \"internalNetworkNumberIndicator\": 1,\n" +
+        "      \"numberingPlanIndicator\": 1,\n" +
+        "      \"addressRepresentationRestrictedIndicator\": 1,\n" +
+        "      \"screeningIndicator\": 3,\n" +
+        "      \"address\": \"819203961904\"\n" +
+        "    },\n" +
+        "    \"CGIorSAIorLAI\": {\n" +
+        "      \"mcc\": 748,\n" +
+        "      \"mnc\": 21,\n" +
+        "      \"lac\": 32005,\n" +
+        "      \"sac\": 38221\n" +
+        "    },\n" +
+        "    \"GeographicalInformation\": {\n" +
+        "      \"latitude\": -44.72101807594299,\n" +
+        "      \"longitude\": 105.99341154098511,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 9.487171000000012\n" +
+        "    },\n" +
+        "    \"GeodeticInformation\": {\n" +
+        "      \"latitude\": -45.002102851867676,\n" +
+        "      \"longitude\": 110.10006666183472,\n" +
+        "      \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "      \"uncertainty\": 4.641000000000004,\n" +
+        "      \"confidence\": 1,\n" +
+        "      \"screeningAndPresentationIndicators\": 3\n" +
+        "    },\n" +
+        "    \"EPSLocationInformation\": {\n" +
+        "      \"TAI\": {\n" +
+        "        \"mcc\": 732,\n" +
+        "        \"mnc\": 103,\n" +
+        "        \"tac\": 14649\n" +
+        "      },\n" +
+        "      \"ECGI\": {\n" +
+        "        \"mcc\": 732,\n" +
+        "        \"mnc\": 103,\n" +
+        "        \"eNBId\": 334,\n" +
+        "        \"ci\": 74\n" +
+        "      },\n" +
+        "      \"GeographicalInformation\": {\n" +
+        "        \"latitude\": -44.72101807594299,\n" +
+        "        \"longitude\": 105.99341154098511,\n" +
+        "        \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "        \"uncertainty\": 9.487171000000012\n" +
+        "      },\n" +
+        "      \"GeodeticInformation\": {\n" +
+        "        \"latitude\": -45.002102851867676,\n" +
+        "        \"longitude\": 110.10006666183472,\n" +
+        "        \"typeOfShape\": \"EllipsoidPointWithUncertaintyCircle\",\n" +
+        "        \"uncertainty\": 4.641000000000004,\n" +
+        "        \"confidence\": 1,\n" +
+        "        \"screeningAndPresentationIndicators\": 3\n" +
+        "      }\n" +
+        "    }\n" +
+        "  },\n" +
+        "  \"PSLocationInformation\": {\n" +
+        "    \"LSA\": {},\n" +
+        "    \"RAI\": {},\n" +
+        "    \"CGIorSAIorLAI\": {},\n" +
+        "    \"GeographicalInformation\": {},\n" +
+        "    \"GeodeticInformation\": {}\n" +
+        "  },\n" +
+        "  \"GPRSMSClass\": {},\n" +
+        "  \"MNPInfoResult\": {\n" +
+        "    \"mnpStatus\": 4,\n" +
+        "    \"mnpMsisdn\": \"59899077937\",\n" +
+        "    \"mnpImsi\": \"748026871012345\",\n" +
+        "    \"mnpRouteingNumber\": \"598123\"\n" +
+        "  },\n" +
+        "  \"saiPresent\": true,\n" +
+        "  \"ageOfLocationInformation\": 5,\n" +
+        "  \"currentLocationRetrieved\": true,\n" +
+        "  \"imei\": \"011714004661050\",\n" +
+        "  \"vlrNumber\": \"59899000231\",\n" +
+        "  \"mscNumber\": \"5982123007\",\n" +
+        "  \"mmeName\": \"MME7480001\",\n" +
+        "  \"subscriberState\": \"assumedIdle\",\n" +
+        "  \"msClassmark\": \"003\"\n" +
+        "}";
+ */
         SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
         assertTrue(df.parse(geolocationJson.get("date_created").getAsString()) != null);
         assertTrue(df.parse(geolocationJson.get("date_updated").getAsString()) != null);
@@ -366,32 +1046,32 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("device_identifier").getAsString().equals(deviceIdentifier));
         assertTrue(geolocationJson.get("msisdn") == null);
         assertTrue(geolocationJson.get("imsi") == null);
-        assertTrue(geolocationJson.get("imei") == null);
+        assertTrue(geolocationJson.get("imei").getAsString().equals("011714004661050"));
         assertTrue(geolocationJson.get("lmsi") == null);
         assertTrue(geolocationJson.get("reference_number") == null);
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals("598"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("598001"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString().equals("0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 732);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsInt() == 103);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsInt() == 32005 );
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsInt() == 74);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsInt() == 38221);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5982123007"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("MME7480001"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsInt() == 334);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 5);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsInt() == 14649);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().equals("EllipsoidPointWithUncertaintyCircle"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsDouble() == -45.002102851867676);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsDouble() == 110.10006666183472);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty").getAsDouble() == 4.641000000000004);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence").getAsInt() == 1);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
@@ -432,27 +1112,26 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_type").getAsString().equals(ImmediateGT));
         assertTrue(geolocationJson.get("response_status") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_timestamp") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals("598"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("320"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("521"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("598001"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString().equals("0"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 732);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsInt() == 103);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsInt() == 32005 );
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsInt() == 74);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsInt() == 38221);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5982123007"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("MME7480001"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsInt() == 334);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 5);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsInt() == 14649);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().equals("EllipsoidPointWithUncertaintyCircle"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsDouble() == -45.002102851867676);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsDouble() == 110.10006666183472);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty").getAsDouble() == 4.641000000000004);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_major_axis") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_semi_minor_axis") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("angle_of_major_axis") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("confidence").getAsInt() == 1);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_altitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("uncertainty_altitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("inner_radius") == null);
@@ -625,9 +1304,9 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
@@ -635,7 +1314,7 @@ public class GeolocationEndpointTest {
             .equals(ageOfLocationInfo));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
@@ -709,17 +1388,17 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
@@ -826,15 +1505,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
@@ -910,8 +1589,8 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
@@ -919,7 +1598,7 @@ public class GeolocationEndpointTest {
             .equals(ageOfLocationInfo));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString()
             .equals(deviceLatitude));
@@ -1083,15 +1762,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 437);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("109"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("8304"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("17185"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals("17185"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 0);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5982123007"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("MME7480001"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("34.78911995887756"));
@@ -1143,15 +1822,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 437);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("109"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("8304"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("17185"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals("17185"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 0);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5982123007"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("MME7480001"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("34.78911995887756"));
@@ -1356,8 +2035,8 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString()
@@ -1421,8 +2100,8 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString()
@@ -1528,15 +2207,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
@@ -1619,15 +2298,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsString().equals(mobileCountryCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == Integer.valueOf(ageOfLocationInfo));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals(deviceLatitude));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals(deviceLongitude));
@@ -1775,15 +2454,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 748);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("5"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("3479"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals("3479"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsLong() == 5982123007L);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("mme7480001"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == 5092171L);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == 5092171L);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 1);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString().equals("13295"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai").getAsString().equals("132952"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac").getAsString().equals("132952"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().equals("EllipsoidPointWithUncertaintyCircle"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("-24.010008573532104"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("110.00985860824585"));
@@ -1835,15 +2514,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code").getAsInt() == 748);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code").getAsString().equals("1"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString().equals("5"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("3479"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals("3479"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsLong() == 5982123007L);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().equals("mme7480001"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == 5092171L);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == 5092171L);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 1);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state").getAsString().equals("assumedIdle"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString().equals("13295"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai").getAsString().equals("132952"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac").getAsString().equals("132952"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().equals("EllipsoidPointWithUncertaintyCircle"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("-24.010008573532104"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude").getAsString().equals("110.00985860824585"));
@@ -1973,9 +2652,9 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == Long.valueOf(lteCellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == Long.valueOf(lteCellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString()
@@ -1984,7 +2663,7 @@ public class GeolocationEndpointTest {
             .equals(subscriberState));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString()
             .equals(tac));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai").getAsString()
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac").getAsString()
             .equals(rai));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
@@ -2079,9 +2758,9 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == Long.valueOf(lteCellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == Long.valueOf(lteCellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString()
@@ -2090,7 +2769,7 @@ public class GeolocationEndpointTest {
             .equals(subscriberState));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString()
             .equals(tac));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai").getAsString()
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac").getAsString()
             .equals(rai));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
@@ -2271,15 +2950,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
@@ -2370,9 +3049,9 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == Long.valueOf(lteCellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == Long.valueOf(lteCellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString()
             .equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString()
@@ -2381,7 +3060,7 @@ public class GeolocationEndpointTest {
             .equals(subscriberState));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString()
             .equals(tac));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai").getAsString()
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac").getAsString()
             .equals(rai));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsString()
             .equals(ageOfLocationInfo));
@@ -2566,16 +3245,16 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("54108"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai").getAsString().equals("2718"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == 7890104);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals("54108"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsString().equals("2718"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == 7890104);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5989900021"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().
             equals("simulator.be-connect.us@be-connect.us"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 0);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("33.99999260902405"));
@@ -2628,16 +3307,16 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals("54108"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai").getAsString().equals("2718"));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == 7890104);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals("54108"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsString().equals("2718"));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == 7890104);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals("5989900021"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().
             equals("simulator.be-connect.us@be-connect.us"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == 0);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals("EllipsoidPointWithAltitudeAndUncertaintyEllipsoid"));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals("33.99999260902405"));
@@ -2796,16 +3475,16 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai").getAsString().equals(sai));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == Long.valueOf(lteCellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsString().equals(sai));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == Long.valueOf(lteCellId));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().
             equals(networkEntityName));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == Integer.valueOf(ageOfLocationInfo));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString().equals(tac));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals(typeOfShape));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals(deviceLatitude));
@@ -2901,16 +3580,16 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai").getAsString().equals(sai));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == Long.valueOf(lteCellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsString().equals(sai));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == Long.valueOf(lteCellId));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().
             equals(networkEntityName));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == Integer.valueOf(ageOfLocationInfo));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString().equals(tac));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals(typeOfShape));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals(deviceLatitude));
@@ -3098,15 +3777,15 @@ public class GeolocationEndpointTest {
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_country_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("mobile_network_code") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac") == null);
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_longitude") == null);
@@ -3203,16 +3882,16 @@ public class GeolocationEndpointTest {
             .equals(mobileNetworkCode));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_area_code").getAsString()
             .equals(locationAreaCode));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("cell_id").getAsString().equals(cellId));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sai").getAsString().equals(sai));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("lte_cell_id").getAsLong() == Long.valueOf(lteCellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("ci").getAsString().equals(cellId));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("sac").getAsString().equals(sai));
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("enbid").getAsLong() == Long.valueOf(lteCellId));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_address").getAsString().equals(networkEntityAddress));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("network_entity_name").getAsString().
             equals(networkEntityName));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("subscriber_state") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("location_age").getAsInt() == Integer.valueOf(ageOfLocationInfo));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("tac").getAsString().equals(tac));
-        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rai") == null);
+        assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("rac") == null);
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("type_of_shape").getAsString().
             equals(typeOfShape));
         assertTrue(geolocationJson.get("geolocation_data").getAsJsonObject().get("device_latitude").getAsString().equals(deviceLatitude));

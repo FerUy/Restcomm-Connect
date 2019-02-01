@@ -181,15 +181,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeImei(final String imei, final HierarchicalStreamWriter writer) {
+    protected void writeImei(final Long imei, final HierarchicalStreamWriter writer) {
         if (imei != null) {
             writer.startNode("IMEI");
-            writer.setValue(imei);
+            writer.setValue(imei.toString());
             writer.endNode();
         }
     }
 
-    protected void writeImei(final String imei, final JsonObject object) {
+    protected void writeImei(final Long imei, final JsonObject object) {
         if (imei != null) {
             object.addProperty("imei", imei);
         } else {
@@ -269,15 +269,16 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileCountryCode(geolocation.getMobileCountryCode(), writer);
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), writer);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), writer);
-            writeCellId(geolocation.getCellId(), writer);
-            writeSai(geolocation.getSai(), writer);
-            writeEcid(geolocation.getEcid(), writer);
+            writeCellId(geolocation.getCi(), writer);
+            writeSac(geolocation.getSac(), writer);
+            writeEnbid(geolocation.getEnbid(), writer);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), writer);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), writer);
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), writer);
             writeSubscriberState(geolocation.getSubscriberState(), writer);
+            writeNotReachableReason(geolocation.getNotReachableReason(), writer);
             writeTrackingAreaCode(geolocation.getTac(), writer);
-            writeRoutingAreaId(geolocation.getRai(), writer);
+            writeRoutingAreaCode(geolocation.getRac(), writer);
             writeTypeOfShape(geolocation.getTypeOfShape(), writer);
             writeDeviceLatitude(geolocation.getDeviceLatitude(), writer);
             writeDeviceLongitude(geolocation.getDeviceLongitude(), writer);
@@ -315,15 +316,16 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileCountryCode(geolocation.getMobileCountryCode(), locationDataJsonObject);
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), locationDataJsonObject);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), locationDataJsonObject);
-            writeCellId(geolocation.getCellId(), locationDataJsonObject);
-            writeSai(geolocation.getSai(), locationDataJsonObject);
-            writeEcid(geolocation.getEcid(), locationDataJsonObject);
+            writeCellId(geolocation.getCi(), locationDataJsonObject);
+            writeSac(geolocation.getSac(), locationDataJsonObject);
+            writeEnbid(geolocation.getEnbid(), locationDataJsonObject);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), locationDataJsonObject);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), locationDataJsonObject);
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), locationDataJsonObject);
             writeSubscriberState(geolocation.getSubscriberState(), locationDataJsonObject);
+            writeNotReachableReason(geolocation.getNotReachableReason(), locationDataJsonObject);
             writeTrackingAreaCode(geolocation.getTac(), locationDataJsonObject);
-            writeRoutingAreaId(geolocation.getRai(), locationDataJsonObject);
+            writeRoutingAreaCode(geolocation.getRac(), locationDataJsonObject);
             writeTypeOfShape(geolocation.getTypeOfShape(), locationDataJsonObject);
             writeDeviceLatitude(geolocation.getDeviceLatitude(), locationDataJsonObject);
             writeDeviceLongitude(geolocation.getDeviceLongitude(), locationDataJsonObject);
@@ -373,15 +375,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeMobileNetworkCode(final String mobileNetworkCode, final HierarchicalStreamWriter writer) {
+    protected void writeMobileNetworkCode(final Integer mobileNetworkCode, final HierarchicalStreamWriter writer) {
         if (mobileNetworkCode != null) {
             writer.startNode("MobileNetworkCode");
-            writer.setValue(mobileNetworkCode.toString());
+            writer.setValue(String.valueOf(mobileNetworkCode));
             writer.endNode();
         }
     }
 
-    protected void writeMobileNetworkCode(final String mobileNetworkCode, final JsonObject object) {
+    protected void writeMobileNetworkCode(final Integer mobileNetworkCode, final JsonObject object) {
         if (mobileNetworkCode != null) {
             object.addProperty("mobile_network_code", mobileNetworkCode);
         } else {
@@ -389,15 +391,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeLocationAreaCode(final String locationAreaCode, final HierarchicalStreamWriter writer) {
+    protected void writeLocationAreaCode(final Integer locationAreaCode, final HierarchicalStreamWriter writer) {
         if (locationAreaCode != null) {
             writer.startNode("LocationAreaCode");
-            writer.setValue(locationAreaCode);
+            writer.setValue(String.valueOf(locationAreaCode));
             writer.endNode();
         }
     }
 
-    protected void writeLocationAreaCode(final String locationAreaCode, final JsonObject object) {
+    protected void writeLocationAreaCode(final Integer locationAreaCode, final JsonObject object) {
         if (locationAreaCode != null) {
             object.addProperty("location_area_code", locationAreaCode);
         } else {
@@ -405,15 +407,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeCellId(final String cellId, final HierarchicalStreamWriter writer) {
+    protected void writeCellId(final Integer cellId, final HierarchicalStreamWriter writer) {
         if (cellId != null) {
             writer.startNode("CellId");
-            writer.setValue(cellId);
+            writer.setValue(String.valueOf(cellId));
             writer.endNode();
         }
     }
 
-    protected void writeCellId(final String cellId, final JsonObject object) {
+    protected void writeCellId(final Integer cellId, final JsonObject object) {
         if (cellId != null) {
             object.addProperty("cell_id", cellId);
         } else {
@@ -421,35 +423,51 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeSai(final String sai, final HierarchicalStreamWriter writer) {
-        if (sai != null) {
-            writer.startNode("Sai");
-            writer.setValue(sai);
+    protected void writeSac(final Integer sac, final HierarchicalStreamWriter writer) {
+        if (sac != null) {
+            writer.startNode("ServiceAreaCode");
+            writer.setValue(String.valueOf(sac));
             writer.endNode();
         }
     }
 
-    protected void writeSai(final String sai, final JsonObject object) {
-        if (sai != null) {
-            object.addProperty("sai", sai);
+    protected void writeSac(final Integer sac, final JsonObject object) {
+        if (sac != null) {
+            object.addProperty("service_area_code", sac);
         } else {
-            object.add("sai", JsonNull.INSTANCE);
+            object.add("service_area_code", JsonNull.INSTANCE);
         }
     }
 
-    protected void writeEcid(final Long ecid, final HierarchicalStreamWriter writer) {
-        if (ecid != null) {
-            writer.startNode("LteCellId");
-            writer.setValue(ecid.toString());
+    protected void writeEnbid(final Integer enbid, final HierarchicalStreamWriter writer) {
+        if (enbid != null) {
+            writer.startNode("ENodeBId");
+            writer.setValue(String.valueOf(enbid));
             writer.endNode();
         }
     }
 
-    protected void writeEcid(final Long ecid, final JsonObject object) {
-        if (ecid != null) {
-            object.addProperty("lte_cell_id", ecid);
+    protected void writeEnbid(final Integer enbid, final JsonObject object) {
+        if (enbid != null) {
+            object.addProperty("enodeb_id", enbid);
         } else {
-            object.add("lte_cell_id", JsonNull.INSTANCE);
+            object.add("enodeb_id", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeLocationNumberAddress(final String address, final HierarchicalStreamWriter writer) {
+        if (address != null) {
+            writer.startNode("LocationNumberAddress");
+            writer.setValue(address);
+            writer.endNode();
+        }
+    }
+
+    protected void writeLocationNumberAddress(final String address, final JsonObject object) {
+        if (address != null) {
+            object.addProperty("location_number_address", address);
+        } else {
+            object.add("location_number_address", JsonNull.INSTANCE);
         }
     }
 
@@ -488,7 +506,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
     protected void writeAgeOfLocationInfo(final Integer ageOfLocationInfo, final HierarchicalStreamWriter writer) {
         if (ageOfLocationInfo != null) {
             writer.startNode("LocationAge");
-            writer.setValue(ageOfLocationInfo.toString());
+            writer.setValue(String.valueOf(ageOfLocationInfo));
             writer.endNode();
         }
     }
@@ -504,7 +522,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
     protected void writeSubscriberState(final String subscriberState, final HierarchicalStreamWriter writer) {
         if (subscriberState != null) {
             writer.startNode("SubscriberState");
-            writer.setValue(subscriberState.toString());
+            writer.setValue(subscriberState);
             writer.endNode();
         }
     }
@@ -517,35 +535,51 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeTrackingAreaCode(final String tac, final HierarchicalStreamWriter writer) {
-        if (tac != null) {
-            writer.startNode("TAC");
-            writer.setValue(tac.toString());
+    protected void writeNotReachableReason(final String notReachableReason, final HierarchicalStreamWriter writer) {
+        if (notReachableReason != null) {
+            writer.startNode("NotReachableReason");
+            writer.setValue(notReachableReason);
             writer.endNode();
         }
     }
 
-    protected void writeTrackingAreaCode(final String tac, final JsonObject object) {
-        if (tac != null) {
-            object.addProperty("tac", tac);
+    protected void writeNotReachableReason(final String notReachableReason, final JsonObject object) {
+        if (notReachableReason != null) {
+            object.addProperty("not_reachable_reason", notReachableReason);
         } else {
-            object.add("tac", JsonNull.INSTANCE);
+            object.add("not_reachable_reason", JsonNull.INSTANCE);
         }
     }
 
-    protected void writeRoutingAreaId(final String tac, final HierarchicalStreamWriter writer) {
+    protected void writeTrackingAreaCode(final Integer tac, final HierarchicalStreamWriter writer) {
         if (tac != null) {
-            writer.startNode("RAC");
-            writer.setValue(tac.toString());
+            writer.startNode("TrackingAreaCode");
+            writer.setValue(String.valueOf(tac));
             writer.endNode();
         }
     }
 
-    protected void writeRoutingAreaId(final String rai, final JsonObject object) {
-        if (rai != null) {
-            object.addProperty("rai", rai);
+    protected void writeTrackingAreaCode(final Integer tac, final JsonObject object) {
+        if (tac != null) {
+            object.addProperty("tracking_area_code", tac);
         } else {
-            object.add("rai", JsonNull.INSTANCE);
+            object.add("tracking_area_code", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeRoutingAreaCode(final Integer rac, final HierarchicalStreamWriter writer) {
+        if (rac != null) {
+            writer.startNode("RoutingAreaCode");
+            writer.setValue(String.valueOf(rac));
+            writer.endNode();
+        }
+    }
+
+    protected void writeRoutingAreaCode(final Integer rac, final JsonObject object) {
+        if (rac != null) {
+            object.addProperty("routing_area_code", rac);
+        } else {
+            object.add("routing_area_code", JsonNull.INSTANCE);
         }
     }
 
@@ -597,15 +631,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeUncertainty(final String uncertainty, final HierarchicalStreamWriter writer) {
+    protected void writeUncertainty(final Double uncertainty, final HierarchicalStreamWriter writer) {
         if (uncertainty != null) {
             writer.startNode("Uncertainty");
-            writer.setValue(uncertainty);
+            writer.setValue(String.valueOf(uncertainty));
             writer.endNode();
         }
     }
 
-    protected void writeUncertainty(final String uncertainty, final JsonObject object) {
+    protected void writeUncertainty(final Double uncertainty, final JsonObject object) {
         if (uncertainty != null) {
             object.addProperty("uncertainty", uncertainty);
         } else {
@@ -613,15 +647,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeUncertaintySemiMajorAxis(final String uncertaintySemiMajorAxis, final HierarchicalStreamWriter writer) {
+    protected void writeUncertaintySemiMajorAxis(final Double uncertaintySemiMajorAxis, final HierarchicalStreamWriter writer) {
         if (uncertaintySemiMajorAxis != null) {
             writer.startNode("UncertaintySemiMajorAxis");
-            writer.setValue(uncertaintySemiMajorAxis);
+            writer.setValue(String.valueOf(uncertaintySemiMajorAxis));
             writer.endNode();
         }
     }
 
-    protected void writeUncertaintySemiMajorAxis(final String uncertaintySemiMajorAxis, final JsonObject object) {
+    protected void writeUncertaintySemiMajorAxis(final Double uncertaintySemiMajorAxis, final JsonObject object) {
         if (uncertaintySemiMajorAxis != null) {
             object.addProperty("uncertainty_semi_major_axis", uncertaintySemiMajorAxis);
         } else {
@@ -629,15 +663,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeUncertaintySemiMinorAxis(final String uncertaintySemiMinorAxis, final HierarchicalStreamWriter writer) {
+    protected void writeUncertaintySemiMinorAxis(final Double uncertaintySemiMinorAxis, final HierarchicalStreamWriter writer) {
         if (uncertaintySemiMinorAxis != null) {
             writer.startNode("UncertaintySemiMinorAxis");
-            writer.setValue(uncertaintySemiMinorAxis);
+            writer.setValue(String.valueOf(uncertaintySemiMinorAxis));
             writer.endNode();
         }
     }
 
-    protected void writeUncertaintySemiMinorAxis(final String uncertaintySemiMinorAxis, final JsonObject object) {
+    protected void writeUncertaintySemiMinorAxis(final Double uncertaintySemiMinorAxis, final JsonObject object) {
         if (uncertaintySemiMinorAxis != null) {
             object.addProperty("uncertainty_semi_minor_axis", uncertaintySemiMinorAxis);
         } else {
@@ -645,15 +679,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeAngleOfMajorAxis(final String angleOfMajorAxis, final HierarchicalStreamWriter writer) {
+    protected void writeAngleOfMajorAxis(final Double angleOfMajorAxis, final HierarchicalStreamWriter writer) {
         if (angleOfMajorAxis != null) {
             writer.startNode("AngleOfMajorAxis");
-            writer.setValue(angleOfMajorAxis);
+            writer.setValue(String.valueOf(angleOfMajorAxis));
             writer.endNode();
         }
     }
 
-    protected void writeAngleOfMajorAxis(final String angleOfMajorAxis, final JsonObject object) {
+    protected void writeAngleOfMajorAxis(final Double angleOfMajorAxis, final JsonObject object) {
         if (angleOfMajorAxis != null) {
             object.addProperty("angle_of_major_axis", angleOfMajorAxis);
         } else {
@@ -661,15 +695,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeConfidence(final String confidence, final HierarchicalStreamWriter writer) {
+    protected void writeConfidence(final Integer confidence, final HierarchicalStreamWriter writer) {
         if (confidence != null) {
             writer.startNode("Confidence");
-            writer.setValue(confidence);
+            writer.setValue(String.valueOf(confidence));
             writer.endNode();
         }
     }
 
-    protected void writeConfidence(final String confidence, final JsonObject object) {
+    protected void writeConfidence(final Integer confidence, final JsonObject object) {
         if (confidence != null) {
             object.addProperty("confidence", confidence);
         } else {
@@ -677,15 +711,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeDeviceAltitude(final String altitude, final HierarchicalStreamWriter writer) {
+    protected void writeDeviceAltitude(final Integer altitude, final HierarchicalStreamWriter writer) {
         if (altitude != null) {
             writer.startNode("DeviceAltitude");
-            writer.setValue(altitude);
+            writer.setValue(String.valueOf(altitude));
             writer.endNode();
         }
     }
 
-    protected void writeDeviceAltitude(final String altitude, final JsonObject object) {
+    protected void writeDeviceAltitude(final Integer altitude, final JsonObject object) {
         if (altitude != null) {
             object.addProperty("device_altitude", altitude);
         } else {
@@ -693,15 +727,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeDeviceAltitudeUncertainty(final String altitudeUncertainty, final HierarchicalStreamWriter writer) {
+    protected void writeDeviceAltitudeUncertainty(final Double altitudeUncertainty, final HierarchicalStreamWriter writer) {
         if (altitudeUncertainty != null) {
             writer.startNode("DeviceAltitudeUncertainty");
-            writer.setValue(altitudeUncertainty);
+            writer.setValue(String.valueOf(altitudeUncertainty));
             writer.endNode();
         }
     }
 
-    protected void writeDeviceAltitudeUncertainty(final String altitudeUncertainty, final JsonObject object) {
+    protected void writeDeviceAltitudeUncertainty(final Double altitudeUncertainty, final JsonObject object) {
         if (altitudeUncertainty != null) {
             object.addProperty("device_altitude_uncertainty", altitudeUncertainty);
         } else {
@@ -709,15 +743,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeInnerRadius(final String innerRadius, final HierarchicalStreamWriter writer) {
+    protected void writeInnerRadius(final Integer innerRadius, final HierarchicalStreamWriter writer) {
         if (innerRadius != null) {
             writer.startNode("InnerRadius");
-            writer.setValue(innerRadius);
+            writer.setValue(String.valueOf(innerRadius));
             writer.endNode();
         }
     }
 
-    protected void writeInnerRadius(final String innerRadius, final JsonObject object) {
+    protected void writeInnerRadius(final Integer innerRadius, final JsonObject object) {
         if (innerRadius != null) {
             object.addProperty("inner_radius", innerRadius);
         } else {
@@ -725,15 +759,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeUncertaintyInnerRadius(final String uncertaintyInnerRadius, final HierarchicalStreamWriter writer) {
+    protected void writeUncertaintyInnerRadius(final Double uncertaintyInnerRadius, final HierarchicalStreamWriter writer) {
         if (uncertaintyInnerRadius != null) {
             writer.startNode("UncertaintyInnerRadius");
-            writer.setValue(uncertaintyInnerRadius);
+            writer.setValue(String.valueOf(uncertaintyInnerRadius));
             writer.endNode();
         }
     }
 
-    protected void writeUncertaintyInnerRadius(final String uncertaintyInnerRadius, final JsonObject object) {
+    protected void writeUncertaintyInnerRadius(final Double uncertaintyInnerRadius, final JsonObject object) {
         if (uncertaintyInnerRadius != null) {
             object.addProperty("uncertainty_inner_radius", uncertaintyInnerRadius);
         } else {
@@ -741,15 +775,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeOffsetAngle(final String offsetAngle, final HierarchicalStreamWriter writer) {
+    protected void writeOffsetAngle(final Double offsetAngle, final HierarchicalStreamWriter writer) {
         if (offsetAngle != null) {
             writer.startNode("OffsetAngle");
-            writer.setValue(offsetAngle);
+            writer.setValue(String.valueOf(offsetAngle));
             writer.endNode();
         }
     }
 
-    protected void writeOffsetAngle(final String offsetAngle, final JsonObject object) {
+    protected void writeOffsetAngle(final Double offsetAngle, final JsonObject object) {
         if (offsetAngle != null) {
             object.addProperty("offset_angle", offsetAngle);
         } else {
@@ -757,15 +791,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeIncludedAngle(final String includedAngle, final HierarchicalStreamWriter writer) {
+    protected void writeIncludedAngle(final Double includedAngle, final HierarchicalStreamWriter writer) {
         if (includedAngle != null) {
             writer.startNode("IncludedAngle");
-            writer.setValue(includedAngle);
+            writer.setValue(String.valueOf(includedAngle));
             writer.endNode();
         }
     }
 
-    protected void writeIncludedAngle(final String includedAngle, final JsonObject object) {
+    protected void writeIncludedAngle(final Double includedAngle, final JsonObject object) {
         if (includedAngle != null) {
             object.addProperty("included_angle", includedAngle);
         } else {
@@ -773,15 +807,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeHorizontalSpeed(final String horizontalSpeed, final HierarchicalStreamWriter writer) {
+    protected void writeHorizontalSpeed(final Integer horizontalSpeed, final HierarchicalStreamWriter writer) {
         if (horizontalSpeed != null) {
             writer.startNode("DeviceHorizontalSpeed");
-            writer.setValue(horizontalSpeed);
+            writer.setValue(String.valueOf(horizontalSpeed));
             writer.endNode();
         }
     }
 
-    protected void writeHorizontalSpeed(final String horizontalSpeed, final JsonObject object) {
+    protected void writeHorizontalSpeed(final Integer horizontalSpeed, final JsonObject object) {
         if (horizontalSpeed != null) {
             object.addProperty("device_horizontal_speed", horizontalSpeed);
         } else {
@@ -789,15 +823,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeVerticalSpeed(final String verticalSpeed, final HierarchicalStreamWriter writer) {
+    protected void writeVerticalSpeed(final Integer verticalSpeed, final HierarchicalStreamWriter writer) {
         if (verticalSpeed != null) {
             writer.startNode("DeviceVerticalSpeed");
-            writer.setValue(verticalSpeed);
+            writer.setValue(String.valueOf(verticalSpeed));
             writer.endNode();
         }
     }
 
-    protected void writeVerticalSpeed(final String verticalSpeed, final JsonObject object) {
+    protected void writeVerticalSpeed(final Integer verticalSpeed, final JsonObject object) {
         if (verticalSpeed != null) {
             object.addProperty("device_vertical_speed", verticalSpeed);
         } else {
@@ -805,15 +839,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeUncertaintyHorizontalSpeed(final String uncertaintyHorizontalSpeed, final HierarchicalStreamWriter writer) {
+    protected void writeUncertaintyHorizontalSpeed(final Integer uncertaintyHorizontalSpeed, final HierarchicalStreamWriter writer) {
         if (uncertaintyHorizontalSpeed != null) {
             writer.startNode("UncertaintyHorizontalSpeed");
-            writer.setValue(uncertaintyHorizontalSpeed);
+            writer.setValue(String.valueOf(uncertaintyHorizontalSpeed));
             writer.endNode();
         }
     }
 
-    protected void writeUncertaintyHorizontalSpeed(final String uncertaintyHorizontalSpeed, final JsonObject object) {
+    protected void writeUncertaintyHorizontalSpeed(final Integer uncertaintyHorizontalSpeed, final JsonObject object) {
         if (uncertaintyHorizontalSpeed != null) {
             object.addProperty("uncertainty_horizontal_speed", uncertaintyHorizontalSpeed);
         } else {
@@ -821,15 +855,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeUncertaintyVerticalSpeed(final String uncertaintyVerticalSpeed, final HierarchicalStreamWriter writer) {
+    protected void writeUncertaintyVerticalSpeed(final Integer uncertaintyVerticalSpeed, final HierarchicalStreamWriter writer) {
         if (uncertaintyVerticalSpeed != null) {
             writer.startNode("UncertaintyVerticalSpeed");
-            writer.setValue(uncertaintyVerticalSpeed);
+            writer.setValue(String.valueOf(uncertaintyVerticalSpeed));
             writer.endNode();
         }
     }
 
-    protected void writeUncertaintyVerticalSpeed(final String uncertaintyVerticalSpeed, final JsonObject object) {
+    protected void writeUncertaintyVerticalSpeed(final Integer uncertaintyVerticalSpeed, final JsonObject object) {
         if (uncertaintyVerticalSpeed != null) {
             object.addProperty("uncertainty_vertical_speed", uncertaintyVerticalSpeed);
         } else {
@@ -837,15 +871,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeBearing(final String bearing, final HierarchicalStreamWriter writer) {
+    protected void writeBearing(final Integer bearing, final HierarchicalStreamWriter writer) {
         if (bearing != null) {
             writer.startNode("Bearing");
-            writer.setValue(bearing);
+            writer.setValue(String.valueOf(bearing));
             writer.endNode();
         }
     }
 
-    protected void writeBearing(final String bearing, final JsonObject object) {
+    protected void writeBearing(final Integer bearing, final JsonObject object) {
         if (bearing != null) {
             object.addProperty("bearing", bearing);
         } else {

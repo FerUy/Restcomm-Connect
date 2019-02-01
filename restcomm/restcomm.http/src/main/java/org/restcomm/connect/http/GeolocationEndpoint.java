@@ -260,6 +260,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String gmlcUser = gmlcConf.getString("gmlc-user");
             String gmlcPassword = gmlcConf.getString("gmlc-password");
             // Credentials credentials = new UsernamePasswordCredentials(gmlcUser, gmlcPassword);
+            String domainType = data.getFirst("Domain");
             String psiService = data.getFirst("PsiService");
             String coreNetwork = data.getFirst("CoreNetwork");
             String httpRespType = data.getFirst("HttpRespType");
@@ -287,6 +288,9 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
             if (coreNetwork != null)
                 uriBuilder.addParameter("coreNetwork", coreNetwork);
+
+            if (domainType != null)
+                uriBuilder.addParameter("domain", domainType);
 
             if (psiService != null)
                 uriBuilder.addParameter("psiService", psiService);
@@ -547,6 +551,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 String gmlcResponse = null;
                 try {
                     if (httpRespType != null && psiService == null && coreNetwork == null) {
+                        // For retro-compatibility with Restcomm GMLC 1.0.0
                         stream = entity.getContent();
                         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
                         while (null != (gmlcResponse = br.readLine())) {
@@ -595,546 +600,31 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                     if (coreNetwork.equalsIgnoreCase("UMTS")) {
                                         HashMap<String, String> sriPslResponse = parsePslJsonString(gmlcResponse);
                                         logger.info("Data retrieved from GMLC via MAP SRIforLCS-PSL: " + gmlcResponse);
-
-                                        lcsReferenceNumber = sriPslResponse.get("lcsReferenceNumber");
-                                        if (lcsReferenceNumber != null)
-                                            data.putSingle("ReferenceNumber", lcsReferenceNumber);
-
-                                        String msisdn = sriPslResponse.get("msisdn");
-                                        if (msisdn != null)
-                                            data.putSingle("MSISDN", msisdn);
-
-                                        String imsi = sriPslResponse.get("imsi");
-                                        if (imsi != null)
-                                            data.putSingle("IMSI", imsi);
-
-                                        String lmsi = sriPslResponse.get("lmsi");
-                                        if (lmsi != null)
-                                            data.putSingle("LMSI", lmsi);
-
-                                        String networkNodeNumber = sriPslResponse.get("networkNodeNumber");
-                                        if (networkNodeNumber != null)
-                                            data.putSingle("NetworkEntityAddress", networkNodeNumber);
-
-                                        String tgppAAAServerName = sriPslResponse.get("3GPPAAAServerName");
-                                        if (tgppAAAServerName != null)
-                                            data.putSingle("NetworkEntityName", tgppAAAServerName);
-
-                                        String pprAddress = sriPslResponse.get("pprAddress");
-                                        if (pprAddress != null)
-                                            data.putSingle("NetworkEntityName", pprAddress);
-
-                                        String sgsnName = sriPslResponse.get("sgsnName");
-                                        if (sgsnName != null)
-                                            data.putSingle("NetworkEntityName", sgsnName);
-
-                                        String sgsnRealm = sriPslResponse.get("sgsnRealm");
-                                        if (sgsnRealm != null) {
-                                            sgsnName = sgsnName.concat("@").concat(sgsnRealm);
-                                            data.putSingle("NetworkEntityName", sgsnName);
-                                        }
-
-                                        String mmeName = sriPslResponse.get("mmeName");
-                                        if (mmeName != null)
-                                            data.putSingle("NetworkEntityName", mmeName);
-
-                                        String mmeRealm = sriPslResponse.get("mmeRealm");
-                                        if (mmeRealm != null) {
-                                            mmeName = mmeName.concat("@").concat(mmeRealm);
-                                            data.putSingle("NetworkEntityName", mmeName);
-                                        }
-
-                                        String typeOfShape = sriPslResponse.get("typeOfShape");
-                                        if (typeOfShape != null)
-                                            data.putSingle("TypeOfShape", typeOfShape);
-
-                                        String latitude = sriPslResponse.get("latitude");
-                                        if (latitude != null)
-                                            data.putSingle("DeviceLatitude", latitude);
-
-                                        String longitude = sriPslResponse.get("longitude");
-                                        if (longitude != null)
-                                            data.putSingle("DeviceLongitude", longitude);
-
-                                        String uncertainty = sriPslResponse.get("uncertainty");
-                                        if (uncertainty != null)
-                                            data.putSingle("Uncertainty", uncertainty);
-
-                                        String uncertaintySemiMajorAxis = sriPslResponse.get("uncertaintySemiMajorAxis");
-                                        if (uncertaintySemiMajorAxis != null)
-                                            data.putSingle("UncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
-
-                                        String uncertaintySemiMinorAxis = sriPslResponse.get("uncertaintySemiMinorAxis");
-                                        if (uncertaintySemiMinorAxis != null)
-                                            data.putSingle("UncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
-
-                                        String angleOfMajorAxis = sriPslResponse.get("angleOfMajorAxis");
-                                        if (angleOfMajorAxis != null)
-                                            data.putSingle("AngleOfMajorAxis", angleOfMajorAxis);
-
-                                        String confidence = sriPslResponse.get("confidence");
-                                        if (confidence != null)
-                                            data.putSingle("Confidence", confidence);
-
-                                        String altitude = sriPslResponse.get("altitude");
-                                        if (altitude != null)
-                                            data.putSingle("DeviceAltitude", altitude);
-
-                                        String uncertaintyAltitude = sriPslResponse.get("uncertaintyAltitude");
-                                        if (uncertaintyAltitude != null)
-                                            data.putSingle("UncertaintyAltitude", uncertaintyAltitude);
-
-                                        String innerRadius = sriPslResponse.get("innerRadius");
-                                        if (innerRadius != null)
-                                            data.putSingle("InnerRadius", innerRadius);
-
-                                        String uncertaintyInnerRadius = sriPslResponse.get("uncertaintyInnerRadius");
-                                        if (uncertaintyInnerRadius != null)
-                                            data.putSingle("UncertaintyInnerRadius", uncertaintyInnerRadius);
-
-                                        String offsetAngle = sriPslResponse.get("offsetAngle");
-                                        if (offsetAngle != null)
-                                            data.putSingle("OffsetAngle", offsetAngle);
-
-                                        String includedAngle = sriPslResponse.get("includedAngle");
-                                        if (includedAngle != null)
-                                            data.putSingle("IncludedAngle", includedAngle);
-
-                                        String horizontalSpeed = sriPslResponse.get("horizontalSpeed");
-                                        if (horizontalSpeed != null)
-                                            data.putSingle("HorizontalSpeed", horizontalSpeed);
-
-                                        String verticalSpeed = sriPslResponse.get("verticalSpeed");
-                                        if (verticalSpeed != null)
-                                            data.putSingle("VerticalSpeed", verticalSpeed);
-
-                                        String uncertaintyHorizontalSpeed = sriPslResponse.get("uncertaintyHorizontalSpeed");
-                                        if (uncertaintyHorizontalSpeed != null)
-                                            data.putSingle("UncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
-
-                                        String uncertaintyVerticalSpeed = sriPslResponse.get("uncertaintyVerticalSpeed");
-                                        if (uncertaintyVerticalSpeed != null)
-                                            data.putSingle("UncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
-
-                                        String bearing = sriPslResponse.get("bearing");
-                                        if (bearing != null)
-                                            data.putSingle("Bearing", bearing);
-
-                                        String ageOfLocationEstimate = sriPslResponse.get("ageOfLocationEstimate");
-                                        if (ageOfLocationEstimate != null)
-                                            data.putSingle("LocationAge", ageOfLocationEstimate);
-
-                                        String mcc = sriPslResponse.get("mcc");
-                                        if (mcc != null)
-                                            data.putSingle("MobileCountryCode", mcc);
-
-                                        String mnc = sriPslResponse.get("mnc");
-                                        if (mnc != null)
-                                            data.putSingle("MobileNetworkCode", mnc);
-
-                                        String lac = sriPslResponse.get("lac");
-                                        if (lac != null)
-                                            data.putSingle("LocationAreaCode", lac);
-
-                                        String ci = sriPslResponse.get("ci");
-                                        if (ci != null)
-                                            data.putSingle("CellId", ci);
-
-                                        /*String gprsNodeIndicator = sriPslResponse.get("gprsNodeIndicator");
-                                        String deferredMTLRresponseIndicator = sriPslResponse.get("deferredMTLRresponseIndicator");
-                                        String geranPositioningInfo = sriPslResponse.get("geranPositioningInfo");
-                                        String geranGanssPositioningData = sriPslResponse.get("geranGanssPositioningData");
-                                        String utranPositioningInfo = sriPslResponse.get("utranPositioningInfo");
-                                        String utranGanssPositioningData = sriPslResponse.get("utranGanssPositioningData");
-                                        String velocityType = sriPslResponse.get("velocityType");*/
+                                        putDataFromSriPslResponse(sriPslResponse, data);
 
                                     } else if (coreNetwork.equalsIgnoreCase("LTE")) {
                                         HashMap<String, String> rirPlrResponse = parsePlrJsonString(gmlcResponse);
                                         logger.info("Data retrieved from GMLC via Diameter RIR/RIA-PLR/PLA: " + gmlcResponse);
-
-                                        lcsReferenceNumber = rirPlrResponse.get("lcsReferenceNumber");
-                                        if (lcsReferenceNumber != null)
-                                            data.putSingle("ReferenceNumber", lcsReferenceNumber);
-
-                                        String msisdn = rirPlrResponse.get("msisdn");
-                                        if (msisdn != null)
-                                            data.putSingle("MSISDN", msisdn);
-
-                                        String imsi = rirPlrResponse.get("imsi");
-                                        if (imsi != null)
-                                            data.putSingle("IMSI", imsi);
-
-                                        String lmsi = rirPlrResponse.get("lmsi");
-                                        if (lmsi != null)
-                                            data.putSingle("LMSI", lmsi);
-
-                                        String sgsnName = rirPlrResponse.get("sgsnName");
-                                        if (sgsnName != null)
-                                            data.putSingle("NetworkEntityName", sgsnName);
-
-                                        String sgsnRealm = rirPlrResponse.get("sgsnRealm");
-                                        if (sgsnRealm != null) {
-                                            sgsnName = sgsnName.concat("@").concat(sgsnRealm);
-                                            data.putSingle("NetworkEntityName", sgsnName);
-                                        }
-
-                                        String mmeName = rirPlrResponse.get("mmeName");
-                                        if (mmeName != null)
-                                            data.putSingle("NetworkEntityName", mmeName);
-
-                                        String mmeRealm = rirPlrResponse.get("mmeRealm");
-                                        if (mmeRealm != null) {
-                                            mmeName = mmeName.concat("@").concat(mmeRealm);
-                                            data.putSingle("NetworkEntityName", mmeName);
-                                        }
-
-                                        String mscNumber = rirPlrResponse.get("mscNumber");
-                                        if (mscNumber != null)
-                                            data.putSingle("NetworkEntityAddress", mscNumber);
-
-                                        String sgsnNumber = rirPlrResponse.get("sgsnNumber");
-                                        if (sgsnNumber != null)
-                                            data.putSingle("NetworkEntityAddress", sgsnNumber);
-
-                                        String typeOfShape = rirPlrResponse.get("typeOfShape");
-                                        if (typeOfShape != null)
-                                            data.putSingle("TypeOfShape", typeOfShape);
-
-                                        String latitude = rirPlrResponse.get("latitude");
-                                        if (latitude != null)
-                                            data.putSingle("DeviceLatitude", latitude);
-
-                                        String longitude = rirPlrResponse.get("longitude");
-                                        if (longitude != null)
-                                            data.putSingle("DeviceLongitude", longitude);
-
-                                        String uncertainty = rirPlrResponse.get("uncertainty");
-                                        if (uncertainty != null)
-                                            data.putSingle("Uncertainty", uncertainty);
-
-                                        String uncertaintySemiMajorAxis = rirPlrResponse.get("uncertaintySemiMajorAxis");
-                                        if (uncertaintySemiMajorAxis != null)
-                                            data.putSingle("UncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
-
-                                        String uncertaintySemiMinorAxis = rirPlrResponse.get("uncertaintySemiMinorAxis");
-                                        if (uncertaintySemiMinorAxis != null)
-                                            data.putSingle("UncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
-
-                                        String angleOfMajorAxis = rirPlrResponse.get("angleOfMajorAxis");
-                                        if (angleOfMajorAxis != null)
-                                            data.putSingle("AngleOfMajorAxis", angleOfMajorAxis);
-
-                                        String confidence = rirPlrResponse.get("confidence");
-                                        if (confidence != null)
-                                            data.putSingle("Confidence", confidence);
-
-                                        String altitude = rirPlrResponse.get("altitude");
-                                        if (altitude != null)
-                                            data.putSingle("DeviceAltitude", altitude);
-
-                                        String uncertaintyAltitude = rirPlrResponse.get("uncertaintyAltitude");
-                                        if (uncertaintyAltitude != null)
-                                            data.putSingle("UncertaintyAltitude", uncertaintyAltitude);
-
-                                        String innerRadius = rirPlrResponse.get("innerRadius");
-                                        if (innerRadius != null)
-                                            data.putSingle("InnerRadius", innerRadius);
-
-                                        String uncertaintyInnerRadius = rirPlrResponse.get("uncertaintyInnerRadius");
-                                        if (uncertaintyInnerRadius != null)
-                                            data.putSingle("UncertaintyInnerRadius", uncertaintyInnerRadius);
-
-                                        String offsetAngle = rirPlrResponse.get("offsetAngle");
-                                        if (offsetAngle != null)
-                                            data.putSingle("OffsetAngle", offsetAngle);
-
-                                        String includedAngle = rirPlrResponse.get("includedAngle");
-                                        if (includedAngle != null)
-                                            data.putSingle("IncludedAngle", includedAngle);
-
-                                        String horizontalSpeed = rirPlrResponse.get("horizontalSpeed");
-                                        if (horizontalSpeed != null)
-                                            data.putSingle("HorizontalSpeed", horizontalSpeed);
-
-                                        String verticalSpeed = rirPlrResponse.get("verticalSpeed");
-                                        if (verticalSpeed != null)
-                                            data.putSingle("VerticalSpeed", verticalSpeed);
-
-                                        String uncertaintyHorizontalSpeed = rirPlrResponse.get("uncertaintyHorizontalSpeed");
-                                        if (uncertaintyHorizontalSpeed != null)
-                                            data.putSingle("UncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
-
-                                        String uncertaintyVerticalSpeed = rirPlrResponse.get("uncertaintyVerticalSpeed");
-                                        if (uncertaintyVerticalSpeed != null)
-                                            data.putSingle("UncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
-
-                                        String bearing = rirPlrResponse.get("bearing");
-                                        if (bearing != null)
-                                            data.putSingle("Bearing", bearing);
-
-                                        String ageOfLocationEstimate = rirPlrResponse.get("ageOfLocationEstimate");
-                                        if (ageOfLocationEstimate != null)
-                                            data.putSingle("LocationAge", ageOfLocationEstimate);
-
-                                        String ci = rirPlrResponse.get("cellGlobalIdentity");
-                                        if (ci != null)
-                                            data.putSingle("CellId", ci);
-
-                                        String sai = rirPlrResponse.get("serviceAreaIdentity");
-                                        if (sai != null)
-                                            data.putSingle("Sai", sai);
-
-                                        String eUtranCgi = rirPlrResponse.get("eUtranCgi");
-                                        if (eUtranCgi != null)
-                                            data.putSingle("LteCellId", eUtranCgi);
-
-                                        String civicAddress = rirPlrResponse.get("civicAddress");
-                                        if (civicAddress != null)
-                                            data.putSingle("CivicAddress", civicAddress);
-
-                                        String barometricPressure = rirPlrResponse.get("barometricPressure");
-                                        if (barometricPressure != null)
-                                            data.putSingle("BarometricPressure", barometricPressure);
-
+                                        putDataFromRirPlrResponse(rirPlrResponse, data);
                                     }
                                 }
-                                if (psiService == null && !geolocationType.toString().equals(NotificationGT)) {
+                                if (coreNetwork != null && psiService == null && !geolocationType.toString().equals(NotificationGT)) {
+                                    if (coreNetwork.equalsIgnoreCase("IMS")) {
+                                        logger.info("Data retrieved from GMLC via Sh UDR/UDA: " + gmlcResponse);
+                                        HashMap<String, String> shUdrResponse = parseUdaJsonString(gmlcResponse);
+                                        putDataFromShUdrResponse(shUdrResponse, data);
+                                    }
+                                }
+                                if (psiService == null && !geolocationType.toString().equals(NotificationGT) && coreNetwork == null) {
                                     logger.info("Data retrieved from GMLC via MAP ATI: " + gmlcResponse);
-                                    HashMap<String, String> atiResponse = parseAtiJsonString(gmlcResponse);
-
-                                    String mcc = atiResponse.get("mcc");
-                                    if (mcc != null)
-                                        data.putSingle("MobileCountryCode", mcc);
-
-                                    String mnc = atiResponse.get("mnc");
-                                    if (mnc != null)
-                                        data.putSingle("MobileNetworkCode", mnc);
-
-                                    String lac = atiResponse.get("lac");
-                                    if (lac != null)
-                                        data.putSingle("LocationAreaCode", lac);
-
-                                    String ci = atiResponse.get("ci");
-                                    if (ci != null)
-                                        data.putSingle("CellId", ci);
-
-                                    String aol = atiResponse.get("aol");
-                                    if (aol != null)
-                                        data.putSingle("LocationAge", aol);
-
-                                    String vlrNumber = atiResponse.get("vlrNumber");
-                                    if (vlrNumber != null)
-                                        data.putSingle("NetworkEntityAddress", vlrNumber);
-
-                                    String subscriberState = atiResponse.get("subscriberState");
-                                    if (subscriberState != null)
-                                        data.putSingle("SubscriberState", subscriberState);
+                                    HashMap<String, String> atiResponse = parseAtiOrPsiJsonString(gmlcResponse);
+                                    putDataFromAtiOrPsiResponse(atiResponse, data);
 
                                 } else if (psiService != null) {
                                     if (psiService.equalsIgnoreCase("true") && !geolocationType.toString().equals(NotificationGT)) {
                                         logger.info("Data retrieved from GMLC via MAP PSI: " + gmlcResponse);
-                                        HashMap<String, String> psiResponse = parsePsiJsonString(gmlcResponse);
-
-                                        String imsi = psiResponse.get("imsi");
-                                        if (imsi != null)
-                                            data.putSingle("IMSI", imsi);
-
-                                        String imei = psiResponse.get("imei");
-                                        if (imei != null)
-                                            data.putSingle("IMEI", imei);
-
-                                        String lmsi = psiResponse.get("lmsi");
-                                        if (lmsi != null)
-                                            data.putSingle("LMSI", lmsi);
-
-                                        String subscriberState = psiResponse.get("subscriberState");
-                                        if (subscriberState != null)
-                                            data.putSingle("SubscriberState", subscriberState);
-
-                                        // Subscriber GPRS Location Info
-                                        // GPRS CGI
-                                        String mcc = psiResponse.get("gprsMcc");
-                                        if (mcc != null)
-                                            data.putSingle("MobileCountryCode", mcc);
-
-                                        String mnc = psiResponse.get("gprsMnc");
-                                        if (mnc != null)
-                                            data.putSingle("MobileNetworkCode", mnc);
-
-                                        String lac = psiResponse.get("gprsLac");
-                                        if (lac != null)
-                                            data.putSingle("LocationAreaCode", lac);
-
-                                        String ci = psiResponse.get("gprsCi");
-                                        if (ci != null)
-                                            data.putSingle("CellId", ci);
-
-                                        // GPRS Geographic info
-                                        String latitude = psiResponse.get("gprsLatitude");
-                                        if (latitude != null)
-                                            data.putSingle("DeviceLatitude", latitude);
-
-                                        String longitude = psiResponse.get("gprsLongitude");
-                                        if (longitude != null)
-                                            data.putSingle("DeviceLongitude", longitude);
-
-                                        String typeOfShape = psiResponse.get("gprsTypeOfShape");
-                                        if (typeOfShape != null)
-                                            data.putSingle("TypeOfShape", typeOfShape);
-
-                                        String uncertainty = psiResponse.get("gprsUncertainty");
-                                        if (uncertainty != null)
-                                            data.putSingle("Uncertainty", uncertainty);
-
-                                        // GPRS Geodetic info
-                                        latitude = psiResponse.get("gprsGeodLatitude");
-                                        if (latitude != null)
-                                            data.putSingle("DeviceLatitude", latitude);
-
-                                        longitude = psiResponse.get("gprsGeodLongitude");
-                                        if (longitude != null)
-                                            data.putSingle("DeviceLongitude", longitude);
-
-                                        typeOfShape = psiResponse.get("gprsGeodTypeOfShape");
-                                        if (typeOfShape != null)
-                                            data.putSingle("TypeOfShape", typeOfShape);
-
-                                        uncertainty = psiResponse.get("gprsGeodUncertainty");
-                                        if (uncertainty != null)
-                                            data.putSingle("Uncertainty", uncertainty);
-
-                                        String confidence = psiResponse.get("gprsConfidence");
-                                        if (confidence != null)
-                                            data.putSingle("Confidence", confidence);
-
-                                        String screeningAndPresInd = psiResponse.get("gprsScreeningAndPresentationIndicators");
-                                        if (screeningAndPresInd != null)
-                                            data.putSingle("ScreeningAndPresentationIndicators", screeningAndPresInd);
-
-                                        // GPRS Location info
-                                        String sgsnNumber = psiResponse.get("sgsnNumber");
-                                        if (sgsnNumber != null)
-                                            data.putSingle("NetworkEntityAddress", sgsnNumber);
-
-                                        String lsaId = psiResponse.get("lsaId");
-                                        if (lsaId != null)
-                                            data.putSingle("LSAId", lsaId);
-
-                                        String routeingAreaId = psiResponse.get("routeingAreaId");
-                                        if (routeingAreaId != null)
-                                            data.putSingle("RoutingAreaId", routeingAreaId);
-
-                                        // Subscriber Location Info
-                                        // CGI
-                                        mcc = psiResponse.get("mcc");
-                                        if (mcc != null)
-                                            data.putSingle("MobileCountryCode", mcc);
-
-                                        mnc = psiResponse.get("mnc");
-                                        if (mnc != null)
-                                            data.putSingle("MobileNetworkCode", mnc);
-
-                                        lac = psiResponse.get("lac");
-                                        if (lac != null)
-                                            data.putSingle("LocationAreaCode", lac);
-
-                                        ci = psiResponse.get("ci");
-                                        if (ci != null)
-                                            data.putSingle("CellId", ci);
-
-                                        // Subscriber Location info
-                                        String locationNumber = psiResponse.get("locationNumber");
-                                        if (locationNumber != null)
-                                            data.putSingle("LocationNumber", locationNumber);
-
-                                        String aol = psiResponse.get("aol");
-                                        if (aol != null)
-                                            data.putSingle("LocationAge", aol);
-
-                                        String vlrNumber = psiResponse.get("vlrNumber");
-                                        if (vlrNumber != null)
-                                            data.putSingle("NetworkEntityAddress", vlrNumber);
-
-                                        String mscNumber = psiResponse.get("mscNumber");
-                                        if (mscNumber != null)
-                                            data.putSingle("NetworkEntityAddress", mscNumber);
-
-                                        // Subscriber Geographic Location Info
-                                        latitude = psiResponse.get("latitude");
-                                        if (latitude != null)
-                                            data.putSingle("DeviceLatitude", latitude);
-
-                                        longitude = psiResponse.get("longitude");
-                                        if (longitude != null)
-                                            data.putSingle("DeviceLongitude", longitude);
-
-                                        typeOfShape = psiResponse.get("typeOfShape");
-                                        if (typeOfShape != null)
-                                            data.putSingle("TypeOfShape", typeOfShape);
-
-                                        uncertainty = psiResponse.get("uncertainty");
-                                        if (uncertainty != null)
-                                            data.putSingle("Uncertainty", uncertainty);
-
-                                        // Subscriber Geodetic Location Info
-                                        latitude = psiResponse.get("geodLatitude");
-                                        if (latitude != null)
-                                            data.putSingle("DeviceLatitude", latitude);
-
-                                        longitude = psiResponse.get("geodLongitude");
-                                        if (longitude != null)
-                                            data.putSingle("DeviceLongitude", longitude);
-
-                                        typeOfShape = psiResponse.get("geodTypeOfShape");
-                                        if (typeOfShape != null)
-                                            data.putSingle("TypeOfShape", typeOfShape);
-
-                                        uncertainty = psiResponse.get("geodUncertainty");
-                                        if (uncertainty != null)
-                                            data.putSingle("Uncertainty", uncertainty);
-
-                                        confidence = psiResponse.get("confidence");
-                                        if (confidence != null)
-                                            data.putSingle("Confidence", confidence);
-
-                                        screeningAndPresInd = psiResponse.get("screeningAndPresentationIndicators");
-                                        if (screeningAndPresInd != null)
-                                            data.putSingle("ScreeningAndPresentationIndicators", screeningAndPresInd);
-
-                                        String currentLocationRetrieved = psiResponse.get("currentLocationRetrieved");
-                                        if (currentLocationRetrieved != null)
-                                            data.putSingle("CurrentLocationRetrieved", currentLocationRetrieved);
-
-                                        // EPS Location Info
-                                        String mmeName = psiResponse.get("mmeName");
-                                        if (mmeName != null)
-                                            data.putSingle("NetworkEntityName", mmeName);
-
-                                        String eUtranCgi = psiResponse.get("eUtranCgi");
-                                        if (eUtranCgi != null)
-                                            data.putSingle("LteCellId", eUtranCgi);
-
-                                        String trackingAreaId = psiResponse.get("trackingAreaId");
-                                        if (trackingAreaId != null)
-                                            data.putSingle("TrackingAreaCode", trackingAreaId);
-
-                                        // MNP Stastus Info
-                                        String mnpStatus = psiResponse.get("mnpStatus");
-                                        if (mnpStatus != null)
-                                            data.putSingle("MNPStatus", mnpStatus);
-
-                                        String mnpMsisdn = psiResponse.get("mnpMsisdn");
-                                        if (mnpMsisdn != null)
-                                            data.putSingle("MNPMSISDN", mnpMsisdn);
-
-                                        String mnpImsi = psiResponse.get("mnpImsi");
-                                        if (mnpImsi != null)
-                                            data.putSingle("MNPIMSI", mnpImsi);
-
-                                        String mnpRouteingNumber = psiResponse.get("mnpRouteingNumber");
-                                        if (mnpRouteingNumber != null)
-                                            data.putSingle("MNPRouteingNumber", mnpRouteingNumber);
-
+                                        HashMap<String, String> psiResponse = parseAtiOrPsiJsonString(gmlcResponse);
+                                        putDataFromAtiOrPsiResponse(psiResponse, data);
                                     }
                                 }
                             }
@@ -1153,14 +643,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                             logger.info("\nMNC = " + data.getFirst("MobileNetworkCode"));
                             logger.info("\nLAC  = " + data.getFirst("LocationAreaCode"));
                             logger.info("\nCI = " + data.getFirst("CellId"));
-                            logger.info("\nSAI = " + data.getFirst("Sai"));
-                            logger.info("\nECID = " + getLong("LteCellId", data));
+                            logger.info("\nSAC = " + data.getFirst("ServiceAreaCode"));
+                            logger.info("\nENodeBId = " + getInteger("ENodeBId", data));
                             logger.info("\nAOL = " + getInteger("LocationAge", data));
                             logger.info("\nSubscriber State = " + data.getFirst("SubscriberState"));
+                            logger.info("\nNot Reachable Reason = " + data.getFirst("NotReachableReason"));
                             logger.info("\nNetwork Entity Address = " + getLong("NetworkEntityAddress", data));
                             logger.info("\nNetwork Entity Name = " + data.getFirst("NetworkEntityName"));
-                            logger.info("\nTracking Area Code = " + data.getFirst("TrackingAreaCode"));
-                            logger.info("\nRouteing Area Id = " + data.getFirst("RoutingAreaId"));
+                            logger.info("\nTAC = " + data.getFirst("TrackingAreaCode"));
+                            logger.info("\nRAC = " + data.getFirst("RoutingAreaCode"));
                             logger.info("\nType of Shape = " + data.getFirst("TypeOfShape"));
                             logger.info("\nDevice Latitude = " + data.getFirst("DeviceLatitude"));
                             logger.info("\nDevice Longitude = " + data.getFirst("DeviceLongitude"));
@@ -1252,6 +743,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             if (!coreNetwork.equalsIgnoreCase("umts") && !coreNetwork.equalsIgnoreCase("lte")) {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("CoreNetwork value not API compliant, must be UMTS or LTE for Notification type of Geolocation");
+            }
+        }
+
+        /*** Domain must be API compliant: cs or ps values only for Immediate type of Geolocation***/
+        if (data.containsKey("Domain") && glType.toString().equals(ImmediateGT)) {
+            String psiService = data.getFirst("Domain");
+            if (!psiService.equalsIgnoreCase("cs") && !psiService.equalsIgnoreCase("ps")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Domain values can be only cs or ps for Circuit-Switched or Packet-Switched networks respectively");
             }
         }
 
@@ -1640,44 +1140,52 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
         builder.setMsisdn(getLong("MSISDN", data));
         builder.setImsi(getLong("IMSI", data));
-        builder.setImei(data.getFirst("IMEI"));
+        builder.setImei(getLong("IMEI", data));
         builder.setLmsi(getLong("LMSI", data));
         builder.setReferenceNumber(getLong("ReferenceNumber", data));
         builder.setGeolocationType(glType);
         builder.setResponseStatus(data.getFirst("ResponseStatus"));
         builder.setCause(data.getFirst("Cause"));
         builder.setMobileCountryCode(getInteger("MobileCountryCode", data));
-        builder.setMobileNetworkCode(data.getFirst("MobileNetworkCode"));
-        builder.setLocationAreaCode(data.getFirst("LocationAreaCode"));
-        builder.setCellId(data.getFirst("CellId"));
-        builder.setSai(data.getFirst("Sai"));
-        builder.setEcid(getLong("LteCellId", data));
+        builder.setMobileNetworkCode(getInteger("MobileNetworkCode", data));
+        builder.setLocationAreaCode(getInteger("LocationAreaCode", data));
+        builder.setCi(getInteger("CellId", data));
+        builder.setSac(getInteger("ServiceAreaCode", data));
+        builder.setEnbid(getInteger("eNBId", data));
         builder.setAgeOfLocationInfo(getInteger("LocationAge", data));
         builder.setSubscriberState(data.getFirst("SubscriberState"));
         builder.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
         builder.setNetworkEntityName(data.getFirst("NetworkEntityName"));
-        builder.setTac(data.getFirst("TrackingAreaCode"));
-        builder.setRai(data.getFirst("RoutingAreaId"));
+        builder.setTac(getInteger("TrackingAreaCode", data));
+        builder.setRac(getInteger("RoutingAreaCode", data));
         builder.setLocationTimestamp(getDateTime("LocationTimestamp", data));
         builder.setTypeOfShape(data.getFirst("TypeOfShape"));
         builder.setDeviceLatitude(data.getFirst("DeviceLatitude"));
         builder.setDeviceLongitude(data.getFirst("DeviceLongitude"));
-        builder.setUncertainty(data.getFirst("Uncertainty"));
-        builder.setUncertaintySemiMajorAxis(data.getFirst("UncertaintySemiMajorAxis"));
-        builder.setUncertaintySemiMinorAxis(data.getFirst("UncertaintySemiMinorAxis"));
-        builder.setAngleOfMajorAxis(data.getFirst("AngleOfMajorAxis"));
-        builder.setConfidence(data.getFirst("Confidence"));
-        builder.setAltitude(data.getFirst("DeviceAltitude"));
-        builder.setUncertaintyAltitude(data.getFirst("UncertaintyAltitude"));
-        builder.setInnerRadius(data.getFirst("InnerRadius"));
-        builder.setUncertaintyInnerRadius(data.getFirst("UncertaintyInnerRadius"));
-        builder.setOffsetAngle(data.getFirst("OffsetAngle"));
-        builder.setIncludedAngle(data.getFirst("IncludedAngle"));
-        builder.setHorizontalSpeed(data.getFirst("HorizontalSpeed"));
-        builder.setVerticalSpeed(data.getFirst("VerticalSpeed"));
-        builder.setUncertaintyHorizontalSpeed(data.getFirst("UncertaintyHorizontalSpeed"));
-        builder.setUncertaintyVerticalSpeed(data.getFirst("UncertaintyVerticalSpeed"));
-        builder.setBearing(data.getFirst("Bearing"));
+        if (data.getFirst("Uncertainty") != null)
+            builder.setUncertainty(Double.valueOf(data.getFirst("Uncertainty")));
+        if (data.getFirst("UncertaintySemiMajorAxis") != null)
+            builder.setUncertaintySemiMajorAxis(Double.valueOf(data.getFirst("UncertaintySemiMajorAxis")));
+        if (data.getFirst("UncertaintySemiMinorAxis") != null)
+            builder.setUncertaintySemiMinorAxis(Double.valueOf(data.getFirst("UncertaintySemiMinorAxis")));
+        if (data.getFirst("AngleOfMajorAxis") != null)
+            builder.setAngleOfMajorAxis(Double.valueOf(data.getFirst("AngleOfMajorAxis")));
+        builder.setConfidence(getInteger("Confidence", data));
+        builder.setAltitude(getInteger("DeviceAltitude", data));
+        if (data.getFirst("UncertaintyAltitude") != null)
+            builder.setUncertaintyAltitude(Double.valueOf(data.getFirst("UncertaintyAltitude")));
+        builder.setInnerRadius(getInteger("InnerRadius", data));
+        if (data.getFirst("UncertaintyInnerRadius") != null)
+            builder.setUncertaintyInnerRadius(Double.valueOf(data.getFirst("UncertaintyInnerRadius")));
+        if (data.getFirst("OffsetAngle") != null)
+            builder.setOffsetAngle(Double.valueOf(data.getFirst("OffsetAngle")));
+        if (data.getFirst("IncludedAngle") != null)
+            builder.setIncludedAngle(Double.valueOf(data.getFirst("IncludedAngle")));
+        builder.setHorizontalSpeed(getInteger("HorizontalSpeed", data));
+        builder.setVerticalSpeed(getInteger("VerticalSpeed", data));
+        builder.setUncertaintyHorizontalSpeed(getInteger("UncertaintyHorizontalSpeed", data));
+        builder.setUncertaintyVerticalSpeed(getInteger("UncertaintyVerticalSpeed", data));
+        builder.setBearing(getInteger("Bearing", data));
         builder.setGeofenceType(data.getFirst("GeofenceType"));
         builder.setGeofenceId(data.getFirst("GeofenceId"));
         builder.setGeofenceEventType(data.getFirst("GeofenceEventType"));
@@ -1808,7 +1316,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("IMEI must be a number with an amount of digits not greater than 15");
             }
-            updatedGeolocation = updatedGeolocation.setImei(data.getFirst("IMEI"));
+            updatedGeolocation = updatedGeolocation.setImei(getLong("IMEI", data));
         }
 
         if (data.containsKey("LMSI")) {
@@ -1874,7 +1382,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("MobileNetworkCode amount of digits must not be greater than 3");
             } else {
-                updatedGeolocation = updatedGeolocation.setMobileNetworkCode(data.getFirst("MobileNetworkCode"));
+                updatedGeolocation = updatedGeolocation.setMobileNetworkCode(getInteger("MobileNetworkCode", data));
 
             }
         }
@@ -1891,52 +1399,52 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("LocationAreaCode must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setLocationAreaCode(data.getFirst("LocationAreaCode"));
+            updatedGeolocation = updatedGeolocation.setLocationAreaCode(getInteger("LocationAreaCode", data));
         }
 
         if (data.containsKey("CellId")) {
             String ci = data.getFirst("CellId");
             Long digits = Long.valueOf(ci);
             try {
-                if (digits > 268435455) {
+                if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("CellId must be a number not greater than 268435455");
+                    throw new IllegalArgumentException("CellId must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("CellId must be a number not greater than 268435455");
+                throw new IllegalArgumentException("CellId must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setCellId(data.getFirst("CellId"));
+            updatedGeolocation = updatedGeolocation.setCi(getInteger("CellId", data));
         }
 
-        if (data.containsKey("Sai")) {
-            String sai = data.getFirst("Sai");
+        if (data.containsKey("ServiceAreaCode")) {
+            String sai = data.getFirst("ServiceAreaCode");
             Long digits = Long.valueOf(sai);
             try {
-                if (digits > 268435455) {
+                if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("SAI must be a number not greater than 268435455");
+                    throw new IllegalArgumentException("SAI must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("SAI must be a number not greater than 268435455");
+                throw new IllegalArgumentException("SAI must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setSai(data.getFirst("Sai"));
+            updatedGeolocation = updatedGeolocation.setSac(getInteger("ServiceAreaCode", data));
         }
 
-        if (data.containsKey("LteCellId")) {
-            String ecid = data.getFirst("LteCellId");
+        if (data.containsKey("eNBId")) {
+            String ecid = data.getFirst("eNBId");
             Long digits = Long.valueOf(ecid);
             try {
-                if (digits > 268435455) {
+                if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("LteCellId must be a number not greater than 268435455");
+                    throw new IllegalArgumentException("LteCellId must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("LteCellId must be a number not greater than 268435455");
+                throw new IllegalArgumentException("LteCellId must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setEcid(getLong("LteCellId", data));
+            updatedGeolocation = updatedGeolocation.setEnbid(getInteger("eNBId", data));
         }
 
         if (data.containsKey("NetworkEntityAddress")) {
@@ -1979,13 +1487,31 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             updatedGeolocation = updatedGeolocation.setAgeOfLocationInfo(getInteger("LocationAge", data));
         }
 
+        // TODO add PS states
         if (data.containsKey("SubscriberState")) {
             String state = data.getFirst("SubscriberState");
             if (!state.equalsIgnoreCase("assumedIdle") && !state.equalsIgnoreCase("camelBusy") &&
-                !state.equalsIgnoreCase("netDetNotReachable") && !state.equalsIgnoreCase("notProvidedFromVLR")) {
+                !state.equalsIgnoreCase("netDetNotReachable") && !state.equalsIgnoreCase("notProvidedFromVLR") &&
+                !state.equalsIgnoreCase("psDetached") && !state.equalsIgnoreCase("psAttachedReachableForPaging") &&
+                !state.equalsIgnoreCase("psAttachedNotReachableForPaging") && !state.equalsIgnoreCase("notProvidedFromSGSNorMME") &&
+                !state.equalsIgnoreCase("psPDPActiveNotReachableForPaging") && !state.equalsIgnoreCase("psPDPActiveReachableForPaging")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("SubscriberState must be one of assumedIdle, camelBusy, netDetNotReachable or notProvidedFromVLR," +
-                    " but it is actually set to:"+state);
+                throw new IllegalArgumentException("SubscriberState \""+state+"\" is not API compliant. " +
+                    "It must be one of assumedIdle, camelBusy, notProvidedFromVLR (CS domain), " +
+                    "psDetached, psAttachedReachableForPaging, psAttachedNotReachableForPaging, notProvidedFromSGSNorMME, " +
+                    "psPDPActiveNotReachableForPaging, psPDPActiveReachableForPaging (PS domain), or netDetNotReachable");
+            } else {
+                updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("SubscriberState"));
+            }
+        }
+
+        if (data.containsKey("NotReachableReason")) {
+            String notReachableReason = data.getFirst("NotReachableReason");
+            if (!notReachableReason.equalsIgnoreCase("msPurged") && !notReachableReason.equalsIgnoreCase("imsiDetached") &&
+                !notReachableReason.equalsIgnoreCase("restrictedArea") && !notReachableReason.equalsIgnoreCase("notRegistered")) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("NotReachableReason \""+notReachableReason+"\" is not API compliant. " +
+                    "It must be one of msPurged, imsiDetached, restrictedArea or notRegistered");
             } else {
                 updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("SubscriberState"));
             }
@@ -2003,17 +1529,22 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setTac(data.getFirst("TrackingAreaCode"));
+            updatedGeolocation = updatedGeolocation.setTac(getInteger("TrackingAreaCode", data));
         }
 
-        if (data.containsKey("RoutingAreaId")) {
-            String routeingAreaId = data.getFirst("RoutingAreaId");
-            if (routeingAreaId.length() > 20) {
-                httpBadRequest = true;
-                throw new IllegalArgumentException("RoutingAreaId length must not be greater than 20 characters");
-            } else {
-                updatedGeolocation = updatedGeolocation.setRai(data.getFirst("RoutingAreaId"));
-            }
+        if (data.containsKey("RoutingAreaCode")) {
+            String routeingAreaCode = data.getFirst("RoutingAreaCode");
+            Integer digits = Integer.valueOf(routeingAreaCode);
+            try {
+                if (digits > 65535) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("RoutingAreaCode must be a number not greater than 65535");
+                }
+            } catch (NumberFormatException nfe) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+                }
+                updatedGeolocation = updatedGeolocation.setRac(getInteger("RoutingAreaCode", data));
         }
 
         if (data.containsKey("TypeOfShape")) {
@@ -2117,7 +1648,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("HorizontalSpeed length must not be greater than 30 digits");
             } else {
-                updatedGeolocation = updatedGeolocation.setHorizontalSpeed(data.getFirst("HorizontalSpeed"));
+                updatedGeolocation = updatedGeolocation.setHorizontalSpeed(getInteger("HorizontalSpeed", data));
             }
         }
 
@@ -2127,7 +1658,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("VerticalSpeed length must not be greater than 30 digits");
             } else {
-                updatedGeolocation = updatedGeolocation.setVerticalSpeed(data.getFirst("VerticalSpeed"));
+                updatedGeolocation = updatedGeolocation.setVerticalSpeed(getInteger("VerticalSpeed", data));
             }
         }
 
@@ -2273,50 +1804,724 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         }
     }
 
-    private static HashMap<String, String> parseAtiJsonString(String jsonLine) {
-        HashMap<String, String> atiResponse = new HashMap<>();
+    private static HashMap<String, String> parseAtiOrPsiJsonString(String jsonLine) {
+        HashMap<String, String> atiOrPsiResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
-        JsonObject cgiSaiLai = jelement.getAsJsonObject();
-        cgiSaiLai = cgiSaiLai.getAsJsonObject("CGIorSAIorLAI");
-        if (cgiSaiLai != null) {
-            if (cgiSaiLai.get("mcc") != null) {
-                String mcc = cgiSaiLai.get("mcc").getAsString();
-                if (!mcc.isEmpty())
-                    atiResponse.put("mcc", mcc);
+        String network = jobject.get("network").getAsString();
+        atiOrPsiResponse.put("network", network);
+        String protocol = jobject.get("protocol").getAsString();
+        atiOrPsiResponse.put("protocol", protocol);
+        String operation = jobject.get("operation").getAsString();
+        atiOrPsiResponse.put("operation", operation);
+
+        JsonObject csLocationInformation = jelement.getAsJsonObject();
+        csLocationInformation = csLocationInformation.getAsJsonObject("CSLocationInformation");
+        JsonObject locationNumber = csLocationInformation.getAsJsonObject("LocationNumber");
+        if (locationNumber != null) {
+            if (locationNumber.get("oddFlag") != null) {
+                String oF = locationNumber.get("oddFlag").getAsString();
+                if (!oF.isEmpty())
+                    atiOrPsiResponse.put("oddFlag", oF);
             }
-            if (cgiSaiLai.get("mnc") != null) {
-                String mnc = cgiSaiLai.get("mnc").getAsString();
-                if (!mnc.isEmpty())
-                    atiResponse.put("mnc", mnc);
+            if (locationNumber.get("natureOfAddressIndicator") != null) {
+                String nai = locationNumber.get("natureOfAddressIndicator").getAsString();
+                if (!nai.isEmpty())
+                    atiOrPsiResponse.put("nai", nai);
             }
-            if (cgiSaiLai.get("lac") != null) {
-                String lac = cgiSaiLai.get("lac").getAsString();
-                if (!lac.isEmpty())
-                    atiResponse.put("lac", lac);
+            if (locationNumber.get("internalNetworkNumberIndicator") != null) {
+                String inni = locationNumber.get("internalNetworkNumberIndicator").getAsString();
+                if (!inni.isEmpty())
+                    atiOrPsiResponse.put("inni", inni);
             }
-            if (cgiSaiLai.get("cellid") != null) {
-                String ci = cgiSaiLai.get("cellid").getAsString();
-                if (!ci.isEmpty())
-                    atiResponse.put("ci", ci);
+            if (locationNumber.get("numberingPlanIndicator") != null) {
+                String npi = locationNumber.get("numberingPlanIndicator").getAsString();
+                if (!npi.isEmpty())
+                    atiOrPsiResponse.put("npi", npi);
+            }
+            if (locationNumber.get("addressRepresentationRestrictedIndicator") != null) {
+                String arpi = locationNumber.get("addressRepresentationRestrictedIndicator").getAsString();
+                if (!arpi.isEmpty())
+                    atiOrPsiResponse.put("arpi", arpi);
+            }
+            if (locationNumber.get("screeningIndicator") != null) {
+                String si = locationNumber.get("screeningIndicator").getAsString();
+                if (!si.isEmpty())
+                    atiOrPsiResponse.put("si", si);
+            }
+            if (locationNumber.get("address") != null) {
+                String address = locationNumber.get("address").getAsString();
+                if (!address.isEmpty())
+                    atiOrPsiResponse.put("address", address);
             }
         }
-        if (jobject.get("aol") != null) {
-            String aol = jobject.get("aol").getAsString();
+
+        JsonObject csCgiSaiLai = csLocationInformation.getAsJsonObject("CGIorSAIorLAI");
+        if (csCgiSaiLai != null) {
+            if (csCgiSaiLai.get("mcc") != null) {
+                String csMcc = csCgiSaiLai.get("mcc").getAsString();
+                if (!csMcc.isEmpty())
+                    atiOrPsiResponse.put("csMcc", csMcc);
+            }
+            if (csCgiSaiLai.get("mnc") != null) {
+                String csMnc = csCgiSaiLai.get("mnc").getAsString();
+                if (!csMnc.isEmpty())
+                    atiOrPsiResponse.put("csMnc", csMnc);
+            }
+            if (csCgiSaiLai.get("lac") != null) {
+                String csLac = csCgiSaiLai.get("lac").getAsString();
+                if (!csLac.isEmpty())
+                    atiOrPsiResponse.put("csLac", csLac);
+            }
+            if (csCgiSaiLai.get("ci") != null) {
+                String csCi = csCgiSaiLai.get("ci").getAsString();
+                if (!csCi.isEmpty())
+                    atiOrPsiResponse.put("csCi", csCi);
+            }
+            if (csCgiSaiLai.get("sac") != null) {
+                String csSac = csCgiSaiLai.get("sac").getAsString();
+                if (!csSac.isEmpty())
+                    atiOrPsiResponse.put("csSac", csSac);
+            }
+        }
+
+        JsonObject geographicalInformation = csLocationInformation.getAsJsonObject("GeographicalInformation");
+        if (geographicalInformation != null) {
+            if (geographicalInformation.get("typeOfShape") != null) {
+                String csGeogTypeOfShape = geographicalInformation.get("typeOfShape").getAsString();
+                if (!csGeogTypeOfShape.isEmpty())
+                    atiOrPsiResponse.put("csGeogTypeOfShape", csGeogTypeOfShape);
+            }
+            if (geographicalInformation.get("latitude") != null) {
+                String csGeogLatitude = geographicalInformation.get("latitude").getAsString();
+                if (!csGeogLatitude.isEmpty())
+                    atiOrPsiResponse.put("csGeogLatitude", csGeogLatitude);
+            }
+            if (geographicalInformation.get("longitude") != null) {
+                String csGeogLongitude = geographicalInformation.get("longitude").getAsString();
+                if (!csGeogLongitude.isEmpty())
+                    atiOrPsiResponse.put("csGeogLongitude", csGeogLongitude);
+            }
+            if (geographicalInformation.get("uncertainty") != null) {
+                String csGeogUncertainty = geographicalInformation.get("uncertainty").getAsString();
+                if (!csGeogUncertainty.isEmpty())
+                    atiOrPsiResponse.put("csGeogUncertainty", csGeogUncertainty);
+            }
+        }
+
+        JsonObject geodeticInformation = csLocationInformation.getAsJsonObject("GeodeticInformation");
+        if (geodeticInformation != null) {
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String csGeodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
+                if (!csGeodTypeOfShape.isEmpty())
+                    atiOrPsiResponse.put("csGeodTypeOfShape", csGeodTypeOfShape);
+            }
+            if (geodeticInformation.get("latitude") != null) {
+                String csGeodLatitude = geodeticInformation.get("latitude").getAsString();
+                if (!csGeodLatitude.isEmpty())
+                    atiOrPsiResponse.put("csGeodLatitude", csGeodLatitude);
+            }
+            if (geodeticInformation.get("longitude") != null) {
+                String csGeodLongitude = geodeticInformation.get("longitude").getAsString();
+                if (!csGeodLongitude.isEmpty())
+                    atiOrPsiResponse.put("csGeodLongitude", csGeodLongitude);
+            }
+            if (geodeticInformation.get("uncertainty") != null) {
+                String csGeodUncertainty = geodeticInformation.get("uncertainty").getAsString();
+                if (!csGeodUncertainty.isEmpty())
+                    atiOrPsiResponse.put("csGeodUncertainty", csGeodUncertainty);
+            }
+            if (geodeticInformation.get("confidence") != null) {
+                String csGeodConfidence = geodeticInformation.get("confidence").getAsString();
+                if (!csGeodConfidence.isEmpty())
+                    atiOrPsiResponse.put("csGeodConfidence", csGeodConfidence);
+            }
+            if (geodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                String csGeodScreeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                if (!csGeodScreeningAndPresentationIndicators.isEmpty())
+                    atiOrPsiResponse.put("csGeodScreeningAndPresentationIndicators", csGeodScreeningAndPresentationIndicators);
+            }
+        }
+
+        JsonObject epsLocationInformation = csLocationInformation.getAsJsonObject("EPSLocationInformation");
+        JsonObject tai = epsLocationInformation.getAsJsonObject("TAI");
+        if (tai != null) {
+            if (tai.get("mcc") != null) {
+                String taiMcc = tai.get("mcc").getAsString();
+                if (!taiMcc.isEmpty())
+                    atiOrPsiResponse.put("taiMcc", taiMcc);
+            }
+            if (tai.get("mnc") != null) {
+                String taiMnc = tai.get("mnc").getAsString();
+                if (!taiMnc.isEmpty())
+                    atiOrPsiResponse.put("taiMnc", taiMnc);
+            }
+            if (tai.get("tac") != null) {
+                String tac = tai.get("tac").getAsString();
+                if (!tac.isEmpty())
+                    atiOrPsiResponse.put("tac", tac);
+            }
+        }
+
+        JsonObject ecgi = epsLocationInformation.getAsJsonObject("E-UTRANCellGlobalId");
+        if (ecgi != null) {
+            if (ecgi.get("mcc") != null) {
+                String ecgiMcc = ecgi.get("mcc").getAsString();
+                if (!ecgiMcc.isEmpty())
+                    atiOrPsiResponse.put("ecgiMcc", ecgiMcc);
+            }
+            if (ecgi.get("mnc") != null) {
+                String ecgiMnc = ecgi.get("mnc").getAsString();
+                if (!ecgiMnc.isEmpty())
+                    atiOrPsiResponse.put("ecgiMnc", ecgiMnc);
+            }
+            if (ecgi.get("eNBId") != null) {
+                String eNBId = ecgi.get("eNBId").getAsString();
+                if (!eNBId.isEmpty())
+                    atiOrPsiResponse.put("ecgiENBId", eNBId);
+            }
+            if (ecgi.get("ci") != null) {
+                String ecgiCi = ecgi.get("ci").getAsString();
+                if (!ecgiCi.isEmpty())
+                    atiOrPsiResponse.put("ecgiCi", ecgiCi);
+            }
+        }
+
+        geographicalInformation = epsLocationInformation.getAsJsonObject("GeographicalInformation");
+        if (geographicalInformation != null) {
+            if (geographicalInformation.get("typeOfShape") != null) {
+                String epsGeogTypeOfShape = geographicalInformation.get("typeOfShape").getAsString();
+                if (!epsGeogTypeOfShape.isEmpty())
+                    atiOrPsiResponse.put("epsGeogTypeOfShape", epsGeogTypeOfShape);
+            }
+            if (geographicalInformation.get("latitude") != null) {
+                String epsGeogLatitude = geographicalInformation.get("latitude").getAsString();
+                if (!epsGeogLatitude.isEmpty())
+                    atiOrPsiResponse.put("epsGeogLatitude", epsGeogLatitude);
+            }
+            if (geographicalInformation.get("longitude") != null) {
+                String epsGeogLongitude = geographicalInformation.get("longitude").getAsString();
+                if (!epsGeogLongitude.isEmpty())
+                    atiOrPsiResponse.put("epsGeogLongitude", epsGeogLongitude);
+            }
+
+            if (geographicalInformation.get("uncertainty") != null) {
+                String epsGeogUncertainty = geographicalInformation.get("uncertainty").getAsString();
+                if (!epsGeogUncertainty.isEmpty())
+                    atiOrPsiResponse.put("epsGeogUncertainty", epsGeogUncertainty);
+            }
+        }
+
+        geodeticInformation = epsLocationInformation.getAsJsonObject("GeodeticInformation");
+        if (geodeticInformation != null) {
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String epsGeodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
+                if (!epsGeodTypeOfShape.isEmpty())
+                    atiOrPsiResponse.put("epsGeodTypeOfShape", epsGeodTypeOfShape);
+            }
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String epsGeodLatitude = geodeticInformation.get("latitude").getAsString();
+                if (!epsGeodLatitude.isEmpty())
+                    atiOrPsiResponse.put("epsGeodLatitude", epsGeodLatitude);
+            }
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String epsGeodLongitude = geodeticInformation.get("longitude").getAsString();
+                if (!epsGeodLongitude.isEmpty())
+                    atiOrPsiResponse.put("epsGeodLongitude", epsGeodLongitude);
+            }
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String epsGeodUncertainty = geodeticInformation.get("uncertainty").getAsString();
+                if (!epsGeodUncertainty.isEmpty())
+                    atiOrPsiResponse.put("epsGeodUncertainty", epsGeodUncertainty);
+            }
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String epsGeodConfidence = geodeticInformation.get("confidence").getAsString();
+                if (!epsGeodConfidence.isEmpty())
+                    atiOrPsiResponse.put("epsGeodConfidence", epsGeodConfidence);
+            }
+            if (geodeticInformation.get("typeOfShape") != null) {
+                String epsGeodScreeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                if (!epsGeodScreeningAndPresentationIndicators.isEmpty())
+                    atiOrPsiResponse.put("epsGeodScreeningAndPresentationIndicators", epsGeodScreeningAndPresentationIndicators);
+            }
+        }
+
+        JsonObject psLocationInformation = jelement.getAsJsonObject();
+        psLocationInformation = psLocationInformation.getAsJsonObject("PSLocationInformation");
+        JsonObject lsa = psLocationInformation.getAsJsonObject("LSA");
+        if (lsa != null) {
+            if (lsa.get("lsaIdType") != null) {
+                String lsaIdType = lsa.get("lsaIdType").getAsString();
+                if (!lsaIdType.isEmpty())
+                    atiOrPsiResponse.put("lsaIdType", lsaIdType);
+            }
+            if (lsa.get("lsaId") != null) {
+                String lsaId = lsa.get("lsaId").getAsString();
+                if (!lsaId.isEmpty())
+                    atiOrPsiResponse.put("lsaId", lsaId);
+            }
+        }
+        JsonObject rai = psLocationInformation.getAsJsonObject("RAI");
+        if (rai != null) {
+            if (rai.get("mcc") != null) {
+                String raiMcc = rai.get("mcc").getAsString();
+                if (!raiMcc.isEmpty())
+                    atiOrPsiResponse.put("raiMcc", raiMcc);
+            }
+            if (rai.get("mnc") != null) {
+                String raiMnc = rai.get("mnc").getAsString();
+                if (!raiMnc.isEmpty())
+                    atiOrPsiResponse.put("raiMnc", raiMnc);
+            }
+            if (rai.get("lac") != null) {
+                String raiLac = rai.get("lac").getAsString();
+                if (!raiLac.isEmpty())
+                    atiOrPsiResponse.put("raiLac", raiLac);
+            }
+            if (rai.get("rac") != null) {
+                String rac = rai.get("rac").getAsString();
+                if (!rac.isEmpty())
+                    atiOrPsiResponse.put("rac", rac);
+            }
+        }
+        JsonObject psCgiSaiLai = psLocationInformation.getAsJsonObject("CGIorSAIorLAI");
+        if (psCgiSaiLai != null) {
+            if (psCgiSaiLai.get("mcc") != null) {
+                String psMcc = psCgiSaiLai.get("mcc").getAsString();
+                if (!psMcc.isEmpty())
+                    atiOrPsiResponse.put("psMcc", psMcc);
+            }
+            if (psCgiSaiLai.get("mnc") != null) {
+                String psMnc = psCgiSaiLai.get("mnc").getAsString();
+                if (!psMnc.isEmpty())
+                    atiOrPsiResponse.put("psMnc", psMnc);
+            }
+            if (psCgiSaiLai.get("lac") != null) {
+                String psLac = psCgiSaiLai.get("lac").getAsString();
+                if (!psLac.isEmpty())
+                    atiOrPsiResponse.put("psLac", psLac);
+            }
+            if (psCgiSaiLai.get("ci") != null) {
+                String psCi = psCgiSaiLai.get("ci").getAsString();
+                if (!psCi.isEmpty())
+                    atiOrPsiResponse.put("psCi", psCi);
+            }
+            if (psCgiSaiLai.get("sac") != null) {
+                String psSac = psCgiSaiLai.get("sac").getAsString();
+                if (!psSac.isEmpty())
+                    atiOrPsiResponse.put("psSac", psSac);
+            }
+
+        }
+        JsonObject psGeographicalInformation = psLocationInformation.getAsJsonObject("GeographicalInformation");
+        if (psGeographicalInformation != null) {
+            if (psGeographicalInformation.get("typeOfShape") != null) {
+                String psGeogTypeOfShape = psGeographicalInformation.get("typeOfShape").getAsString();
+                if (!psGeogTypeOfShape.isEmpty())
+                    atiOrPsiResponse.put("psGeogTypeOfShape", psGeogTypeOfShape);
+            }
+            if (psGeographicalInformation.get("latitude") != null) {
+                String psGeogLatitude = psGeographicalInformation.get("latitude").getAsString();
+                if (!psGeogLatitude.isEmpty())
+                    atiOrPsiResponse.put("psGeogLatitude", psGeogLatitude);
+            }
+            if (psGeographicalInformation.get("longitude") != null) {
+                String psGeogLongitude = psGeographicalInformation.get("longitude").getAsString();
+                if (!psGeogLongitude.isEmpty())
+                    atiOrPsiResponse.put("psGeogLongitude", psGeogLongitude);
+            }
+            if (psGeographicalInformation.get("uncertainty") != null) {
+                String psGeogUncertainty = psGeographicalInformation.get("uncertainty").getAsString();
+                if (!psGeogUncertainty.isEmpty())
+                    atiOrPsiResponse.put("psGeogUncertainty", psGeogUncertainty);
+            }
+        }
+        JsonObject psGeodeticInformation = psLocationInformation.getAsJsonObject("GeodeticInformation");
+        if (psGeographicalInformation != null) {
+            if (psGeodeticInformation.get("typeOfShape") != null) {
+                String psGeodTypeOfShape = psGeodeticInformation.get("typeOfShape").getAsString();
+                if (!psGeodTypeOfShape.isEmpty())
+                    atiOrPsiResponse.put("psGeodTypeOfShape", psGeodTypeOfShape);
+            }
+
+            if (psGeodeticInformation.get("latitude") != null) {
+                String psGeodLatitude = psGeodeticInformation.get("latitude").getAsString();
+                if (!psGeodLatitude.isEmpty())
+                    atiOrPsiResponse.put("psGeodLatitude", psGeodLatitude);
+            }
+            if (psGeodeticInformation.get("longitude") != null) {
+                String psGeodLongitude = psGeodeticInformation.get("longitude").getAsString();
+                if (!psGeodLongitude.isEmpty())
+                    atiOrPsiResponse.put("psGeodLongitude", psGeodLongitude);
+            }
+            if (psGeodeticInformation.get("uncertainty") != null) {
+                String psGeodUncertainty = psGeodeticInformation.get("uncertainty").getAsString();
+                if (!psGeodUncertainty.isEmpty())
+                    atiOrPsiResponse.put("psGeodUncertainty", psGeodUncertainty);
+            }
+
+            if (psGeodeticInformation.get("confidence") != null) {
+                String psGeodConfidence = psGeodeticInformation.get("confidence").getAsString();
+                if (!psGeodConfidence.isEmpty())
+                    atiOrPsiResponse.put("psGeodConfidence", psGeodConfidence);
+            }
+            if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                String psGeodScreeningAndPresentationIndicators = psGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                if (!psGeodScreeningAndPresentationIndicators.isEmpty())
+                    atiOrPsiResponse.put("psGeodScreeningAndPresentationIndicators", psGeodScreeningAndPresentationIndicators);
+            }
+        }
+        JsonObject grpsMSClass = jelement.getAsJsonObject();
+        grpsMSClass = grpsMSClass.getAsJsonObject("GPRSMSClass");
+        if (grpsMSClass != null) {
+            if (grpsMSClass.get("msNetworkCapability") != null) {
+                String msNetworkCapability = grpsMSClass.get("msNetworkCapability").getAsString();
+                if (!msNetworkCapability.isEmpty())
+                    atiOrPsiResponse.put("msNetworkCapability", msNetworkCapability);
+            }
+            if (grpsMSClass.get("msNetworkCapability") != null) {
+                String msRadioAccessCapability = grpsMSClass.get("msRadioAccessCapability").getAsString();
+                if (!msRadioAccessCapability.isEmpty())
+                    atiOrPsiResponse.put("msRadioAccessCapability", msRadioAccessCapability);
+            }
+        }
+
+        JsonObject mnpInfoResult = jelement.getAsJsonObject();
+        mnpInfoResult = mnpInfoResult.getAsJsonObject("MNPInfoResult");
+        if (mnpInfoResult != null) {
+            if (mnpInfoResult.get("mnpStatus") != null) {
+                String mnpStatus = mnpInfoResult.get("mnpStatus").getAsString();
+                if (!mnpStatus.isEmpty())
+                    atiOrPsiResponse.put("mnpStatus", mnpStatus);
+            }
+            if (mnpInfoResult.get("mnpMsisdn") != null) {
+                String mnpMsisdn = mnpInfoResult.get("mnpMsisdn").getAsString();
+                if (!mnpMsisdn.isEmpty())
+                    atiOrPsiResponse.put("mnpMsisdn", mnpMsisdn);
+            }
+            if (mnpInfoResult.get("mnpImsi") != null) {
+                String mnpImsi = mnpInfoResult.get("mnpImsi").getAsString();
+                if (!mnpImsi.isEmpty())
+                    atiOrPsiResponse.put("mnpImsi", mnpImsi);
+            }
+            if (mnpInfoResult.get("mnpRouteingNumber") != null) {
+                String mnpRouteingNumber = mnpInfoResult.get("mnpRouteingNumber").getAsString();
+                if (!mnpRouteingNumber.isEmpty())
+                    atiOrPsiResponse.put("mnpRouteingNumber", mnpRouteingNumber);
+            }
+        }
+
+        if (jobject.get("ageOfLocationInformation") != null) {
+            String aol = jobject.get("ageOfLocationInformation").getAsString();
             if (!aol.isEmpty())
-                atiResponse.put("aol", aol);
+                atiOrPsiResponse.put("aol", aol);
+        }
+        if (jobject.get("currentLocationRetrieved") != null) {
+            String current = jobject.get("currentLocationRetrieved").getAsString();
+            if (!current.isEmpty())
+                atiOrPsiResponse.put("currentLocationRetrieved", current);
+        }
+        if (jobject.get("imsi") != null) {
+            String imsi = jobject.get("imsi").getAsString();
+            if (!imsi.isEmpty())
+                atiOrPsiResponse.put("imsi", imsi);
+        }
+        if (jobject.get("imei") != null) {
+            String imei = jobject.get("imei").getAsString();
+            if (!imei.isEmpty())
+                atiOrPsiResponse.put("imei", imei);
+        }
+        if (jobject.get("lmsi") != null) {
+            String lmsi = jobject.get("lmsi").getAsString();
+            if (!lmsi.isEmpty())
+                atiOrPsiResponse.put("lmsi", lmsi);
         }
         if (jobject.get("vlrNumber") != null) {
             String vlrNumber = jobject.get("vlrNumber").getAsString();
             if (!vlrNumber.isEmpty())
-                atiResponse.put("vlrNumber", vlrNumber);
+                atiOrPsiResponse.put("vlrNumber", vlrNumber);
+        }
+        if (jobject.get("mscNumber") != null) {
+            String mscNumber = jobject.get("mscNumber").getAsString();
+            if (!mscNumber.isEmpty())
+                atiOrPsiResponse.put("mscNumber", mscNumber);
+        }
+        if (jobject.get("sgsnNumber") != null) {
+            String sgsnNumber = jobject.get("sgsnNumber").getAsString();
+            if (!sgsnNumber.isEmpty())
+                atiOrPsiResponse.put("sgsnNumber", sgsnNumber);
+        }
+        if (jobject.get("mmeName") != null) {
+            String mmeName = jobject.get("mmeName").getAsString();
+            if (!mmeName.isEmpty())
+                atiOrPsiResponse.put("mmeName", mmeName);
         }
         if (jobject.get("subscriberState") != null) {
             String subscriberState = jobject.get("subscriberState").getAsString();
             if (!subscriberState.isEmpty())
-                atiResponse.put("subscriberState", subscriberState);
+                atiOrPsiResponse.put("subscriberState", subscriberState);
         }
-        return atiResponse;
+        if (jobject.get("notReachableReason") != null) {
+            String notReachableReason = jobject.get("notReachableReason").getAsString();
+            if (!notReachableReason.isEmpty())
+                atiOrPsiResponse.put("notReachableReason", notReachableReason);
+        }
+        if (jobject.get("msClassmark") != null) {
+            String msClassmark = jobject.get("msClassmark").getAsString();
+            if (!msClassmark.isEmpty())
+                atiOrPsiResponse.put("msClassmark", msClassmark);
+        }
+
+        return atiOrPsiResponse;
+    }
+
+    private static void putDataFromAtiOrPsiResponse(HashMap<String, String> atiOrPsiResponse, MultivaluedMap<String, String> data) {
+
+        // CS Subscriber Location Info
+        // CGI
+        String csMcc = atiOrPsiResponse.get("csMcc");
+        if (csMcc != null)
+            data.putSingle("MobileCountryCode", csMcc);
+
+        String csMnc = atiOrPsiResponse.get("csMnc");
+        if (csMnc != null)
+            data.putSingle("MobileNetworkCode", csMnc);
+
+        String csLac = atiOrPsiResponse.get("csLac");
+        if (csLac != null)
+            data.putSingle("LocationAreaCode", csLac);
+
+        String csCi = atiOrPsiResponse.get("csCi");
+        if (csCi != null)
+            data.putSingle("CellId", csCi);
+
+        String csSac = atiOrPsiResponse.get("csSac");
+        if (csSac != null)
+            data.putSingle("ServiceAreaCode", csSac);
+
+        // Location Number
+        String locationNumber = atiOrPsiResponse.get("address");
+        if (locationNumber != null)
+            data.putSingle("LocationNumber", locationNumber);
+
+        // Subscriber Geographic Location Info
+        String csGeogTypeOfShape = atiOrPsiResponse.get("csGeogTypeOfShape");
+        if (csGeogTypeOfShape != null)
+            data.putSingle("TypeOfShape", csGeogTypeOfShape);
+
+        String csGeogLatitude = atiOrPsiResponse.get("csGeogLatitude");
+        if (csGeogLatitude != null)
+            data.putSingle("DeviceLatitude", csGeogLatitude);
+
+        String csGeogLongitude = atiOrPsiResponse.get("csGeogLongitude");
+        if (csGeogLongitude != null)
+            data.putSingle("DeviceLongitude", csGeogLongitude);
+
+        String csGeogUncertainty = atiOrPsiResponse.get("csGeogUncertainty");
+        if (csGeogUncertainty != null)
+            data.putSingle("Uncertainty", csGeogUncertainty);
+
+        // Subscriber Geodetic Location Info
+        String csGeodTypeOfShape = atiOrPsiResponse.get("csGeodTypeOfShape");
+        if (csGeodTypeOfShape != null)
+            data.putSingle("TypeOfShape", csGeodTypeOfShape);
+
+        String csGeodLatitude = atiOrPsiResponse.get("csGeodLatitude");
+        if (csGeodLatitude != null)
+            data.putSingle("DeviceLatitude", csGeodLatitude);
+
+        String csGeodLongitude = atiOrPsiResponse.get("csGeodLongitude");
+        if (csGeodLongitude != null)
+            data.putSingle("DeviceLongitude", csGeodLongitude);
+
+        String csGeodUncertainty = atiOrPsiResponse.get("csGeodUncertainty");
+        if (csGeodUncertainty != null)
+            data.putSingle("Uncertainty", csGeodUncertainty);
+
+        String csGeodConfidence = atiOrPsiResponse.get("csGeodConfidence");
+        if (csGeodConfidence != null)
+            data.putSingle("Confidence", csGeodConfidence);
+
+        String csGeodScreeningAndPresentationIndicators = atiOrPsiResponse.get("csGeodScreeningAndPresentationIndicators");
+        if (csGeodScreeningAndPresentationIndicators != null)
+            data.putSingle("ScreeningAndPresentationIndicators", csGeodScreeningAndPresentationIndicators);
+
+        // EPS Location Info
+        String taiMcc = atiOrPsiResponse.get("taiMcc");
+        if (taiMcc != null)
+            data.putSingle("MobileCountryCode", taiMcc);
+
+        String taiMnc = atiOrPsiResponse.get("taiMnc");
+        if (taiMnc != null)
+            data.putSingle("MobileNetworkCode", taiMnc);
+
+        String tac = atiOrPsiResponse.get("tac");
+        if (tac != null)
+            data.putSingle("TrackingAreaCode", tac);
+
+        String ecgiMcc = atiOrPsiResponse.get("ecgiMcc");
+        if (ecgiMcc != null)
+            data.putSingle("MobileCountryCode", ecgiMcc);
+
+        String ecgiMnc = atiOrPsiResponse.get("ecgiMnc");
+        if (ecgiMnc != null)
+            data.putSingle("MobileNetworkCode", ecgiMnc);
+
+        String eNBId = atiOrPsiResponse.get("ecgiENBId");
+        if (eNBId != null)
+            data.putSingle("ENodeBId", eNBId);
+
+        String ecgiCi = atiOrPsiResponse.get("ecgiCi");
+        if (ecgiCi != null)
+            data.putSingle("CellId", ecgiCi);
+
+        // PS Subscriber Info
+        // LSA ID
+        String lsaId = atiOrPsiResponse.get("lsaId");
+        if (lsaId != null)
+            data.putSingle("LSAId", lsaId);
+
+        // RAI
+        String raiMcc = atiOrPsiResponse.get("raiMcc");
+        if (raiMcc != null)
+            data.putSingle("MobileCountryCode", raiMcc);
+
+        String raiMnc = atiOrPsiResponse.get("raiMnc");
+        if (raiMnc != null)
+            data.putSingle("MobileNetworkCode", raiMnc);
+
+        String raiLac = atiOrPsiResponse.get("raiLac");
+        if (raiLac != null)
+            data.putSingle("LocationAreaCode", raiLac);
+
+        String rac = atiOrPsiResponse.get("rac");
+        if (rac != null)
+            data.putSingle("RoutingAreaCode", rac);
+
+        // CGI
+        String psMcc = atiOrPsiResponse.get("psMcc");
+        if (psMcc != null)
+            data.putSingle("MobileCountryCode", psMcc);
+
+        String psMnc = atiOrPsiResponse.get("psMnc");
+        if (psMnc != null)
+            data.putSingle("MobileNetworkCode", psMnc);
+
+        String psLac = atiOrPsiResponse.get("psLac");
+        if (psLac != null)
+            data.putSingle("LocationAreaCode", psLac);
+
+        String psCi = atiOrPsiResponse.get("psCi");
+        if (psCi != null)
+            data.putSingle("CellId", psCi);
+
+        String psSac = atiOrPsiResponse.get("psSac");
+        if (psSac != null)
+            data.putSingle("ServiceAreaCode", psSac);
+
+        // PS Geographic info
+        String psGeogTypeOfShape = atiOrPsiResponse.get("psGeogTypeOfShape");
+        if (psGeogTypeOfShape != null)
+            data.putSingle("TypeOfShape", psGeogTypeOfShape);
+
+        String psGeogLatitude = atiOrPsiResponse.get("psGeogLatitude");
+        if (psGeogLatitude != null)
+            data.putSingle("DeviceLatitude", psGeogLatitude);
+
+        String psGeogLongitude = atiOrPsiResponse.get("psGeogLongitude");
+        if (psGeogLongitude != null)
+            data.putSingle("DeviceLongitude", psGeogLongitude);
+
+        String psGeogUncertainty = atiOrPsiResponse.get("psGeogUncertainty");
+        if (psGeogUncertainty != null)
+            data.putSingle("Uncertainty", psGeogUncertainty);
+
+        // PS Geodetic info
+        String psGeodTypeOfShape = atiOrPsiResponse.get("psGeodTypeOfShape");
+        if (psGeodTypeOfShape != null)
+            data.putSingle("TypeOfShape", psGeodTypeOfShape);
+
+        String psGeodLatitude = atiOrPsiResponse.get("psGeodLatitude");
+        if (psGeodLatitude != null)
+            data.putSingle("DeviceLatitude", psGeodLatitude);
+
+        String psGeodLongitude = atiOrPsiResponse.get("psGeodLongitude");
+        if (psGeodLongitude != null)
+            data.putSingle("DeviceLongitude", psGeodLongitude);
+
+        String psGeodUncertainty = atiOrPsiResponse.get("psGeodUncertainty");
+        if (psGeodUncertainty != null)
+            data.putSingle("Uncertainty", psGeodUncertainty);
+
+        String psGeodConfidence = atiOrPsiResponse.get("psGeodConfidence");
+        if (psGeodConfidence != null)
+            data.putSingle("Confidence", psGeodConfidence);
+
+        String psGeodScreeningAndPresentationIndicators = atiOrPsiResponse.get("psGeodScreeningAndPresentationIndicators");
+        if (psGeodScreeningAndPresentationIndicators != null)
+            data.putSingle("ScreeningAndPresentationIndicators", psGeodScreeningAndPresentationIndicators);
+
+        // MNP Status Info
+        String mnpStatus = atiOrPsiResponse.get("mnpStatus");
+        if (mnpStatus != null)
+            data.putSingle("MNPStatus", mnpStatus);
+
+        String mnpMsisdn = atiOrPsiResponse.get("mnpMsisdn");
+        if (mnpMsisdn != null)
+            data.putSingle("MNPMSISDN", mnpMsisdn);
+
+        String mnpImsi = atiOrPsiResponse.get("mnpImsi");
+        if (mnpImsi != null)
+            data.putSingle("MNPIMSI", mnpImsi);
+
+        String mnpRouteingNumber = atiOrPsiResponse.get("mnpRouteingNumber");
+        if (mnpRouteingNumber != null)
+            data.putSingle("MNPRouteingNumber", mnpRouteingNumber);
+
+        // Rest of Subscriber Location Info
+        String aol = atiOrPsiResponse.get("aol");
+        if (aol != null)
+            data.putSingle("LocationAge", aol);
+
+        String currentLocationRetrieved = atiOrPsiResponse.get("currentLocationRetrieved");
+        if (currentLocationRetrieved != null)
+            data.putSingle("CurrentLocationRetrieved", currentLocationRetrieved);
+
+        String imsi = atiOrPsiResponse.get("imsi");
+        if (imsi != null)
+            data.putSingle("IMSI", imsi);
+
+        String imei = atiOrPsiResponse.get("imei");
+        if (imei != null)
+            data.putSingle("IMEI", imei);
+
+        String lmsi = atiOrPsiResponse.get("lmsi");
+        if (lmsi != null)
+            data.putSingle("LMSI", lmsi);
+
+        String vlrNumber = atiOrPsiResponse.get("vlrNumber");
+        if (vlrNumber != null)
+            data.putSingle("NetworkEntityAddress", vlrNumber);
+
+        String mscNumber = atiOrPsiResponse.get("mscNumber");
+        if (mscNumber != null)
+            data.putSingle("NetworkEntityAddress", mscNumber);
+
+        String sgsnNumber = atiOrPsiResponse.get("sgsnNumber");
+        if (sgsnNumber != null)
+            data.putSingle("NetworkEntityAddress", sgsnNumber);
+
+        String mmeName = atiOrPsiResponse.get("mmeName");
+        if (mmeName != null)
+            data.putSingle("NetworkEntityName", mmeName);
+
+        String subscriberState = atiOrPsiResponse.get("subscriberState");
+        if (subscriberState != null)
+            data.putSingle("SubscriberState", subscriberState);
+
+        String notReachableReason = atiOrPsiResponse.get("notReachableReason");
+        if (notReachableReason != null)
+            data.putSingle("NotReachableReason", notReachableReason);
     }
 
     private static HashMap<String, String> parsePslJsonString(String jsonLine) {
@@ -2495,10 +2700,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     if (!lac.isEmpty())
                         sriPslResponse.put("lac", lac);
                 }
-                if (cgiSaiLai.get("cellid") != null) {
-                    String ci = cgiSaiLai.get("cellid").getAsString();
+                if (cgiSaiLai.get("ci") != null) {
+                    String ci = cgiSaiLai.get("ci").getAsString();
                     if (!ci.isEmpty())
                         sriPslResponse.put("ci", ci);
+                }
+                if (cgiSaiLai.get("sac") != null) {
+                    String sac = cgiSaiLai.get("sac").getAsString();
+                    if (!sac.isEmpty())
+                        sriPslResponse.put("sac", sac);
                 }
             }
             JsonObject geranPosInfo = psl.getAsJsonObject("GERANPositioningInfo");
@@ -2564,296 +2774,167 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         return sriPslResponse;
     }
 
-    private static HashMap<String, String> parsePsiJsonString(String jsonLine) {
-        HashMap<String, String> psiResponse = new HashMap<>();
-        JsonElement jelement = new JsonParser().parse(jsonLine);
-        JsonObject jobject = jelement.getAsJsonObject();
-        if (jobject.get("imsi") != null) {
-            String imsi = jobject.get("imsi").getAsString();
-            if (!imsi.isEmpty())
-                psiResponse.put("imsi", imsi);
-        }
-        if (jobject.get("imei") != null) {
-            String imei = jobject.get("imei").getAsString();
-            if (!imei.isEmpty())
-                psiResponse.put("imei", imei);
-        }
-        if (jobject.get("lmsi") != null) {
-            String lmsi = jobject.get("lmsi").getAsString();
-            if (!lmsi.isEmpty())
-                psiResponse.put("lmsi", lmsi);
-        }
-        if (jobject.get("subscriberState") != null) {
-            String subscriberState = jobject.get("subscriberState").getAsString();
-            if (!subscriberState.isEmpty())
-                psiResponse.put("subscriberState", subscriberState);
-        }
+    private static void putDataFromSriPslResponse(HashMap<String, String> sriPslResponse, MultivaluedMap<String, String> data) {
+        String lcsReferenceNumber = sriPslResponse.get("lcsReferenceNumber");
+        if (lcsReferenceNumber != null)
+            data.putSingle("ReferenceNumber", lcsReferenceNumber);
 
-        JsonObject locationInfo = jelement.getAsJsonObject();
-        if (locationInfo != null) {
-            locationInfo = locationInfo.getAsJsonObject("LocationInformation");
-            JsonObject cgiSaiLai = locationInfo.getAsJsonObject("CGIorSAIorLAI");
-            if (cgiSaiLai != null) {
-                if (cgiSaiLai.get("mcc") != null) {
-                    String mcc = cgiSaiLai.get("mcc").getAsString();
-                    if (!mcc.isEmpty())
-                        psiResponse.put("mcc", mcc);
-                }
-                if (cgiSaiLai.get("mnc") != null) {
-                    String mnc = cgiSaiLai.get("mnc").getAsString();
-                    if (!mnc.isEmpty())
-                        psiResponse.put("mnc", mnc);
-                }
-                if (cgiSaiLai.get("lac") != null) {
-                    String lac = cgiSaiLai.get("lac").getAsString();
-                    if (!lac.isEmpty())
-                        psiResponse.put("lac", lac);
-                }
-                if (cgiSaiLai.get("cellid") != null) {
-                    String ci = cgiSaiLai.get("cellid").getAsString();
-                    if (!ci.isEmpty())
-                        psiResponse.put("ci", ci);
-                }
-            }
-            if (locationInfo.get("saiPresent") != null) {
-                String saiPresent = locationInfo.get("saiPresent").getAsString();
-                if (!saiPresent.isEmpty())
-                    psiResponse.put("saiPresent", saiPresent);
-            }
-            if (locationInfo.get("locationNumber") != null) {
-                String locationNumber = locationInfo.get("locationNumber").getAsString();
-                if (!locationNumber.isEmpty())
-                    psiResponse.put("locationNumber", locationNumber);
-            }
-            if (locationInfo.get("aol") != null) {
-                String aol = locationInfo.get("aol").getAsString();
-                if (!aol.isEmpty())
-                    psiResponse.put("aol", aol);
-            }
-            if (locationInfo.get("vlrNumber") != null) {
-                String vlrNumber = locationInfo.get("vlrNumber").getAsString();
-                if (!vlrNumber.isEmpty())
-                    psiResponse.put("vlrNumber", vlrNumber);
-            }
-            if (locationInfo.get("mscNumber") != null) {
-                String mscNumber = locationInfo.get("mscNumber").getAsString();
-                if (!mscNumber.isEmpty())
-                    psiResponse.put("mscNumber", mscNumber);
-            }
-            JsonObject geographicalInformation = locationInfo.getAsJsonObject("GeographicalInformation");
-            if (geographicalInformation != null) {
-                if (geographicalInformation.get("latitude") != null) {
-                    String latitude = geographicalInformation.get("latitude").getAsString();
-                    if (!latitude.isEmpty())
-                        psiResponse.put("latitude", latitude);
-                }
-                if (geographicalInformation.get("longitude") != null) {
-                    String longitude = geographicalInformation.get("longitude").getAsString();
-                    if (!longitude.isEmpty())
-                        psiResponse.put("longitude", longitude);
-                }
-                if (geographicalInformation.get("typeOfShape") != null) {
-                    String typeOfShape = geographicalInformation.get("typeOfShape").getAsString();
-                    if (!typeOfShape.isEmpty())
-                        psiResponse.put("typeOfShape", typeOfShape);
-                }
-                if (geographicalInformation.get("uncertainty") != null) {
-                    String uncertainty = geographicalInformation.get("uncertainty").getAsString();
-                    if (!uncertainty.isEmpty())
-                        psiResponse.put("uncertainty", uncertainty);
-                }
-            }
+        String msisdn = sriPslResponse.get("msisdn");
+        if (msisdn != null)
+            data.putSingle("MSISDN", msisdn);
 
-            JsonObject geodeticInformation = locationInfo.getAsJsonObject("GeodeticInformation");
-            if (geodeticInformation != null) {
-                if (geodeticInformation.get("latitude") != null) {
-                    String geodLatitude = geodeticInformation.get("latitude").getAsString();
-                    if (!geodLatitude.isEmpty())
-                        psiResponse.put("geodLatitude", geodLatitude);
-                }
-                if (geodeticInformation.get("longitude") != null) {
-                    String geodLongitude = geodeticInformation.get("longitude").getAsString();
-                    if (!geodLongitude.isEmpty())
-                        psiResponse.put("geodLongitude", geodLongitude);
-                }
-                if (geodeticInformation.get("typeOfShape") != null) {
-                    String geodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
-                    if (!geodTypeOfShape.isEmpty())
-                        psiResponse.put("geodTypeOfShape", geodTypeOfShape);
-                }
-                if (geodeticInformation.get("uncertainty") != null) {
-                    String geodUncertainty = geodeticInformation.get("uncertainty").getAsString();
-                    if (!geodUncertainty.isEmpty())
-                        psiResponse.put("geodUncertainty", geodUncertainty);
-                }
-                if (geodeticInformation.get("confidence") != null) {
-                    String confidence = geodeticInformation.get("confidence").getAsString();
-                    if (!confidence.isEmpty())
-                        psiResponse.put("confidence", confidence);
-                }
-                if (geodeticInformation.get("screeningAndPresentationIndicators") != null) {
-                    String screeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                    if (!screeningAndPresentationIndicators.isEmpty())
-                        psiResponse.put("screeningAndPresentationIndicators", screeningAndPresentationIndicators);
-                }
-            }
+        String imsi = sriPslResponse.get("imsi");
+        if (imsi != null)
+            data.putSingle("IMSI", imsi);
 
-            if (locationInfo.get("currentLocationRetrieved") != null) {
-                String currentLocationRetrieved = locationInfo.get("currentLocationRetrieved").getAsString();
-                if (!currentLocationRetrieved.isEmpty())
-                    psiResponse.put("currentLocationRetrieved", currentLocationRetrieved);
-            }
+        String lmsi = sriPslResponse.get("lmsi");
+        if (lmsi != null)
+            data.putSingle("LMSI", lmsi);
 
-            JsonObject locationInfoEPS = locationInfo.getAsJsonObject("LocationInformationEPS");
-            if (locationInfoEPS != null) {
-                if (locationInfoEPS.get("mmeName") != null) {
-                    String mmeName = locationInfoEPS.get("mmeName").getAsString();
-                    if (!mmeName.isEmpty())
-                        psiResponse.put("mmeName", mmeName);
-                }
-                if (locationInfoEPS.get("eUtranCgi") != null) {
-                    String eUtranCgi = locationInfoEPS.get("eUtranCgi").getAsString();
-                    if (!eUtranCgi.isEmpty())
-                        psiResponse.put("eUtranCgi", eUtranCgi);
-                }
-                if (locationInfoEPS.get("trackingAreaId") != null) {
-                    String trackingAreaId = locationInfoEPS.get("trackingAreaId").getAsString();
-                    if (!trackingAreaId.isEmpty())
-                        psiResponse.put("trackingAreaId", trackingAreaId);
-                }
-            }
+        String networkNodeNumber = sriPslResponse.get("networkNodeNumber");
+        if (networkNodeNumber != null)
+            data.putSingle("NetworkEntityAddress", networkNodeNumber);
+
+        String tgppAAAServerName = sriPslResponse.get("3GPPAAAServerName");
+        if (tgppAAAServerName != null)
+            data.putSingle("NetworkEntityName", tgppAAAServerName);
+
+        String pprAddress = sriPslResponse.get("pprAddress");
+        if (pprAddress != null)
+            data.putSingle("NetworkEntityName", pprAddress);
+
+        String sgsnName = sriPslResponse.get("sgsnName");
+        if (sgsnName != null)
+            data.putSingle("NetworkEntityName", sgsnName);
+
+        String sgsnRealm = sriPslResponse.get("sgsnRealm");
+        if (sgsnRealm != null) {
+            sgsnName = sgsnName.concat("@").concat(sgsnRealm);
+            data.putSingle("NetworkEntityName", sgsnName);
         }
 
-        JsonObject locationInfoGPRS = jelement.getAsJsonObject();
-        if (locationInfoGPRS != null) {
-            locationInfoGPRS = locationInfoGPRS.getAsJsonObject("LocationInformationGPRS");
-            JsonObject cgiSaiLai = locationInfoGPRS.getAsJsonObject("CGIorSAIorLAI");
-            if (cgiSaiLai != null) {
-                if (cgiSaiLai.get("mcc") != null) {
-                    String mcc = cgiSaiLai.get("mcc").getAsString();
-                    if (!mcc.isEmpty())
-                        psiResponse.put("gprsMcc", mcc);
-                }
-                if (cgiSaiLai.get("mnc") != null) {
-                    String mnc = cgiSaiLai.get("mnc").getAsString();
-                    if (!mnc.isEmpty())
-                        psiResponse.put("gprsMnc", mnc);
-                }
-                if (cgiSaiLai.get("lac") != null) {
-                    String lac = cgiSaiLai.get("lac").getAsString();
-                    if (!lac.isEmpty())
-                        psiResponse.put("gprsLac", lac);
-                }
-                if (cgiSaiLai.get("cellid") != null) {
-                    String ci = cgiSaiLai.get("cellid").getAsString();
-                    if (!ci.isEmpty())
-                        psiResponse.put("gprsCi", ci);
-                }
-            }
+        String mmeName = sriPslResponse.get("mmeName");
+        if (mmeName != null)
+            data.putSingle("NetworkEntityName", mmeName);
 
-            JsonObject geoInfoGPRS = locationInfoGPRS.getAsJsonObject("GeographicalInformationGPRS");
-            if (geoInfoGPRS != null) {
-                if (geoInfoGPRS.get("latitude") != null) {
-                    String latitude = geoInfoGPRS.get("latitude").getAsString();
-                    if (!latitude.isEmpty())
-                        psiResponse.put("gprsLatitude", latitude);
-                }
-                if (geoInfoGPRS.get("longitude") != null) {
-                    String longitude = geoInfoGPRS.get("longitude").getAsString();
-                    if (!longitude.isEmpty())
-                        psiResponse.put("gprsLongitude", longitude);
-                }
-                if (geoInfoGPRS.get("typeOfShape") != null) {
-                    String typeOfShape = geoInfoGPRS.get("typeOfShape").getAsString();
-                    if (!typeOfShape.isEmpty())
-                        psiResponse.put("gprsTypeOfShape", typeOfShape);
-                }
-                if (geoInfoGPRS.get("uncertainty") != null) {
-                    String uncertainty = geoInfoGPRS.get("uncertainty").getAsString();
-                    if (!uncertainty.isEmpty())
-                        psiResponse.put("gprsUncertainty", uncertainty);
-                }
-            }
-
-            JsonObject geodInfoGPRS = locationInfoGPRS.getAsJsonObject("GeodeticInformationGPRS");
-            if (geodInfoGPRS != null) {
-                if (geodInfoGPRS.get("latitude") != null) {
-                    String latitude = geodInfoGPRS.get("latitude").getAsString();
-                    if (!latitude.isEmpty())
-                        psiResponse.put("gprsGeodLatitude", latitude);
-                }
-                if (geodInfoGPRS.get("longitude") != null) {
-                    String longitude = geodInfoGPRS.get("longitude").getAsString();
-                    if (!longitude.isEmpty())
-                        psiResponse.put("gprsGeodLongitude", longitude);
-                }
-                if (geodInfoGPRS.get("typeOfShape") != null) {
-                    String typeOfShape = geodInfoGPRS.get("typeOfShape").getAsString();
-                    if (!typeOfShape.isEmpty())
-                        psiResponse.put("gprsGeodTypeOfShape", typeOfShape);
-                }
-                if (geodInfoGPRS.get("uncertainty") != null) {
-                    String uncertainty = geodInfoGPRS.get("uncertainty").getAsString();
-                    if (!uncertainty.isEmpty())
-                        psiResponse.put("gprsGeodUncertainty", uncertainty);
-                }
-                if (geodInfoGPRS.get("confidence") != null) {
-                    String confidence = geodInfoGPRS.get("confidence").getAsString();
-                    if (!confidence.isEmpty())
-                        psiResponse.put("gprsConfidence", confidence);
-                }
-                if (geodInfoGPRS.get("screeningAndPresentationIndicators") != null) {
-                    String screeningAndPresentationIndicators = geodInfoGPRS.get("screeningAndPresentationIndicators").getAsString();
-                    if (!screeningAndPresentationIndicators.isEmpty())
-                        psiResponse.put("gprsScreeningAndPresentationIndicators", screeningAndPresentationIndicators);
-                }
-            }
-
-            if (locationInfoGPRS.get("sgsnNumber") != null) {
-                String sgsnNumber = locationInfoGPRS.get("sgsnNumber").getAsString();
-                if (!sgsnNumber.isEmpty())
-                    psiResponse.put("sgsnNumber", sgsnNumber);
-            }
-            if (locationInfoGPRS.get("lsaId") != null) {
-                String lsaId = locationInfoGPRS.get("lsaId").getAsString();
-                if (!lsaId.isEmpty())
-                    psiResponse.put("lsaId", lsaId);
-            }
-            if (locationInfoGPRS.get("routeingAreaId") != null) {
-                String routeingAreaId = locationInfoGPRS.get("routeingAreaId").getAsString();
-                if (!routeingAreaId.isEmpty())
-                    psiResponse.put("routeingAreaId", routeingAreaId);
-            }
+        String mmeRealm = sriPslResponse.get("mmeRealm");
+        if (mmeRealm != null) {
+            mmeName = mmeName.concat("@").concat(mmeRealm);
+            data.putSingle("NetworkEntityName", mmeName);
         }
 
-        JsonObject mnpInfoResult = jelement.getAsJsonObject();
-        mnpInfoResult = mnpInfoResult.getAsJsonObject("MNPInfoResult");
-        if (mnpInfoResult != null) {
-            if (mnpInfoResult.get("mnpStatus") != null) {
-                String mnpStatus = mnpInfoResult.get("mnpStatus").getAsString();
-                if (!mnpStatus.isEmpty())
-                    psiResponse.put("mnpStatus", mnpStatus);
-            }
-            if (mnpInfoResult.get("mnpMsisdn") != null) {
-                String mnpMsisdn = mnpInfoResult.get("mnpMsisdn").getAsString();
-                if (!mnpMsisdn.isEmpty())
-                    psiResponse.put("mnpMsisdn", mnpMsisdn);
-            }
-            if (mnpInfoResult.get("mnpImsi") != null) {
-                String mnpImsi = mnpInfoResult.get("mnpImsi").getAsString();
-                if (!mnpImsi.isEmpty())
-                    psiResponse.put("mnpImsi", mnpImsi);
-            }
-            if (mnpInfoResult.get("mnpRouteingNumber") != null) {
-                String mnpRouteingNumber = mnpInfoResult.get("mnpRouteingNumber").getAsString();
-                if (!mnpRouteingNumber.isEmpty())
-                    psiResponse.put("mnpRouteingNumber", mnpRouteingNumber);
-            }
-        }
-        return psiResponse;
+        String typeOfShape = sriPslResponse.get("typeOfShape");
+        if (typeOfShape != null)
+            data.putSingle("TypeOfShape", typeOfShape);
+
+        String latitude = sriPslResponse.get("latitude");
+        if (latitude != null)
+            data.putSingle("DeviceLatitude", latitude);
+
+        String longitude = sriPslResponse.get("longitude");
+        if (longitude != null)
+            data.putSingle("DeviceLongitude", longitude);
+
+        String uncertainty = sriPslResponse.get("uncertainty");
+        if (uncertainty != null)
+            data.putSingle("Uncertainty", uncertainty);
+
+        String uncertaintySemiMajorAxis = sriPslResponse.get("uncertaintySemiMajorAxis");
+        if (uncertaintySemiMajorAxis != null)
+            data.putSingle("UncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
+
+        String uncertaintySemiMinorAxis = sriPslResponse.get("uncertaintySemiMinorAxis");
+        if (uncertaintySemiMinorAxis != null)
+            data.putSingle("UncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
+
+        String angleOfMajorAxis = sriPslResponse.get("angleOfMajorAxis");
+        if (angleOfMajorAxis != null)
+            data.putSingle("AngleOfMajorAxis", angleOfMajorAxis);
+
+        String confidence = sriPslResponse.get("confidence");
+        if (confidence != null)
+            data.putSingle("Confidence", confidence);
+
+        String altitude = sriPslResponse.get("altitude");
+        if (altitude != null)
+            data.putSingle("DeviceAltitude", altitude);
+
+        String uncertaintyAltitude = sriPslResponse.get("uncertaintyAltitude");
+        if (uncertaintyAltitude != null)
+            data.putSingle("UncertaintyAltitude", uncertaintyAltitude);
+
+        String innerRadius = sriPslResponse.get("innerRadius");
+        if (innerRadius != null)
+            data.putSingle("InnerRadius", innerRadius);
+
+        String uncertaintyInnerRadius = sriPslResponse.get("uncertaintyInnerRadius");
+        if (uncertaintyInnerRadius != null)
+            data.putSingle("UncertaintyInnerRadius", uncertaintyInnerRadius);
+
+        String offsetAngle = sriPslResponse.get("offsetAngle");
+        if (offsetAngle != null)
+            data.putSingle("OffsetAngle", offsetAngle);
+
+        String includedAngle = sriPslResponse.get("includedAngle");
+        if (includedAngle != null)
+            data.putSingle("IncludedAngle", includedAngle);
+
+        String horizontalSpeed = sriPslResponse.get("horizontalSpeed");
+        if (horizontalSpeed != null)
+            data.putSingle("HorizontalSpeed", horizontalSpeed);
+
+        String verticalSpeed = sriPslResponse.get("verticalSpeed");
+        if (verticalSpeed != null)
+            data.putSingle("VerticalSpeed", verticalSpeed);
+
+        String uncertaintyHorizontalSpeed = sriPslResponse.get("uncertaintyHorizontalSpeed");
+        if (uncertaintyHorizontalSpeed != null)
+            data.putSingle("UncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
+
+        String uncertaintyVerticalSpeed = sriPslResponse.get("uncertaintyVerticalSpeed");
+        if (uncertaintyVerticalSpeed != null)
+            data.putSingle("UncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
+
+        String bearing = sriPslResponse.get("bearing");
+        if (bearing != null)
+            data.putSingle("Bearing", bearing);
+
+        String ageOfLocationEstimate = sriPslResponse.get("ageOfLocationEstimate");
+        if (ageOfLocationEstimate != null)
+            data.putSingle("LocationAge", ageOfLocationEstimate);
+
+        String mcc = sriPslResponse.get("mcc");
+        if (mcc != null)
+            data.putSingle("MobileCountryCode", mcc);
+
+        String mnc = sriPslResponse.get("mnc");
+        if (mnc != null)
+            data.putSingle("MobileNetworkCode", mnc);
+
+        String lac = sriPslResponse.get("lac");
+        if (lac != null)
+            data.putSingle("LocationAreaCode", lac);
+
+        String ci = sriPslResponse.get("ci");
+        if (ci != null)
+            data.putSingle("CellId", ci);
+
+        String sac = sriPslResponse.get("sac");
+        if (sac != null)
+            data.putSingle("ServiceAreaCode", sac);
+
+        /*String gprsNodeIndicator = sriPslResponse.get("gprsNodeIndicator");
+        String deferredMTLRresponseIndicator = sriPslResponse.get("deferredMTLRresponseIndicator");
+        String geranPositioningInfo = sriPslResponse.get("geranPositioningInfo");
+        String geranGanssPositioningData = sriPslResponse.get("geranGanssPositioningData");
+        String utranPositioningInfo = sriPslResponse.get("utranPositioningInfo");
+        String utranGanssPositioningData = sriPslResponse.get("utranGanssPositioningData");
+        String velocityType = sriPslResponse.get("velocityType");*/
+
     }
 
-    public static HashMap<String, String> parsePlrJsonString(String jsonLine) {
+
+    private static HashMap<String, String> parsePlrJsonString(String jsonLine) {
         HashMap <String, String> rirPlrResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
@@ -3005,29 +3086,79 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (!ageOfLocationEstimate.isEmpty())
                     rirPlrResponse.put("ageOfLocationEstimate", ageOfLocationEstimate);
             }
-            JsonObject cgiSaiEci = pla.getAsJsonObject("CGIorSAIorESMLCCellInfo");
-            if (cgiSaiEci != null) {
-                if (cgiSaiEci.get("cellGlobalIdentity") != null) {
-                    String cgi = cgiSaiEci.get("cellGlobalIdentity").getAsString();
-                    if (!cgi.isEmpty())
-                        rirPlrResponse.put("cellGlobalIdentity", cgi);
-                }
-                if (cgiSaiEci.get("serviceAreaIdentity") != null) {
-                    String sai = cgiSaiEci.get("serviceAreaIdentity").getAsString();
-                    if (!sai.isEmpty())
-                        rirPlrResponse.put("serviceAreaIdentity", sai);
-                }
-                if (cgiSaiEci.get("eUtranCgi") != null) {
-                    String eUtranCgi = cgiSaiEci.get("eUtranCgi").getAsString();
-                    if (!eUtranCgi.isEmpty())
-                        rirPlrResponse.put("eUtranCgi", eUtranCgi);
-                }
-                if (cgiSaiEci.get("cellPortionId") != null) {
-                    String cellPortionId = cgiSaiEci.get("cellPortionId").getAsString();
-                    if (!cellPortionId.isEmpty())
-                        rirPlrResponse.put("cellPortionId", cellPortionId);
-                }
+
+            JsonObject cgiSaiEsmlcCell = pla.getAsJsonObject("CGIorSAIorESMLCCellInfo");
+            JsonObject cgi = cgiSaiEsmlcCell.getAsJsonObject("CGI");
+            if (cgi.get("mcc") != null) {
+                String lteCgiMcc = cgi.get("mcc").getAsString();
+                if (!lteCgiMcc.isEmpty())
+                    rirPlrResponse.put("mcc", lteCgiMcc);
             }
+            if (cgi.get("mnc") != null) {
+                String lteCgiMnc = cgi.get("mnc").getAsString();
+                if (!lteCgiMnc.isEmpty())
+                    rirPlrResponse.put("mnc", lteCgiMnc);
+            }
+            if (cgi.get("lac") != null) {
+                String lteCgiLac = cgi.get("lac").getAsString();
+                if (!lteCgiLac.isEmpty())
+                    rirPlrResponse.put("lac", lteCgiLac);
+            }
+            if (cgi.get("ci") != null) {
+                String lteCgiCi = cgi.get("ci").getAsString();
+                if (!lteCgiCi.isEmpty())
+                    rirPlrResponse.put("ci", lteCgiCi);
+            }
+
+            JsonObject sai = cgiSaiEsmlcCell.getAsJsonObject("SAI");
+            if (sai.get("mcc") != null) {
+                String eSaiMcc = sai.get("mcc").getAsString();
+                if (!eSaiMcc.isEmpty())
+                    rirPlrResponse.put("mcc", eSaiMcc);
+            }
+            if (sai.get("mnc") != null) {
+                String eSaiMnc = sai.get("mnc").getAsString();
+                if (!eSaiMnc.isEmpty())
+                    rirPlrResponse.put("mnc", eSaiMnc);
+            }
+            if (sai.get("lac") != null) {
+                String eSaiLac = sai.get("lac").getAsString();
+                if (!eSaiLac.isEmpty())
+                    rirPlrResponse.put("lac", eSaiLac);
+            }
+            if (sai.get("sac") != null) {
+                String eSaiSac = sai.get("sac").getAsString();
+                if (!eSaiSac.isEmpty())
+                    rirPlrResponse.put("sac", eSaiSac);
+            }
+
+            JsonObject ecgi = cgiSaiEsmlcCell.getAsJsonObject("ECGI");
+            if (ecgi.get("mcc") != null) {
+                String ecgiMcc = ecgi.get("mcc").getAsString();
+                if (!ecgiMcc.isEmpty())
+                    rirPlrResponse.put("mcc", ecgiMcc);
+            }
+            if (ecgi.get("mnc") != null) {
+                String ecgiMnc = ecgi.get("mnc").getAsString();
+                if (!ecgiMnc.isEmpty())
+                    rirPlrResponse.put("mnc", ecgiMnc);
+            }
+            if (ecgi.get("eNBId") != null) {
+                String ecgiENBId = ecgi.get("eNBId").getAsString();
+                if (!ecgiENBId.isEmpty())
+                rirPlrResponse.put("eNBId", ecgiENBId);
+            }
+            if (ecgi.get("ci") != null) {
+                String ecgiCi = ecgi.get("ci").getAsString();
+                if (!ecgiCi.isEmpty())
+                    rirPlrResponse.put("ecgiCi", ecgiCi);
+            }
+            if (ecgi.get("cellPortionId") != null) {
+                String cellPortionId = ecgi.get("cellPortionId").getAsString();
+                if (!cellPortionId.isEmpty())
+                    rirPlrResponse.put("cellPortionId", cellPortionId);
+            }
+
             JsonObject geranPosInfo = pla.getAsJsonObject("GERANPositioningInfo");
             if (geranPosInfo != null) {
                 if (geranPosInfo.get("geranPositioningInfo") != null) {
@@ -3105,6 +3236,788 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             }
         }
         return rirPlrResponse;
+    }
+
+    private static void putDataFromRirPlrResponse(HashMap<String, String> rirPlrResponse, MultivaluedMap<String, String> data) {
+        String lcsReferenceNumber = rirPlrResponse.get("lcsReferenceNumber");
+        if (lcsReferenceNumber != null)
+            data.putSingle("ReferenceNumber", lcsReferenceNumber);
+
+        String msisdn = rirPlrResponse.get("msisdn");
+        if (msisdn != null)
+            data.putSingle("MSISDN", msisdn);
+
+        String imsi = rirPlrResponse.get("imsi");
+        if (imsi != null)
+            data.putSingle("IMSI", imsi);
+
+        String lmsi = rirPlrResponse.get("lmsi");
+        if (lmsi != null)
+            data.putSingle("LMSI", lmsi);
+
+        String sgsnName = rirPlrResponse.get("sgsnName");
+        if (sgsnName != null)
+            data.putSingle("NetworkEntityName", sgsnName);
+
+        String sgsnRealm = rirPlrResponse.get("sgsnRealm");
+        if (sgsnRealm != null) {
+            sgsnName = sgsnName.concat("@").concat(sgsnRealm);
+            data.putSingle("NetworkEntityName", sgsnName);
+        }
+
+        String mmeName = rirPlrResponse.get("mmeName");
+        if (mmeName != null)
+            data.putSingle("NetworkEntityName", mmeName);
+
+        String mmeRealm = rirPlrResponse.get("mmeRealm");
+        if (mmeRealm != null) {
+            mmeName = mmeName.concat("@").concat(mmeRealm);
+            data.putSingle("NetworkEntityName", mmeName);
+        }
+
+        String mscNumber = rirPlrResponse.get("mscNumber");
+        if (mscNumber != null)
+            data.putSingle("NetworkEntityAddress", mscNumber);
+
+        String sgsnNumber = rirPlrResponse.get("sgsnNumber");
+        if (sgsnNumber != null)
+            data.putSingle("NetworkEntityAddress", sgsnNumber);
+
+        String typeOfShape = rirPlrResponse.get("typeOfShape");
+        if (typeOfShape != null)
+            data.putSingle("TypeOfShape", typeOfShape);
+
+        String latitude = rirPlrResponse.get("latitude");
+        if (latitude != null)
+            data.putSingle("DeviceLatitude", latitude);
+
+        String longitude = rirPlrResponse.get("longitude");
+        if (longitude != null)
+            data.putSingle("DeviceLongitude", longitude);
+
+        String uncertainty = rirPlrResponse.get("uncertainty");
+        if (uncertainty != null)
+            data.putSingle("Uncertainty", uncertainty);
+
+        String uncertaintySemiMajorAxis = rirPlrResponse.get("uncertaintySemiMajorAxis");
+        if (uncertaintySemiMajorAxis != null)
+            data.putSingle("UncertaintySemiMajorAxis", uncertaintySemiMajorAxis);
+
+        String uncertaintySemiMinorAxis = rirPlrResponse.get("uncertaintySemiMinorAxis");
+        if (uncertaintySemiMinorAxis != null)
+            data.putSingle("UncertaintySemiMinorAxis", uncertaintySemiMinorAxis);
+
+        String angleOfMajorAxis = rirPlrResponse.get("angleOfMajorAxis");
+        if (angleOfMajorAxis != null)
+            data.putSingle("AngleOfMajorAxis", angleOfMajorAxis);
+
+        String confidence = rirPlrResponse.get("confidence");
+        if (confidence != null)
+            data.putSingle("Confidence", confidence);
+
+        String altitude = rirPlrResponse.get("altitude");
+        if (altitude != null)
+            data.putSingle("DeviceAltitude", altitude);
+
+        String uncertaintyAltitude = rirPlrResponse.get("uncertaintyAltitude");
+        if (uncertaintyAltitude != null)
+            data.putSingle("UncertaintyAltitude", uncertaintyAltitude);
+
+        String innerRadius = rirPlrResponse.get("innerRadius");
+        if (innerRadius != null)
+            data.putSingle("InnerRadius", innerRadius);
+
+        String uncertaintyInnerRadius = rirPlrResponse.get("uncertaintyInnerRadius");
+        if (uncertaintyInnerRadius != null)
+            data.putSingle("UncertaintyInnerRadius", uncertaintyInnerRadius);
+
+        String offsetAngle = rirPlrResponse.get("offsetAngle");
+        if (offsetAngle != null)
+            data.putSingle("OffsetAngle", offsetAngle);
+
+        String includedAngle = rirPlrResponse.get("includedAngle");
+        if (includedAngle != null)
+            data.putSingle("IncludedAngle", includedAngle);
+
+        String horizontalSpeed = rirPlrResponse.get("horizontalSpeed");
+        if (horizontalSpeed != null)
+            data.putSingle("HorizontalSpeed", horizontalSpeed);
+
+        String verticalSpeed = rirPlrResponse.get("verticalSpeed");
+        if (verticalSpeed != null)
+            data.putSingle("VerticalSpeed", verticalSpeed);
+
+        String uncertaintyHorizontalSpeed = rirPlrResponse.get("uncertaintyHorizontalSpeed");
+        if (uncertaintyHorizontalSpeed != null)
+            data.putSingle("UncertaintyHorizontalSpeed", uncertaintyHorizontalSpeed);
+
+        String uncertaintyVerticalSpeed = rirPlrResponse.get("uncertaintyVerticalSpeed");
+        if (uncertaintyVerticalSpeed != null)
+            data.putSingle("UncertaintyVerticalSpeed", uncertaintyVerticalSpeed);
+
+        String bearing = rirPlrResponse.get("bearing");
+        if (bearing != null)
+            data.putSingle("Bearing", bearing);
+
+        String ageOfLocationEstimate = rirPlrResponse.get("ageOfLocationEstimate");
+        if (ageOfLocationEstimate != null)
+            data.putSingle("LocationAge", ageOfLocationEstimate);
+
+        String mcc = rirPlrResponse.get("mcc");
+        if (mcc != null)
+            data.putSingle("MobileCountryCode", mcc);
+
+        String mnc = rirPlrResponse.get("mnc");
+        if (mnc != null)
+            data.putSingle("MobileNetworkCode", mnc);
+
+        String lac = rirPlrResponse.get("lac");
+        if (lac != null)
+            data.putSingle("LocationAreaCode", lac);
+
+        String ci = rirPlrResponse.get("ci");
+        if (ci != null)
+            data.putSingle("CellId", ci);
+
+        String sac = rirPlrResponse.get("sac");
+        if (sac != null)
+            data.putSingle("ServiceAreaCode", sac);
+
+        String eUtranCgiCi = rirPlrResponse.get("ecgiCi");
+        if (eUtranCgiCi != null)
+            data.putSingle("CellId", eUtranCgiCi);
+
+        String eNodeBId = rirPlrResponse.get("eNBId");
+        if (eNodeBId != null)
+            data.putSingle("ENodeBId", eNodeBId);
+
+        String civicAddress = rirPlrResponse.get("civicAddress");
+        if (civicAddress != null)
+            data.putSingle("CivicAddress", civicAddress);
+
+        String barometricPressure = rirPlrResponse.get("barometricPressure");
+        if (barometricPressure != null)
+            data.putSingle("BarometricPressure", barometricPressure);
+    }
+
+    private static HashMap<String, String> parseUdaJsonString(String jsonLine) {
+        HashMap <String, String> udrResponse = new HashMap<>();
+        JsonElement jelement = new JsonParser().parse(jsonLine);
+        JsonObject jobject = jelement.getAsJsonObject();
+        String network = jobject.get("network").getAsString();
+        udrResponse.put("network", network);
+        String protocol = jobject.get("protocol").getAsString();
+        udrResponse.put("protocol", protocol);
+        String operation = jobject.get("operation").getAsString();
+        udrResponse.put("operation", operation);
+
+        JsonObject csLocationInformation = jelement.getAsJsonObject();
+        csLocationInformation = csLocationInformation.getAsJsonObject("CSLocationInformation");
+        JsonObject locationNumber = csLocationInformation.getAsJsonObject("LocationNumber");
+        if (locationNumber != null) {
+            if (locationNumber.get("oddFlag") != null) {
+                String oF = locationNumber.get("oddFlag").getAsString();
+                udrResponse.put("oddFlag", oF);
+            }
+            if (locationNumber.get("natureOfAddressIndicator") != null) {
+                String nai = locationNumber.get("natureOfAddressIndicator").getAsString();
+                udrResponse.put("nai", nai);
+            }
+            if (locationNumber.get("internalNetworkNumberIndicator") != null) {
+                String inni = locationNumber.get("internalNetworkNumberIndicator").getAsString();
+                udrResponse.put("inni", inni);
+            }
+            if (locationNumber.get("numberingPlanIndicator") != null) {
+                String npi = locationNumber.get("numberingPlanIndicator").getAsString();
+                udrResponse.put("npi", npi);
+            }
+            if (locationNumber.get("addressRepresentationRestrictedIndicator") != null) {
+                String arpi = locationNumber.get("addressRepresentationRestrictedIndicator").getAsString();
+                udrResponse.put("arpi", arpi);
+            }
+            if (locationNumber.get("screeningIndicator") != null) {
+                String si = locationNumber.get("screeningIndicator").getAsString();
+                udrResponse.put("si", si);
+            }
+            if (locationNumber.get("address") != null) {
+                String address = locationNumber.get("address").getAsString();
+                udrResponse.put("address", address);
+            }
+        }
+
+        JsonObject csCgi = csLocationInformation.getAsJsonObject("CGI");
+        if (csCgi != null) {
+            if (csCgi.get("mcc") != null) {
+                String csMcc = csCgi.get("mcc").getAsString();
+                udrResponse.put("csMcc", csMcc);
+            }
+            if (csCgi.get("mnc") != null) {
+                String csMnc = csCgi.get("mnc").getAsString();
+                udrResponse.put("csMnc", csMnc);
+            }
+            if (csCgi.get("lac") != null) {
+                String csLac = csCgi.get("lac").getAsString();
+                udrResponse.put("csLac", csLac);
+            }
+            if (csCgi.get("ci") != null) {
+                String csCi = csCgi.get("ci").getAsString();
+                udrResponse.put("csCi", csCi);
+            }
+        }
+
+        JsonObject csGeographicalInformation = csLocationInformation.getAsJsonObject("GeographicalInformation");
+        if (csGeographicalInformation != null) {
+            if (csGeographicalInformation.get("typeOfShape") != null) {
+                String csTypeOfShape = csGeographicalInformation.get("typeOfShape").getAsString();
+                udrResponse.put("csGeogTypeOfShape", csTypeOfShape);
+            }
+            if (csGeographicalInformation.get("latitude") != null) {
+                String csLatitude = csGeographicalInformation.get("latitude").getAsString();
+                udrResponse.put("csGeogLatitude", csLatitude);
+            }
+            if (csGeographicalInformation.get("longitude") != null) {
+                String csLongitude = csGeographicalInformation.get("longitude").getAsString();
+                udrResponse.put("csGeogLongitude", csLongitude);
+            }
+            if (csGeographicalInformation.get("uncertainty") != null) {
+                String csUncertainty = csGeographicalInformation.get("uncertainty").getAsString();
+                udrResponse.put("csGeogUncertainty", csUncertainty);
+            }
+        }
+
+        JsonObject csGeodeticInformation = csLocationInformation.getAsJsonObject("GeodeticInformation");
+        if (csGeodeticInformation != null) {
+            if (csGeodeticInformation.get("typeOfShape") != null) {
+                String csGeodTypeOfShape = csGeodeticInformation.get("typeOfShape").getAsString();
+                udrResponse.put("csGeodTypeOfShape", csGeodTypeOfShape);
+            }
+            if (csGeodeticInformation.get("latitude") != null) {
+                String csGeodLatitude = csGeodeticInformation.get("latitude").getAsString();
+                udrResponse.put("csGeodLatitude", csGeodLatitude);
+            }
+            if (csGeodeticInformation.get("longitude") != null) {
+                String csGeodLongitude = csGeodeticInformation.get("longitude").getAsString();
+                udrResponse.put("csGeodLongitude", csGeodLongitude);
+            }
+            if (csGeodeticInformation.get("uncertainty") != null) {
+                String csGeodUncertainty = csGeodeticInformation.get("uncertainty").getAsString();
+                udrResponse.put("csGeodUncertainty", csGeodUncertainty);
+            }
+            if (csGeodeticInformation.get("confidence") != null) {
+                String csConfidence = csGeodeticInformation.get("confidence").getAsString();
+                udrResponse.put("csGeodConfidence", csConfidence);
+            }
+            if (csGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                String csScreeningAndPresentationIndicators = csGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                udrResponse.put("csGeodScreeningAndPresentationIndicators", csScreeningAndPresentationIndicators);
+            }
+        }
+
+        String mscNumber = csLocationInformation.get("mscNumber").getAsString();
+        if (mscNumber != null) {
+            udrResponse.put("mscNumber", mscNumber);
+        }
+
+        String vlrNumber = csLocationInformation.get("vlrNumber").getAsString();
+        if (vlrNumber != null) {
+            udrResponse.put("vlrNumber", vlrNumber);
+        }
+
+        String csAgeOfLocationInfo = csLocationInformation.get("ageOfLocationInformation").getAsString();
+        if (csAgeOfLocationInfo != null) {
+            udrResponse.put("csAgeOfLocationInformation", csAgeOfLocationInfo);
+        }
+
+        String csCurrentLocationRetrieved = csLocationInformation.get("currentLocationRetrieved").getAsString();
+        if (csCurrentLocationRetrieved != null) {
+            udrResponse.put("csCurrentLocationRetrieved", csCurrentLocationRetrieved);
+        }
+
+        JsonObject psLocationInformation = jelement.getAsJsonObject();
+        psLocationInformation = psLocationInformation.getAsJsonObject("PSLocationInformation");
+        JsonObject routingAreaId = psLocationInformation.getAsJsonObject("RAI");
+        if (routingAreaId != null) {
+            if (routingAreaId.get("mcc") != null) {
+                String raiMcc = routingAreaId.get("mcc").getAsString();
+                udrResponse.put("raiMcc", raiMcc);
+            }
+            if (routingAreaId.get("mnc") != null) {
+                String raiMnc = routingAreaId.get("mnc").getAsString();
+                udrResponse.put("raiMnc", raiMnc);
+            }
+            if (routingAreaId.get("lac") != null) {
+                String raiLac = routingAreaId.get("lac").getAsString();
+                udrResponse.put("raiLac", raiLac);
+            }
+            if (routingAreaId.get("rac") != null) {
+                String rac = routingAreaId.get("rac").getAsString();
+                udrResponse.put("rac", rac);
+            }
+
+        }
+
+        JsonObject psCgi = psLocationInformation.getAsJsonObject("CGI");
+        if (psCgi != null) {
+            if (psCgi.get("mcc") != null) {
+                String psMcc = psCgi.get("mcc").getAsString();
+                udrResponse.put("psMcc", psMcc);
+            }
+            if (psCgi.get("mnc") != null) {
+                String psMnc = psCgi.get("mnc").getAsString();
+                udrResponse.put("psMnc", psMnc);
+            }
+            if (psCgi.get("lac") != null) {
+                String psLac = psCgi.get("lac").getAsString();
+                udrResponse.put("psLac", psLac);
+            }
+            if (psCgi.get("ci") != null) {
+                String psCi = psCgi.get("ci").getAsString();
+                udrResponse.put("psCi", psCi);
+            }
+            if (psCgi.get("sac") != null) {
+                String psSac = psCgi.get("psSac").getAsString();
+                udrResponse.put("psSac", psSac);
+            }
+        }
+
+        JsonObject psGeographicalInformation = psLocationInformation.getAsJsonObject("GeographicalInformation");
+        if (psGeographicalInformation != null) {
+            if (psGeographicalInformation.get("typeOfShape") != null) {
+                String psTypeOfShape = psGeographicalInformation.get("typeOfShape").getAsString();
+                udrResponse.put("psGeogTypeOfShape", psTypeOfShape);
+            }
+            if (psGeographicalInformation.get("latitude") != null) {
+                String psLatitude = psGeographicalInformation.get("latitude").getAsString();
+                udrResponse.put("psGeogLatitude", psLatitude);
+            }
+            if (psGeographicalInformation.get("longitude") != null) {
+                String psLongitude = psGeographicalInformation.get("longitude").getAsString();
+                udrResponse.put("psGeogLongitude", psLongitude);
+            }
+            if (psGeographicalInformation.get("uncertainty") != null) {
+                String psUncertainty = psGeographicalInformation.get("uncertainty").getAsString();
+                udrResponse.put("psGeogUncertainty", psUncertainty);
+            }
+        }
+
+        JsonObject psGeodeticInformation = psLocationInformation.getAsJsonObject("GeodeticInformation");
+        if (psGeodeticInformation != null) {
+            if (psGeodeticInformation.get("typeOfShape") != null) {
+                String psGeodTypeOfShape = psGeodeticInformation.get("typeOfShape").getAsString();
+                udrResponse.put("psGeodTypeOfShape", psGeodTypeOfShape);
+            }
+            if (psGeodeticInformation.get("latitude") != null) {
+                String psGeodLatitude = psGeodeticInformation.get("latitude").getAsString();
+                udrResponse.put("psGeodLatitude", psGeodLatitude);
+            }
+            if (psGeodeticInformation.get("longitude") != null) {
+                String psGeodLongitude = psGeodeticInformation.get("longitude").getAsString();
+                udrResponse.put("psGeodLongitude", psGeodLongitude);
+            }
+            if (psGeodeticInformation.get("uncertainty") != null) {
+                String psGeodUncertainty = psGeodeticInformation.get("uncertainty").getAsString();
+                udrResponse.put("psGeodUncertainty", psGeodUncertainty);
+            }
+            if (psGeodeticInformation.get("confidence") != null) {
+                String psConfidence = psGeodeticInformation.get("confidence").getAsString();
+                udrResponse.put("psGeodConfidence", psConfidence);
+            }
+            if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                String psScreeningAndPresentationIndicators = psGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                udrResponse.put("psGeodScreeningAndPresentationIndicators", psScreeningAndPresentationIndicators);
+            }
+        }
+
+        String sgsnNumber = psLocationInformation.get("sgsnNumber").getAsString();
+        if (sgsnNumber != null) {
+            udrResponse.put("sgsnNumber", sgsnNumber);
+        }
+
+        String psAgeOfLocationInfo = psLocationInformation.get("ageOfLocationInformation").getAsString();
+        if (psAgeOfLocationInfo != null) {
+            udrResponse.put("psAgeOfLocationInformation", psAgeOfLocationInfo);
+        }
+
+        String psCurrentLocationRetrieved = psLocationInformation.get("currentLocationRetrieved").getAsString();
+        if (psCurrentLocationRetrieved != null) {
+            //String csCurrent = vlrNumber.get("currentLocationRetrieved").getAsString();
+            udrResponse.put("psCurrentLocationRetrieved", psCurrentLocationRetrieved);
+        }
+
+        JsonObject epsLocationInformation = jelement.getAsJsonObject();
+        epsLocationInformation = epsLocationInformation.getAsJsonObject("EPSLocationInformation");
+        JsonObject trackingAreaId = epsLocationInformation.getAsJsonObject("TAI");
+        if (trackingAreaId != null) {
+            if (trackingAreaId.get("mcc") != null) {
+                String taiMcc = trackingAreaId.get("mcc").getAsString();
+                udrResponse.put("taiMcc", taiMcc);
+            }
+            if (trackingAreaId.get("mnc") != null) {
+                String taiMnc = trackingAreaId.get("mnc").getAsString();
+                udrResponse.put("taiMnc", taiMnc);
+            }
+            if (trackingAreaId.get("tac") != null) {
+                String tac = trackingAreaId.get("tac").getAsString();
+                udrResponse.put("tac", tac);
+            }
+
+        }
+
+        JsonObject epsCgi = epsLocationInformation.getAsJsonObject("ECGI");
+        if (epsCgi != null) {
+            if (epsCgi.get("mcc") != null) {
+                String epsMcc = epsCgi.get("mcc").getAsString();
+                udrResponse.put("epsMcc", epsMcc);
+            }
+            if (epsCgi.get("mnc") != null) {
+                String epsMnc = epsCgi.get("mnc").getAsString();
+                udrResponse.put("epsMnc", epsMnc);
+            }
+            if (epsCgi.get("eNBId") != null) {
+                String eNBId = epsCgi.get("eNBId").getAsString();
+                udrResponse.put("eNBId", eNBId);
+            }
+            if (epsCgi.get("ci") != null) {
+                String epsCi = epsCgi.get("ci").getAsString();
+                udrResponse.put("epsCi", epsCi);
+            }
+        }
+
+        JsonObject epsGeographicalInformation = epsLocationInformation.getAsJsonObject("GeographicalInformation");
+        if (epsGeographicalInformation != null) {
+            if (epsGeographicalInformation.get("typeOfShape") != null) {
+                String epsTypeOfShape = epsGeographicalInformation.get("typeOfShape").getAsString();
+                udrResponse.put("epsGeogTypeOfShape", epsTypeOfShape);
+            }
+            if (epsGeographicalInformation.get("latitude") != null) {
+                String epsLatitude = epsGeographicalInformation.get("latitude").getAsString();
+                udrResponse.put("epsGeogLatitude", epsLatitude);
+            }
+            if (epsGeographicalInformation.get("longitude") != null) {
+                String epsLongitude = epsGeographicalInformation.get("longitude").getAsString();
+                udrResponse.put("epsGeogLongitude", epsLongitude);
+            }
+            if (epsGeographicalInformation.get("uncertainty") != null) {
+                String epsUncertainty = epsGeographicalInformation.get("uncertainty").getAsString();
+                udrResponse.put("epsGeogUncertainty", epsUncertainty);
+            }
+        }
+
+        JsonObject epsGeodeticInformation = epsLocationInformation.getAsJsonObject("GeodeticInformation");
+        if (epsGeodeticInformation != null) {
+            if (epsGeodeticInformation.get("typeOfShape") != null) {
+                String epsGeodTypeOfShape = epsGeodeticInformation.get("typeOfShape").getAsString();
+                udrResponse.put("epsGeodTypeOfShape", epsGeodTypeOfShape);
+            }
+            if (epsGeodeticInformation.get("latitude") != null) {
+                String epsGeodLatitude = epsGeodeticInformation.get("latitude").getAsString();
+                udrResponse.put("epsGeodLatitude", epsGeodLatitude);
+            }
+            if (epsGeodeticInformation.get("longitude") != null) {
+                String epsGeodLongitude = epsGeodeticInformation.get("longitude").getAsString();
+                udrResponse.put("epsGeodLongitude", epsGeodLongitude);
+            }
+            if (epsGeodeticInformation.get("uncertainty") != null) {
+                String epsGeodUncertainty = epsGeodeticInformation.get("uncertainty").getAsString();
+                udrResponse.put("epsGeodUncertainty", epsGeodUncertainty);
+            }
+            if (epsGeodeticInformation.get("confidence") != null) {
+                String epsConfidence = epsGeodeticInformation.get("confidence").getAsString();
+                udrResponse.put("epsGeodConfidence", epsConfidence);
+            }
+            if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                String epsScreeningAndPresentationIndicators = epsGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                udrResponse.put("epsGeodScreeningAndPresentationIndicators", epsScreeningAndPresentationIndicators);
+            }
+        }
+
+        String mmeName = epsLocationInformation.get("mmeName").getAsString();
+        if (mmeName != null) {
+            udrResponse.put("mmeName", mmeName);
+        }
+
+        String epsAgeOfLocationInfo = epsLocationInformation.get("ageOfLocationInformation").getAsString();
+        if (epsAgeOfLocationInfo != null) {
+            udrResponse.put("epsAgeOfLocationInformation", epsAgeOfLocationInfo);
+        }
+
+        String epsCurrentLocationRetrieved = epsLocationInformation.get("currentLocationRetrieved").getAsString();
+        if (epsCurrentLocationRetrieved != null) {
+            udrResponse.put("epsCurrentLocationRetrieved", epsCurrentLocationRetrieved);
+        }
+
+        return udrResponse;
+    }
+
+    private static void putDataFromShUdrResponse(HashMap<String, String> udrResponse, MultivaluedMap<String, String> data) {
+        // CS Subscriber Location Info
+        // CGI
+        String csMcc = udrResponse.get("csMcc");
+        if (csMcc != null)
+            data.putSingle("MobileCountryCode", csMcc);
+
+        String csMnc = udrResponse.get("csMnc");
+        if (csMnc != null)
+            data.putSingle("MobileNetworkCode", csMnc);
+
+        String csLac = udrResponse.get("csLac");
+        if (csLac != null)
+            data.putSingle("LocationAreaCode", csLac);
+
+        String csCi = udrResponse.get("csCi");
+        if (csCi != null)
+            data.putSingle("CellId", csCi);
+
+        // Location Number
+        String locationNumber = udrResponse.get("address");
+        if (locationNumber != null)
+            data.putSingle("LocationNumber", locationNumber);
+
+        // Subscriber Geographic Location Info
+        String csGeogTypeOfShape = udrResponse.get("csGeogTypeOfShape");
+        if (csGeogTypeOfShape != null)
+            data.putSingle("TypeOfShape", csGeogTypeOfShape);
+
+        String csGeogLatitude = udrResponse.get("csGeogLatitude");
+        if (csGeogLatitude != null)
+            data.putSingle("DeviceLatitude", csGeogLatitude);
+
+        String csGeogLongitude = udrResponse.get("csGeogLongitude");
+        if (csGeogLongitude != null)
+            data.putSingle("DeviceLongitude", csGeogLongitude);
+
+        String csGeogUncertainty = udrResponse.get("csGeogUncertainty");
+        if (csGeogUncertainty != null)
+            data.putSingle("Uncertainty", csGeogUncertainty);
+
+        // Subscriber Geodetic Location Info
+        String csGeodTypeOfShape = udrResponse.get("csGeodTypeOfShape");
+        if (csGeodTypeOfShape != null)
+            data.putSingle("TypeOfShape", csGeodTypeOfShape);
+
+        String csGeodLatitude = udrResponse.get("csGeodLatitude");
+        if (csGeodLatitude != null)
+            data.putSingle("DeviceLatitude", csGeodLatitude);
+
+        String csGeodLongitude = udrResponse.get("csGeodLongitude");
+        if (csGeodLongitude != null)
+            data.putSingle("DeviceLongitude", csGeodLongitude);
+
+        String csGeodUncertainty = udrResponse.get("csGeodUncertainty");
+        if (csGeodUncertainty != null)
+            data.putSingle("Uncertainty", csGeodUncertainty);
+
+        String csGeodConfidence = udrResponse.get("csGeodConfidence");
+        if (csGeodConfidence != null)
+            data.putSingle("Confidence", csGeodConfidence);
+
+        String csGeodScreeningAndPresentationIndicators = udrResponse.get("csGeodScreeningAndPresentationIndicators");
+        if (csGeodScreeningAndPresentationIndicators != null)
+            data.putSingle("ScreeningAndPresentationIndicators", csGeodScreeningAndPresentationIndicators);
+
+        String vlrNumber = udrResponse.get("vlrNumber");
+        if (vlrNumber != null)
+            data.putSingle("NetworkEntityAddress", vlrNumber);
+
+        String mscNumber = udrResponse.get("mscNumber");
+        if (mscNumber != null)
+            data.putSingle("NetworkEntityAddress", mscNumber);
+
+        String csSubscriberState = udrResponse.get("csSubscriberState");
+        if (csSubscriberState != null)
+            data.putSingle("SubscriberState", csSubscriberState);
+
+        String csAgeOfLocationInfo = udrResponse.get("csAgeOfLocationInfo");
+        if (csAgeOfLocationInfo != null)
+            data.putSingle("LocationAge", csAgeOfLocationInfo);
+
+        String csCurrentLocationRetrieved = udrResponse.get("csCurrentLocationRetrieved");
+        if (csCurrentLocationRetrieved != null)
+            data.putSingle("CurrentLocationRetrieved", csCurrentLocationRetrieved);
+
+        // PS Subscriber Info
+        // RAI
+        String raiMcc = udrResponse.get("raiMcc");
+        if (raiMcc != null)
+            data.putSingle("MobileCountryCode", raiMcc);
+
+        String raiMnc = udrResponse.get("raiMnc");
+        if (raiMnc != null)
+            data.putSingle("MobileNetworkCode", raiMnc);
+
+        String raiLac = udrResponse.get("raiLac");
+        if (raiLac != null)
+            data.putSingle("LocationAreaCode", raiLac);
+
+        String rac = udrResponse.get("rac");
+        if (rac != null)
+            data.putSingle("RoutingAreaCode", rac);
+
+        // CGI
+        String psMcc = udrResponse.get("psMcc");
+        if (psMcc != null)
+            data.putSingle("MobileCountryCode", psMcc);
+
+        String psMnc = udrResponse.get("psMnc");
+        if (psMnc != null)
+            data.putSingle("MobileNetworkCode", psMnc);
+
+        String psLac = udrResponse.get("psLac");
+        if (psLac != null)
+            data.putSingle("LocationAreaCode", psLac);
+
+        String psCi = udrResponse.get("psCi");
+        if (psCi != null)
+            data.putSingle("CellId", psCi);
+
+        // PS Geographic info
+        String psGeogTypeOfShape = udrResponse.get("psGeogTypeOfShape");
+        if (psGeogTypeOfShape != null)
+            data.putSingle("TypeOfShape", psGeogTypeOfShape);
+
+        String psGeogLatitude = udrResponse.get("psGeogLatitude");
+        if (psGeogLatitude != null)
+            data.putSingle("DeviceLatitude", psGeogLatitude);
+
+        String psGeogLongitude = udrResponse.get("psGeogLongitude");
+        if (psGeogLongitude != null)
+            data.putSingle("DeviceLongitude", psGeogLongitude);
+
+        String psGeogUncertainty = udrResponse.get("psGeogUncertainty");
+        if (psGeogUncertainty != null)
+            data.putSingle("Uncertainty", psGeogUncertainty);
+
+        // PS Geodetic info
+        String psGeodTypeOfShape = udrResponse.get("psGeodTypeOfShape");
+        if (psGeodTypeOfShape != null)
+            data.putSingle("TypeOfShape", psGeodTypeOfShape);
+
+        String psGeodLatitude = udrResponse.get("psGeodLatitude");
+        if (psGeodLatitude != null)
+            data.putSingle("DeviceLatitude", psGeodLatitude);
+
+        String psGeodLongitude = udrResponse.get("psGeodLongitude");
+        if (psGeodLongitude != null)
+            data.putSingle("DeviceLongitude", psGeodLongitude);
+
+        String psGeodUncertainty = udrResponse.get("psGeodUncertainty");
+        if (psGeodUncertainty != null)
+            data.putSingle("Uncertainty", psGeodUncertainty);
+
+        String psGeodConfidence = udrResponse.get("psGeodConfidence");
+        if (psGeodConfidence != null)
+            data.putSingle("Confidence", psGeodConfidence);
+
+        String psGeodScreeningAndPresentationIndicators = udrResponse.get("psGeodScreeningAndPresentationIndicators");
+        if (psGeodScreeningAndPresentationIndicators != null)
+            data.putSingle("ScreeningAndPresentationIndicators", psGeodScreeningAndPresentationIndicators);
+
+        //SGSN Number
+        String sgsnNumber = udrResponse.get("sgsnNumber");
+        if (sgsnNumber != null)
+            data.putSingle("NetworkEntityAddress", sgsnNumber);
+
+        String psSubscriberState = udrResponse.get("psSubscriberState");
+        if (psSubscriberState != null)
+            data.putSingle("SubscriberState", psSubscriberState);
+
+        String psAgeOfLocationInfo = udrResponse.get("psAgeOfLocationInfo");
+        if (psAgeOfLocationInfo != null)
+            data.putSingle("LocationAge", psAgeOfLocationInfo);
+
+        String psCurrentLocationRetrieved = udrResponse.get("psCurrentLocationRetrieved");
+        if (psCurrentLocationRetrieved != null)
+            data.putSingle("CurrentLocationRetrieved", psCurrentLocationRetrieved);
+
+        // EPS Location Info
+        // TAI
+        String taiMcc = udrResponse.get("taiMcc");
+        if (taiMcc != null)
+            data.putSingle("MobileCountryCode", taiMcc);
+
+        String taiMnc = udrResponse.get("epsMnc");
+        if (taiMnc != null)
+            data.putSingle("MobileNetworkCode", taiMnc);
+
+        String tac = udrResponse.get("tac");
+        if (tac != null)
+            data.putSingle("TrackingAreaCode", tac);
+
+        // E-UTRAN CGI
+        String epsMcc = udrResponse.get("epsMcc");
+        if (epsMcc != null)
+            data.putSingle("MobileCountryCode", epsMcc);
+
+        String epsMnc = udrResponse.get("epsMnc");
+        if (epsMnc != null)
+            data.putSingle("MobileNetworkCode", epsMnc);
+
+        String eNBId = udrResponse.get("eNBId");
+        if (eNBId != null)
+            data.putSingle("ENodeBId", eNBId);
+
+        String epsCi = udrResponse.get("epsCi");
+        if (epsCi != null)
+            data.putSingle("CellId", epsCi);
+
+        // EPS Subscriber Geographic Location Info
+        String epsGeogTypeOfShape = udrResponse.get("epsGeogTypeOfShape");
+        if (epsGeogTypeOfShape != null)
+            data.putSingle("TypeOfShape", epsGeogTypeOfShape);
+
+        String epsGeogLatitude = udrResponse.get("epsGeogLatitude");
+        if (epsGeogLatitude != null)
+            data.putSingle("DeviceLatitude", epsGeogLatitude);
+
+        String epsGeogLongitude = udrResponse.get("epsGeogLongitude");
+        if (epsGeogLongitude != null)
+            data.putSingle("DeviceLongitude", epsGeogLongitude);
+
+        String epsGeogUncertainty = udrResponse.get("epsGeogUncertainty");
+        if (epsGeogUncertainty != null)
+            data.putSingle("Uncertainty", epsGeogUncertainty);
+
+        // Subscriber Geodetic Location Info
+        String epsGeodTypeOfShape = udrResponse.get("epsGeodTypeOfShape");
+        if (epsGeodTypeOfShape != null)
+            data.putSingle("TypeOfShape", epsGeodTypeOfShape);
+
+        String epsGeodLatitude = udrResponse.get("epsGeodLatitude");
+        if (epsGeodLatitude != null)
+            data.putSingle("DeviceLatitude", epsGeodLatitude);
+
+        String epsGeodLongitude = udrResponse.get("epsGeodLongitude");
+        if (epsGeodLongitude != null)
+            data.putSingle("DeviceLongitude", epsGeodLongitude);
+
+        String epsGeodUncertainty = udrResponse.get("epsGeodUncertainty");
+        if (epsGeodUncertainty != null)
+            data.putSingle("Uncertainty", epsGeodUncertainty);
+
+        String epsGeodConfidence = udrResponse.get("epsGeodConfidence");
+        if (epsGeodConfidence != null)
+            data.putSingle("Confidence", epsGeodConfidence);
+
+        String epsGeodScreeningAndPresentationIndicators = udrResponse.get("epsGeodScreeningAndPresentationIndicators");
+        if (epsGeodScreeningAndPresentationIndicators != null)
+            data.putSingle("ScreeningAndPresentationIndicators", epsGeodScreeningAndPresentationIndicators);
+
+        // MME Name
+        String mmeName = udrResponse.get("mmeName");
+        if (mmeName != null)
+            data.putSingle("NetworkEntityName", mmeName);
+
+        String epsSubscriberState = udrResponse.get("epsSubscriberState");
+        if (epsSubscriberState != null)
+            data.putSingle("SubscriberState", epsSubscriberState);
+
+        String epsAgeOfLocationInfo = udrResponse.get("epsAgeOfLocationInfo");
+        if (epsAgeOfLocationInfo != null)
+            data.putSingle("LocationAge", epsAgeOfLocationInfo);
+
+        String epsCurrentLocationRetrieved = udrResponse.get("psCurrentLocationRetrieved");
+        if (epsCurrentLocationRetrieved != null)
+            data.putSingle("CurrentLocationRetrieved", epsCurrentLocationRetrieved);
     }
 
     @Path("/Immediate/{sid}")

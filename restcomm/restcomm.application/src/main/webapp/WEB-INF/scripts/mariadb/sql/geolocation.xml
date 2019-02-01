@@ -4,16 +4,16 @@
 <mapper namespace="org.mobicents.servlet.sip.restcomm.dao.GeolocationDao">
   <insert id="addGeolocation" parameterType="map">
     INSERT INTO restcomm_geolocation(sid, date_created, date_updated, date_executed, location_timestamp, account_sid, source,
-    device_identifier, msisdn, imsi, imei, lmsi,
-    reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code,  cell_id,
-    sai, ecid, network_entity_address, network_entity_name, age_of_location_info, subscriber_state, tac, rai,
+    device_identifier, msisdn, imsi, imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, ci,
+    sac, enbid, network_entity_address, network_entity_name, age_of_location_info, subscriber_state, not_reachable_reason, tac, rac,
     type_of_shape, device_latitude, device_longitude, uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis,
     confidence, altitude, uncertainty_altitude, inner_radius, uncertainty_inner_radius, offset_angle, included_angle,
     horizontal_speed, vertical_speed, uncertainty_horizontal_speed, uncertainty_vertical_speed, bearing,
     geofence_type, geofence_id, geofence_event_type, event_range, civic_address, barometric_pressure,
-    physical_address, internet_address, last_geolocation_response, cause, api_version, uri) VALUES(#{sid}, #{date_created}, #{date_updated}, #{date_executed}, #{location_timestamp}, #{account_sid}, #{source}, #{device_identifier}, #{msisdn}, #{imsi}, #{imei}, #{lmsi},
-    #{reference_number}, #{geolocation_type}, #{response_status}, #{mobile_country_code}, #{mobile_network_code}, #{location_area_code}, #{cell_id},
-    #{sai}, #{ecid}, #{network_entity_address}, #{network_entity_name}, #{age_of_location_info}, #{subscriber_state}, #{tac}, #{rai},
+    physical_address, internet_address, last_geolocation_response, cause, api_version, uri) VALUES(#{sid}, #{date_created}, #{date_updated}, #{date_executed},
+    #{location_timestamp}, #{account_sid}, #{source}, #{device_identifier}, #{msisdn}, #{imsi}, #{imei}, #{lmsi},
+    #{reference_number}, #{geolocation_type}, #{response_status}, #{mobile_country_code}, #{mobile_network_code}, #{location_area_code}, #{ci},
+    #{sac}, #{enbid}, #{network_entity_address}, #{network_entity_name}, #{age_of_location_info}, #{subscriber_state}, #{not_reachable_reason}, #{tac}, #{rac},
     #{type_of_shape}, #{device_latitude}, #{device_longitude}, #{uncertainty}, #{uncertainty_semi_major_axis}, #{uncertainty_semi_minor_axis}, #{angle_of_major_axis},
     #{confidence},  #{altitude},  #{uncertainty_altitude}, #{inner_radius}, #{uncertainty_inner_radius}, #{offset_angle}, #{included_angle},
     #{horizontal_speed}, #{vertical_speed}, #{uncertainty_horizontal_speed}, #{uncertainty_vertical_speed}, #{bearing},
@@ -37,11 +37,15 @@
     UPDATE restcomm_geolocation SET date_updated=#{date_updated}, location_timestamp=#{location_timestamp}, source=#{source},
     msisdn=#{msisdn}, imsi=#{imsi}, imei=#{imei}, lmsi=#{lmsi}, reference_number=#{reference_number}, response_status=#{response_status},
     mobile_country_code=#{mobile_country_code}, mobile_network_code=#{mobile_network_code}, location_area_code=#{location_area_code},
-    cell_id=#{cell_id}, "sai"=#{sai}, ecid=#{ecid}, network_entity_address=#{network_entity_address}, network_entity_name=#{network_entity_name},
-    age_of_location_info=#{age_of_location_info}, subscriber_state=#{subscriber_state}, tac=#{tac}, rai=#{rai},
+    ci=#{ci}, "sai"=#{sac}, ecid=#{enbid}, network_entity_address=#{network_entity_address}, network_entity_name=#{network_entity_name},
+    age_of_location_info=#{age_of_location_info}, subscriber_state=#{subscriber_state}, not_reachable_reason=#{not_reachable_reason}, tac=#{tac}, rai=#{rac},
     type_of_shape=#{type_of_shape}, device_latitude=#{device_latitude}, device_longitude=#{device_longitude},
     uncertainty=#{uncertainty}, uncertainty_semi_major_axis=#{uncertainty_semi_major_axis}, uncertainty_semi_minor_axis=#{uncertainty_semi_minor_axis},
     angle_of_major_axis=#{angle_of_major_axis}, confidence=#{confidence}, altitude=#{altitude}, uncertainty_altitude=#{uncertainty_altitude},
-    inner_radius=#{inner_radius}, uncertainty_inner_radius=#{uncertainty_inner_radius}, offset_angle=#{offset_angle}, included_angle=#{included_angle}, horizontal_speed=#{horizontal_speed}, vertical_speed=#{vertical_speed}, uncertainty_horizontal_speed=#{uncertainty_horizontal_speed}, bearing=#{bearing}, uncertainty_vertical_speed=#{uncertainty_vertical_speed}, geofence_type=#{geofence_type}, geofence_id=#{geofence_id}, geofence_event_type=#{geofence_event_type}, event_range=#{event_range}, civic_address=#{civic_address}, barometric_pressure=#{barometric_pressure}, physical_address=#{physical_address}, internet_address=#{internet_address}, last_geolocation_response=#{last_geolocation_response}, cause=#{cause} WHERE sid=#{sid};
+    inner_radius=#{inner_radius}, uncertainty_inner_radius=#{uncertainty_inner_radius}, offset_angle=#{offset_angle}, included_angle=#{included_angle},
+    horizontal_speed=#{horizontal_speed}, vertical_speed=#{vertical_speed}, uncertainty_horizontal_speed=#{uncertainty_horizontal_speed}, bearing=#{bearing},
+    uncertainty_vertical_speed=#{uncertainty_vertical_speed}, geofence_type=#{geofence_type}, geofence_id=#{geofence_id}, geofence_event_type=#{geofence_event_type},
+    event_range=#{event_range}, civic_address=#{civic_address}, barometric_pressure=#{barometric_pressure}, physical_address=#{physical_address},
+    internet_address=#{internet_address}, last_geolocation_response=#{last_geolocation_response}, cause=#{cause} WHERE sid=#{sid};
   </update>
 </mapper>
