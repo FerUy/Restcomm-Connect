@@ -539,7 +539,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
             URL url = uriBuilder.build().toURL();
             HttpClient client = HttpClientBuilder.create().build();
-            logger.info("\ncURL URL: " + url);
+            if (logger.isDebugEnabled())
+                logger.debug("\ncURL URL: " + url);
             HttpGet request = new HttpGet(String.valueOf(url));
             // Authorization for further stage of the project
             request.addHeader("User-Agent", gmlcUser);
@@ -556,8 +557,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
                         while (null != (gmlcResponse = br.readLine())) {
                             List<String> items = Arrays.asList(gmlcResponse.split("\\s*,\\s*"));
-                            if (logger.isInfoEnabled()) {
-                                logger.info("Data retrieved from GMLC via MAP ATI: " + items.toString());
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Data retrieved from GMLC via MAP ATI: " + items.toString());
                             }
                             for (String item : items) {
                                 for (int i = 0; i < items.size(); i++) {
@@ -599,30 +600,35 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                                 if (psiService == null && geolocationType.toString().equals(NotificationGT)) {
                                     if (coreNetwork.equalsIgnoreCase("UMTS")) {
                                         HashMap<String, String> sriPslResponse = parsePslJsonString(gmlcResponse);
-                                        logger.info("Data retrieved from GMLC via MAP SRIforLCS-PSL: " + gmlcResponse);
+                                        if (logger.isDebugEnabled())
+                                            logger.debug("Data retrieved from GMLC via MAP SRIforLCS-PSL: " + gmlcResponse);
                                         putDataFromSriPslResponse(sriPslResponse, data);
 
                                     } else if (coreNetwork.equalsIgnoreCase("LTE")) {
                                         HashMap<String, String> rirPlrResponse = parsePlrJsonString(gmlcResponse);
-                                        logger.info("Data retrieved from GMLC via Diameter RIR/RIA-PLR/PLA: " + gmlcResponse);
+                                        if (logger.isDebugEnabled())
+                                            logger.debug("Data retrieved from GMLC via Diameter RIR/RIA-PLR/PLA: " + gmlcResponse);
                                         putDataFromRirPlrResponse(rirPlrResponse, data);
                                     }
                                 }
                                 if (coreNetwork != null && psiService == null && !geolocationType.toString().equals(NotificationGT)) {
                                     if (coreNetwork.equalsIgnoreCase("IMS")) {
-                                        logger.info("Data retrieved from GMLC via Sh UDR/UDA: " + gmlcResponse);
+                                        if (logger.isDebugEnabled())
+                                            logger.debug("Data retrieved from GMLC via Sh UDR/UDA: " + gmlcResponse);
                                         HashMap<String, String> shUdrResponse = parseUdaJsonString(gmlcResponse);
                                         putDataFromShUdrResponse(shUdrResponse, data);
                                     }
                                 }
                                 if (psiService == null && !geolocationType.toString().equals(NotificationGT) && coreNetwork == null) {
-                                    logger.info("Data retrieved from GMLC via MAP ATI: " + gmlcResponse);
+                                    if (logger.isDebugEnabled())
+                                        logger.debug("Data retrieved from GMLC via MAP ATI: " + gmlcResponse);
                                     HashMap<String, String> atiResponse = parseAtiOrPsiJsonString(gmlcResponse);
                                     putDataFromAtiOrPsiResponse(atiResponse, data);
 
                                 } else if (psiService != null) {
                                     if (psiService.equalsIgnoreCase("true") && !geolocationType.toString().equals(NotificationGT)) {
-                                        logger.info("Data retrieved from GMLC via MAP PSI: " + gmlcResponse);
+                                        if (logger.isDebugEnabled())
+                                            logger.debug("Data retrieved from GMLC via MAP PSI: " + gmlcResponse);
                                         HashMap<String, String> psiResponse = parseAtiOrPsiJsonString(gmlcResponse);
                                         putDataFromAtiOrPsiResponse(psiResponse, data);
                                     }
@@ -631,48 +637,48 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         }
                     }
                     if (gmlcURI != null && gmlcResponse != null) {
-                        // For debugging/logging purposes only
-                        if (logger.isInfoEnabled()) {
-                            logger.info("Geolocation data of " + targetMSISDN + " retrieved from GMLC at: " + gmlcURI);
-                            logger.info("\nDevice Identifier = " + data.getFirst("DeviceIdentifier"));
-                            logger.info("\nMSISDN = " + getLong("MSISDN", data));
-                            logger.info("\nIMSI = " + getLong("IMSI", data));
-                            logger.info("\nIMEI = " + data.getFirst("IMEI"));
-                            logger.info("\nLMSI = " + getLong("LMSI", data));
-                            logger.info("\nMCC = " + getInteger("MobileCountryCode", data));
-                            logger.info("\nMNC = " + data.getFirst("MobileNetworkCode"));
-                            logger.info("\nLAC  = " + data.getFirst("LocationAreaCode"));
-                            logger.info("\nCI = " + data.getFirst("CellId"));
-                            logger.info("\nSAC = " + data.getFirst("ServiceAreaCode"));
-                            logger.info("\nENodeBId = " + getInteger("ENodeBId", data));
-                            logger.info("\nAOL = " + getInteger("LocationAge", data));
-                            logger.info("\nSubscriber State = " + data.getFirst("SubscriberState"));
-                            logger.info("\nNot Reachable Reason = " + data.getFirst("NotReachableReason"));
-                            logger.info("\nNetwork Entity Address = " + getLong("NetworkEntityAddress", data));
-                            logger.info("\nNetwork Entity Name = " + data.getFirst("NetworkEntityName"));
-                            logger.info("\nTAC = " + data.getFirst("TrackingAreaCode"));
-                            logger.info("\nRAC = " + data.getFirst("RoutingAreaCode"));
-                            logger.info("\nType of Shape = " + data.getFirst("TypeOfShape"));
-                            logger.info("\nDevice Latitude = " + data.getFirst("DeviceLatitude"));
-                            logger.info("\nDevice Longitude = " + data.getFirst("DeviceLongitude"));
-                            logger.info("\nUncertainty = " + data.getFirst("Uncertainty"));
-                            logger.info("\nUncertainty Semi Major Axis = " + data.getFirst("UncertaintySemiMajorAxis"));
-                            logger.info("\nUncertainty Semi Minor Axis = " + data.getFirst("UncertaintySemiMinorAxis"));
-                            logger.info("\nAngle Of Major Axis = " + data.getFirst("AngleOfMajorAxis"));
-                            logger.info("\nConfidence = " + data.getFirst("Confidence"));
-                            logger.info("\nDevice Altitude = " + data.getFirst("DeviceAltitude"));
-                            logger.info("\nUncertaintyAltitude = " + data.getFirst("UncertaintyAltitude"));
-                            logger.info("\nInner Radius = " + data.getFirst("InnerRadius"));
-                            logger.info("\nUncertainty Inner Radius = " + data.getFirst("UncertaintyInnerRadius"));
-                            logger.info("\nOffset Angle = " + data.getFirst("OffsetAngle"));
-                            logger.info("\nIncluded Angle = " + data.getFirst("IncludedAngle"));
-                            logger.info("\nHorizontal Speed = " + data.getFirst("HorizontalSpeed"));
-                            logger.info("\nVertical Speed = " + data.getFirst("VerticalSpeed"));
-                            logger.info("\nUncertainty Horizontal Speed = " + data.getFirst("UncertaintyHorizontalSpeed"));
-                            logger.info("\nUncertainty Vertical Speed = " + data.getFirst("UncertaintyVerticalSpeed"));
-                            logger.info("\nBearing = " + data.getFirst("Bearing"));
-                            logger.info("\nCivic Address = " + data.getFirst("CivicAddress"));
-                            logger.info("\nBarometric Pressure = " + getLong("BarometricPressure", data));
+                        // For debugging purposes only
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Geolocation data of " + targetMSISDN + " retrieved from GMLC at: " + gmlcURI);
+                            logger.debug("\nDevice Identifier = " + data.getFirst("DeviceIdentifier"));
+                            logger.debug("\nMSISDN = " + getLong("MSISDN", data));
+                            logger.debug("\nIMSI = " + getLong("IMSI", data));
+                            logger.debug("\nIMEI = " + data.getFirst("IMEI"));
+                            logger.debug("\nLMSI = " + getLong("LMSI", data));
+                            logger.debug("\nMCC = " + getInteger("MobileCountryCode", data));
+                            logger.debug("\nMNC = " + data.getFirst("MobileNetworkCode"));
+                            logger.debug("\nLAC  = " + data.getFirst("LocationAreaCode"));
+                            logger.debug("\nCI = " + data.getFirst("CellId"));
+                            logger.debug("\nSAC = " + data.getFirst("ServiceAreaCode"));
+                            logger.debug("\nENodeBId = " + getInteger("ENodeBId", data));
+                            logger.debug("\nAOL = " + getInteger("LocationAge", data));
+                            logger.debug("\nSubscriber State = " + data.getFirst("SubscriberState"));
+                            logger.debug("\nNot Reachable Reason = " + data.getFirst("NotReachableReason"));
+                            logger.debug("\nNetwork Entity Address = " + getLong("NetworkEntityAddress", data));
+                            logger.debug("\nNetwork Entity Name = " + data.getFirst("NetworkEntityName"));
+                            logger.debug("\nTAC = " + data.getFirst("TrackingAreaCode"));
+                            logger.debug("\nRAC = " + data.getFirst("RoutingAreaCode"));
+                            logger.debug("\nType of Shape = " + data.getFirst("TypeOfShape"));
+                            logger.debug("\nDevice Latitude = " + data.getFirst("DeviceLatitude"));
+                            logger.debug("\nDevice Longitude = " + data.getFirst("DeviceLongitude"));
+                            logger.debug("\nUncertainty = " + data.getFirst("Uncertainty"));
+                            logger.debug("\nUncertainty Semi Major Axis = " + data.getFirst("UncertaintySemiMajorAxis"));
+                            logger.debug("\nUncertainty Semi Minor Axis = " + data.getFirst("UncertaintySemiMinorAxis"));
+                            logger.debug("\nAngle Of Major Axis = " + data.getFirst("AngleOfMajorAxis"));
+                            logger.debug("\nConfidence = " + data.getFirst("Confidence"));
+                            logger.debug("\nDevice Altitude = " + data.getFirst("DeviceAltitude"));
+                            logger.debug("\nUncertaintyAltitude = " + data.getFirst("UncertaintyAltitude"));
+                            logger.debug("\nInner Radius = " + data.getFirst("InnerRadius"));
+                            logger.debug("\nUncertainty Inner Radius = " + data.getFirst("UncertaintyInnerRadius"));
+                            logger.debug("\nOffset Angle = " + data.getFirst("OffsetAngle"));
+                            logger.debug("\nIncluded Angle = " + data.getFirst("IncludedAngle"));
+                            logger.debug("\nHorizontal Speed = " + data.getFirst("HorizontalSpeed"));
+                            logger.debug("\nVertical Speed = " + data.getFirst("VerticalSpeed"));
+                            logger.debug("\nUncertainty Horizontal Speed = " + data.getFirst("UncertaintyHorizontalSpeed"));
+                            logger.debug("\nUncertainty Vertical Speed = " + data.getFirst("UncertaintyVerticalSpeed"));
+                            logger.debug("\nBearing = " + data.getFirst("Bearing"));
+                            logger.debug("\nCivic Address = " + data.getFirst("CivicAddress"));
+                            logger.debug("\nBarometric Pressure = " + getLong("BarometricPressure", data));
                         }
                     }
 
@@ -1151,9 +1157,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setLocationAreaCode(getInteger("LocationAreaCode", data));
         builder.setCi(getInteger("CellId", data));
         builder.setSac(getInteger("ServiceAreaCode", data));
-        builder.setEnbid(getInteger("eNBId", data));
+        builder.setEnbid(getInteger("ENodeBId", data));
         builder.setAgeOfLocationInfo(getInteger("LocationAge", data));
         builder.setSubscriberState(data.getFirst("SubscriberState"));
+        builder.setNotReachableReason(data.getFirst("NotReachableReason"));
         builder.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
         builder.setNetworkEntityName(data.getFirst("NetworkEntityName"));
         builder.setTac(getInteger("TrackingAreaCode", data));
@@ -1963,7 +1970,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             }
         }
 
-        JsonObject ecgi = epsLocationInformation.getAsJsonObject("E-UTRANCellGlobalId");
+        JsonObject ecgi = epsLocationInformation.getAsJsonObject("ECGI");
         if (ecgi != null) {
             if (ecgi.get("mcc") != null) {
                 String ecgiMcc = ecgi.get("mcc").getAsString();
@@ -2262,6 +2269,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 atiOrPsiResponse.put("subscriberState", subscriberState);
         }
         if (jobject.get("notReachableReason") != null) {
+
             String notReachableReason = jobject.get("notReachableReason").getAsString();
             if (!notReachableReason.isEmpty())
                 atiOrPsiResponse.put("notReachableReason", notReachableReason);
