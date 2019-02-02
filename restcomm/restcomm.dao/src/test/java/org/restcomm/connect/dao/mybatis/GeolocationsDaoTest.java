@@ -79,7 +79,7 @@ public class GeolocationsDaoTest {
         builder.setDeviceIdentifier("device1");
         builder.setMsisdn(Long.valueOf("59899077937"));
         builder.setImsi(Long.valueOf("748026871012345"));
-        builder.setImei(Long.valueOf("01171400466105"));
+        builder.setImei("01171400466105");
         builder.setLmsi(Long.valueOf("2915"));
         builder.setReferenceNumber((long) 5471);
         builder.setGeolocationType(GeolocationType.Notification);
@@ -200,7 +200,7 @@ public class GeolocationsDaoTest {
         geolocation = geolocation.setSource("ble001");
         geolocation = geolocation.setMsisdn(Long.valueOf("59899077939"));
         geolocation = geolocation.setImsi(Long.valueOf("748026871012347"));
-        geolocation = geolocation.setImei(Long.valueOf("01171400466101"));
+        geolocation = geolocation.setImei("01171400466101");
         geolocation = geolocation.setLmsi(Long.valueOf("2918"));
         geolocation = geolocation.setResponseStatus("failed");
         geolocation = geolocation.setCause("API not compliant");
@@ -333,7 +333,7 @@ public class GeolocationsDaoTest {
         builder.setDeviceIdentifier("device1");
         builder.setMsisdn(Long.valueOf("59899077937"));
         builder.setImsi(Long.valueOf("748026871012345"));
-        builder.setImei(Long.valueOf("01171400466105"));
+        builder.setImei("01171400466105");
         builder.setLmsi(Long.valueOf("2915"));
         builder.setReferenceNumber((long) 5471);
         builder.setGeolocationType(GeolocationType.Immediate);

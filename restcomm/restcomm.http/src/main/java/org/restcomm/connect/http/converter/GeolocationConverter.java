@@ -181,15 +181,15 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeImei(final Long imei, final HierarchicalStreamWriter writer) {
+    protected void writeImei(final String imei, final HierarchicalStreamWriter writer) {
         if (imei != null) {
             writer.startNode("IMEI");
-            writer.setValue(imei.toString());
+            writer.setValue(imei);
             writer.endNode();
         }
     }
 
-    protected void writeImei(final Long imei, final JsonObject object) {
+    protected void writeImei(final String imei, final JsonObject object) {
         if (imei != null) {
             object.addProperty("imei", imei);
         } else {
@@ -272,13 +272,13 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeCellId(geolocation.getCi(), writer);
             writeSac(geolocation.getSac(), writer);
             writeEnbid(geolocation.getEnbid(), writer);
+            writeTrackingAreaCode(geolocation.getTac(), writer);
+            writeRoutingAreaCode(geolocation.getRac(), writer);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), writer);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), writer);
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), writer);
             writeSubscriberState(geolocation.getSubscriberState(), writer);
             writeNotReachableReason(geolocation.getNotReachableReason(), writer);
-            writeTrackingAreaCode(geolocation.getTac(), writer);
-            writeRoutingAreaCode(geolocation.getRac(), writer);
             writeTypeOfShape(geolocation.getTypeOfShape(), writer);
             writeDeviceLatitude(geolocation.getDeviceLatitude(), writer);
             writeDeviceLongitude(geolocation.getDeviceLongitude(), writer);
@@ -319,13 +319,13 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeCellId(geolocation.getCi(), locationDataJsonObject);
             writeSac(geolocation.getSac(), locationDataJsonObject);
             writeEnbid(geolocation.getEnbid(), locationDataJsonObject);
+            writeTrackingAreaCode(geolocation.getTac(), locationDataJsonObject);
+            writeRoutingAreaCode(geolocation.getRac(), locationDataJsonObject);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), locationDataJsonObject);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), locationDataJsonObject);
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), locationDataJsonObject);
             writeSubscriberState(geolocation.getSubscriberState(), locationDataJsonObject);
             writeNotReachableReason(geolocation.getNotReachableReason(), locationDataJsonObject);
-            writeTrackingAreaCode(geolocation.getTac(), locationDataJsonObject);
-            writeRoutingAreaCode(geolocation.getRac(), locationDataJsonObject);
             writeTypeOfShape(geolocation.getTypeOfShape(), locationDataJsonObject);
             writeDeviceLatitude(geolocation.getDeviceLatitude(), locationDataJsonObject);
             writeDeviceLongitude(geolocation.getDeviceLongitude(), locationDataJsonObject);

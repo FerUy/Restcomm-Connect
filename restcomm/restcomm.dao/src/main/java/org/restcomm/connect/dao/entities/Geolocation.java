@@ -42,7 +42,7 @@ public final class Geolocation {
     private final String deviceIdentifier;
     private final Long msisdn;
     private final Long imsi;
-    private final Long imei;
+    private final String imei;
     private final Long lmsi;
     private final Long referenceNumber;
     private final GeolocationType geolocationType;
@@ -93,7 +93,7 @@ public final class Geolocation {
     private final URI uri;
 
     public Geolocation(Sid sid, DateTime dateCreated, DateTime dateUpdated, DateTime dateExecuted, DateTime locationTimestamp, Sid accountSid,
-                       String source, String deviceIdentifier, Long msisdn, Long imsi, Long imei, Long lmsi, Long referenceNumber,
+                       String source, String deviceIdentifier, Long msisdn, Long imsi, String imei, Long lmsi, Long referenceNumber,
                        GeolocationType geolocationType, String responseStatus, Integer mobileCountryCode, Integer mobileNetworkCode,
                        Integer locationAreaCode, Integer ci, Integer sac, Integer enbid, Long networkEntityAddress, String networkEntityName,
                        Integer ageOfLocationInfo, String subscriberState, String notReachableReason, Integer tac, Integer rac,
@@ -206,7 +206,7 @@ public final class Geolocation {
         return imsi;
     }
 
-    public Long getImei() {
+    public String getImei() {
         return imei;
     }
 
@@ -529,7 +529,7 @@ public final class Geolocation {
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
-    public Geolocation setImei(Long imei) {
+    public Geolocation setImei(String imei) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
             imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, ci, sac, enbid,
             networkEntityAddress, networkEntityName, ageOfLocationInfo, subscriberState, notReachableReason, tac, rac, typeOfShape, deviceLatitude, deviceLongitude,
@@ -1036,7 +1036,7 @@ public final class Geolocation {
         private String deviceIdentifier;
         private Long msisdn;
         private Long imsi;
-        private Long imei;
+        private String imei;
         private Long lmsi;
         private Long referenceNumber;
         private GeolocationType geolocationType;
@@ -1138,7 +1138,7 @@ public final class Geolocation {
             this.imsi = imsi;
         }
 
-        public void setImei(Long imei) {
+        public void setImei(String imei) {
             this.imei = imei;
         }
 

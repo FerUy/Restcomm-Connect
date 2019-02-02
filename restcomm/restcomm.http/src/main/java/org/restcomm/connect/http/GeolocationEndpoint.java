@@ -599,15 +599,15 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                             if (gmlcResponse != null) {
                                 if (psiService == null && geolocationType.toString().equals(NotificationGT)) {
                                     if (coreNetwork.equalsIgnoreCase("UMTS")) {
-                                        HashMap<String, String> sriPslResponse = parsePslJsonString(gmlcResponse);
                                         if (logger.isDebugEnabled())
                                             logger.debug("Data retrieved from GMLC via MAP SRIforLCS-PSL: " + gmlcResponse);
+                                        HashMap<String, String> sriPslResponse = parsePslJsonString(gmlcResponse);
                                         putDataFromSriPslResponse(sriPslResponse, data);
 
                                     } else if (coreNetwork.equalsIgnoreCase("LTE")) {
-                                        HashMap<String, String> rirPlrResponse = parsePlrJsonString(gmlcResponse);
                                         if (logger.isDebugEnabled())
                                             logger.debug("Data retrieved from GMLC via Diameter RIR/RIA-PLR/PLA: " + gmlcResponse);
+                                        HashMap<String, String> rirPlrResponse = parsePlrJsonString(gmlcResponse);
                                         putDataFromRirPlrResponse(rirPlrResponse, data);
                                     }
                                 }
@@ -1146,7 +1146,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
         builder.setMsisdn(getLong("MSISDN", data));
         builder.setImsi(getLong("IMSI", data));
-        builder.setImei(getLong("IMEI", data));
+        builder.setImei(data.getFirst("IMEI"));
         builder.setLmsi(getLong("LMSI", data));
         builder.setReferenceNumber(getLong("ReferenceNumber", data));
         builder.setGeolocationType(glType);
@@ -1323,7 +1323,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("IMEI must be a number with an amount of digits not greater than 15");
             }
-            updatedGeolocation = updatedGeolocation.setImei(getLong("IMEI", data));
+            updatedGeolocation = updatedGeolocation.setImei(data.getFirst("IMEI"));
         }
 
         if (data.containsKey("LMSI")) {

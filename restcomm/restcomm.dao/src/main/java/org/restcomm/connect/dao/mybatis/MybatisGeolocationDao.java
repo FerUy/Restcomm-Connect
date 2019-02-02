@@ -213,7 +213,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String device_identifier = readString(map.get("device_identifier"));
         final Long msisdn = readLong(map.get("msisdn"));
         final Long imsi = readLong(map.get("imsi"));
-        final Long imei = readLong(map.get("imei"));
+        final String imei = readString(map.get("imei"));
         final Long lmsi = readLong(map.get("lmsi"));
         final Long reference_number = readLong(map.get("reference_number"));
         final Geolocation.GeolocationType geolocation_type = readGeolocationType(map.get("geolocation_type"));
