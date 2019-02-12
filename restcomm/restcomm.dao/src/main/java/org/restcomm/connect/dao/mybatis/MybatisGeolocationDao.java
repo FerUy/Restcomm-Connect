@@ -158,16 +158,17 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("mobile_country_code", gl.getMobileCountryCode());
         map.put("mobile_network_code", gl.getMobileNetworkCode());
         map.put("location_area_code", gl.getLocationAreaCode());
-        map.put("ci", gl.getCi());
-        map.put("sac", gl.getSac());
-        map.put("enbid", gl.getEnbid());
+        map.put("cell_id", gl.getCellId());
+        map.put("service_area_code", gl.getServiceAreaCode());
+        map.put("enodeb_id", gl.getEnodebId());
+        map.put("tracking_area_code", gl.getTrackingAreaCode());
+        map.put("routing_area_code", gl.getRoutingAreaCode());
+        map.put("location_number_address", gl.getLocationNumberAddress());
         map.put("network_entity_address", gl.getNetworkEntityAddress());
         map.put("network_entity_name", gl.getNetworkEntityName());
         map.put("age_of_location_info", gl.getAgeOfLocationInfo());
         map.put("subscriber_state", gl.getSubscriberState());
         map.put("not_reachable_reason", gl.getNotReachableReason());
-        map.put("tac", gl.getTac());
-        map.put("rac", gl.getRac());
         map.put("type_of_shape", gl.getTypeOfShape());
         map.put("device_latitude", gl.getDeviceLatitude());
         map.put("device_longitude", gl.getDeviceLongitude());
@@ -221,16 +222,17 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final Integer mobile_country_code = readInteger(map.get("mobile_country_code"));
         final Integer mobile_network_code = readInteger(map.get("mobile_network_code"));
         final Integer location_area_code = readInteger(map.get("location_area_code"));
-        final Integer ci = readInteger(map.get("ci"));
-        final Integer sac = readInteger(map.get("sac"));
-        final Integer enbid = readInteger(map.get("enbid"));
+        final Integer cell_id = readInteger(map.get("cell_id"));
+        final Integer service_area_code = readInteger(map.get("service_area_code"));
+        final Integer enodeb_id = readInteger(map.get("enodeb_id"));
+        final Integer tracking_area_code = readInteger(map.get("tracking_area_code"));
+        final Integer routing_area_code = readInteger(map.get("routing_area_code"));
+        final Long location_number_address = readLong(map.get("location_number_address"));
         final Long network_entity_address = readLong(map.get("network_entity_address"));
         final String network_entity_name = readString(map.get("network_entity_name"));
         final Integer age_of_location_info = readInteger(map.get("age_of_location_info"));
         final String subscriber_state = readString(map.get("subscriber_state"));
         final String not_reachable_reason = readString(map.get("not_reachable_reason"));
-        final Integer tac = readInteger(map.get("tracking_area_code"));
-        final Integer rac = readInteger(map.get("routing_area_code"));
         final String type_of_shape = readString(map.get("type_of_shape"));
         final String device_latitude = readString(map.get("device_latitude"));
         final String device_longitude = readString(map.get("device_longitude"));
@@ -263,8 +265,9 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final String api_version = readString(map.get("api_version"));
         final URI uri = readUri(map.get("uri"));
         return new Geolocation(sid, date_created, date_updated, date_executed, location_timestamp, account_sid, source, device_identifier, msisdn, imsi,
-            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code, ci, sac, enbid,
-            network_entity_address, network_entity_name, age_of_location_info, subscriber_state, not_reachable_reason, tac, rac, type_of_shape, device_latitude, device_longitude,
+            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code,
+            cell_id, service_area_code, enodeb_id, tracking_area_code, routing_area_code, location_number_address, network_entity_address, network_entity_name,
+            age_of_location_info, subscriber_state, not_reachable_reason, type_of_shape, device_latitude, device_longitude,
             uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis, confidence, altitude, uncertainty_altitude,
             inner_radius, uncertainty_inner_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,
             uncertainty_vertical_speed, bearing, geofence_type, geofence_id, geofence_event_type, event_range, civic_address, barometric_pressure,

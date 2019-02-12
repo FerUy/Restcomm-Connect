@@ -651,13 +651,14 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                             logger.debug("\nCI = " + data.getFirst("CellId"));
                             logger.debug("\nSAC = " + data.getFirst("ServiceAreaCode"));
                             logger.debug("\nENodeBId = " + getInteger("ENodeBId", data));
+                            logger.debug("\nTAC = " + data.getFirst("TrackingAreaCode"));
+                            logger.debug("\nRAC = " + data.getFirst("RoutingAreaCode"));
+                            logger.debug("\nLocation Number Address = " + data.getFirst("LocationNumberAddress"));
                             logger.debug("\nAOL = " + getInteger("LocationAge", data));
                             logger.debug("\nSubscriber State = " + data.getFirst("SubscriberState"));
                             logger.debug("\nNot Reachable Reason = " + data.getFirst("NotReachableReason"));
                             logger.debug("\nNetwork Entity Address = " + getLong("NetworkEntityAddress", data));
                             logger.debug("\nNetwork Entity Name = " + data.getFirst("NetworkEntityName"));
-                            logger.debug("\nTAC = " + data.getFirst("TrackingAreaCode"));
-                            logger.debug("\nRAC = " + data.getFirst("RoutingAreaCode"));
                             logger.debug("\nType of Shape = " + data.getFirst("TypeOfShape"));
                             logger.debug("\nDevice Latitude = " + data.getFirst("DeviceLatitude"));
                             logger.debug("\nDevice Longitude = " + data.getFirst("DeviceLongitude"));
@@ -679,6 +680,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                             logger.debug("\nBearing = " + data.getFirst("Bearing"));
                             logger.debug("\nCivic Address = " + data.getFirst("CivicAddress"));
                             logger.debug("\nBarometric Pressure = " + getLong("BarometricPressure", data));
+                            logger.debug("\nResponse Status = " + data.getFirst("ResponseStatus"));
+                            logger.debug("\nCause = " + data.getFirst("Cause"));
                         }
                     }
 
@@ -1155,16 +1158,17 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setMobileCountryCode(getInteger("MobileCountryCode", data));
         builder.setMobileNetworkCode(getInteger("MobileNetworkCode", data));
         builder.setLocationAreaCode(getInteger("LocationAreaCode", data));
-        builder.setCi(getInteger("CellId", data));
-        builder.setSac(getInteger("ServiceAreaCode", data));
-        builder.setEnbid(getInteger("ENodeBId", data));
+        builder.setCellId(getInteger("CellId", data));
+        builder.setServiceAreaCode(getInteger("ServiceAreaCode", data));
+        builder.setEnodebId(getInteger("ENodeBId", data));
+        builder.setTrackingAreaCode(getInteger("TrackingAreaCode", data));
+        builder.setRoutingAreaCode(getInteger("RoutingAreaCode", data));
+        builder.setLocationNumberAddress(getLong("LocationNumberAddress", data));
         builder.setAgeOfLocationInfo(getInteger("LocationAge", data));
         builder.setSubscriberState(data.getFirst("SubscriberState"));
         builder.setNotReachableReason(data.getFirst("NotReachableReason"));
         builder.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
         builder.setNetworkEntityName(data.getFirst("NetworkEntityName"));
-        builder.setTac(getInteger("TrackingAreaCode", data));
-        builder.setRac(getInteger("RoutingAreaCode", data));
         builder.setLocationTimestamp(getDateTime("LocationTimestamp", data));
         builder.setTypeOfShape(data.getFirst("TypeOfShape"));
         builder.setDeviceLatitude(data.getFirst("DeviceLatitude"));
@@ -1223,6 +1227,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setAccountSid(accountSid);
         builder.setSource(data.getFirst("Source"));
         builder.setDeviceIdentifier(data.getFirst("DeviceIdentifier"));
+        builder.setReferenceNumber(getLong("ReferenceNumber", data));
         builder.setResponseStatus(rStatus);
         rStatus = null;
         builder.setGeolocationType(glType);
@@ -1421,7 +1426,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("CellId must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setCi(getInteger("CellId", data));
+            updatedGeolocation = updatedGeolocation.setCellId(getInteger("CellId", data));
         }
 
         if (data.containsKey("ServiceAreaCode")) {
@@ -1436,11 +1441,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("SAI must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setSac(getInteger("ServiceAreaCode", data));
+            updatedGeolocation = updatedGeolocation.setServiceAreaCode(getInteger("ServiceAreaCode", data));
         }
 
-        if (data.containsKey("eNBId")) {
-            String ecid = data.getFirst("eNBId");
+        if (data.containsKey("LteCellId")) {
+            String ecid = data.getFirst("LteCellId");
             Long digits = Long.valueOf(ecid);
             try {
                 if (digits > 65535) {
@@ -1451,7 +1456,42 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("LteCellId must be a number not greater than 65535");
             }
-            updatedGeolocation = updatedGeolocation.setEnbid(getInteger("eNBId", data));
+            updatedGeolocation = updatedGeolocation.setEnodebId(getInteger("LteCellId", data));
+        }
+
+        if (data.containsKey("TrackingAreaCode")) {
+            String tac = data.getFirst("TrackingAreaCode");
+            Integer digits = Integer.valueOf(tac);
+            try {
+                if (digits > 65535) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+            }
+            updatedGeolocation = updatedGeolocation.setTrackingAreaCode(getInteger("TrackingAreaCode", data));
+        }
+
+        if (data.containsKey("RoutingAreaCode")) {
+            String routeingAreaCode = data.getFirst("RoutingAreaCode");
+            Integer digits = Integer.valueOf(routeingAreaCode);
+            try {
+                if (digits > 65535) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("RoutingAreaCode must be a number not greater than 65535");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+            }
+            updatedGeolocation = updatedGeolocation.setRoutingAreaCode(getInteger("RoutingAreaCode", data));
+        }
+
+        if (data.containsKey("LocationNumberAddress")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("LocationNumberAddress value can not be updated");
         }
 
         if (data.containsKey("NetworkEntityAddress")) {
@@ -1494,7 +1534,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             updatedGeolocation = updatedGeolocation.setAgeOfLocationInfo(getInteger("LocationAge", data));
         }
 
-        // TODO add PS states
         if (data.containsKey("SubscriberState")) {
             String state = data.getFirst("SubscriberState");
             if (!state.equalsIgnoreCase("assumedIdle") && !state.equalsIgnoreCase("camelBusy") &&
@@ -1522,36 +1561,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             } else {
                 updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("SubscriberState"));
             }
-        }
-
-        if (data.containsKey("TrackingAreaCode")) {
-            String tac = data.getFirst("TrackingAreaCode");
-            Integer digits = Integer.valueOf(tac);
-            try {
-                if (digits > 65535) {
-                    httpBadRequest = true;
-                    throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
-                }
-            } catch (NumberFormatException nfe) {
-                httpBadRequest = true;
-                throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
-            }
-            updatedGeolocation = updatedGeolocation.setTac(getInteger("TrackingAreaCode", data));
-        }
-
-        if (data.containsKey("RoutingAreaCode")) {
-            String routeingAreaCode = data.getFirst("RoutingAreaCode");
-            Integer digits = Integer.valueOf(routeingAreaCode);
-            try {
-                if (digits > 65535) {
-                    httpBadRequest = true;
-                    throw new IllegalArgumentException("RoutingAreaCode must be a number not greater than 65535");
-                }
-            } catch (NumberFormatException nfe) {
-                    httpBadRequest = true;
-                    throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
-                }
-                updatedGeolocation = updatedGeolocation.setRac(getInteger("RoutingAreaCode", data));
         }
 
         if (data.containsKey("TypeOfShape")) {
@@ -1811,7 +1820,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         }
     }
 
-    private static HashMap<String, String> parseAtiOrPsiJsonString(String jsonLine) {
+    private HashMap<String, String> parseAtiOrPsiJsonString(String jsonLine) {
         HashMap<String, String> atiOrPsiResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
@@ -1824,360 +1833,368 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         JsonObject csLocationInformation = jelement.getAsJsonObject();
         csLocationInformation = csLocationInformation.getAsJsonObject("CSLocationInformation");
-        JsonObject locationNumber = csLocationInformation.getAsJsonObject("LocationNumber");
-        if (locationNumber != null) {
-            if (locationNumber.get("oddFlag") != null) {
-                String oF = locationNumber.get("oddFlag").getAsString();
-                if (!oF.isEmpty())
-                    atiOrPsiResponse.put("oddFlag", oF);
+        if (csLocationInformation != null) {
+            JsonObject locationNumber = csLocationInformation.getAsJsonObject("LocationNumber");
+            if (locationNumber != null) {
+                if (locationNumber.get("oddFlag") != null) {
+                    String oF = locationNumber.get("oddFlag").getAsString();
+                    if (!oF.isEmpty())
+                        atiOrPsiResponse.put("oddFlag", oF);
+                }
+                if (locationNumber.get("natureOfAddressIndicator") != null) {
+                    String nai = locationNumber.get("natureOfAddressIndicator").getAsString();
+                    if (!nai.isEmpty())
+                        atiOrPsiResponse.put("nai", nai);
+                }
+                if (locationNumber.get("internalNetworkNumberIndicator") != null) {
+                    String inni = locationNumber.get("internalNetworkNumberIndicator").getAsString();
+                    if (!inni.isEmpty())
+                        atiOrPsiResponse.put("inni", inni);
+                }
+                if (locationNumber.get("numberingPlanIndicator") != null) {
+                    String npi = locationNumber.get("numberingPlanIndicator").getAsString();
+                    if (!npi.isEmpty())
+                        atiOrPsiResponse.put("npi", npi);
+                }
+                if (locationNumber.get("addressRepresentationRestrictedIndicator") != null) {
+                    String arpi = locationNumber.get("addressRepresentationRestrictedIndicator").getAsString();
+                    if (!arpi.isEmpty())
+                        atiOrPsiResponse.put("arpi", arpi);
+                }
+                if (locationNumber.get("screeningIndicator") != null) {
+                    String si = locationNumber.get("screeningIndicator").getAsString();
+                    if (!si.isEmpty())
+                        atiOrPsiResponse.put("si", si);
+                }
+                if (locationNumber.get("address") != null) {
+                    String address = locationNumber.get("address").getAsString();
+                    if (!address.isEmpty())
+                        atiOrPsiResponse.put("address", address);
+                }
             }
-            if (locationNumber.get("natureOfAddressIndicator") != null) {
-                String nai = locationNumber.get("natureOfAddressIndicator").getAsString();
-                if (!nai.isEmpty())
-                    atiOrPsiResponse.put("nai", nai);
+
+            JsonObject csCgiSaiLai = csLocationInformation.getAsJsonObject("CGIorSAIorLAI");
+            if (csCgiSaiLai != null) {
+                if (csCgiSaiLai.get("mcc") != null) {
+                    String csMcc = csCgiSaiLai.get("mcc").getAsString();
+                    if (!csMcc.isEmpty())
+                        atiOrPsiResponse.put("csMcc", csMcc);
+                }
+                if (csCgiSaiLai.get("mnc") != null) {
+                    String csMnc = csCgiSaiLai.get("mnc").getAsString();
+                    if (!csMnc.isEmpty())
+                        atiOrPsiResponse.put("csMnc", csMnc);
+                }
+                if (csCgiSaiLai.get("lac") != null) {
+                    String csLac = csCgiSaiLai.get("lac").getAsString();
+                    if (!csLac.isEmpty())
+                        atiOrPsiResponse.put("csLac", csLac);
+                }
+                if (csCgiSaiLai.get("ci") != null) {
+                    String csCi = csCgiSaiLai.get("ci").getAsString();
+                    if (!csCi.isEmpty())
+                        atiOrPsiResponse.put("csCi", csCi);
+                }
+                if (csCgiSaiLai.get("sac") != null) {
+                    String csSac = csCgiSaiLai.get("sac").getAsString();
+                    if (!csSac.isEmpty())
+                        atiOrPsiResponse.put("csSac", csSac);
+                }
             }
-            if (locationNumber.get("internalNetworkNumberIndicator") != null) {
-                String inni = locationNumber.get("internalNetworkNumberIndicator").getAsString();
-                if (!inni.isEmpty())
-                    atiOrPsiResponse.put("inni", inni);
+
+            JsonObject geographicalInformation = csLocationInformation.getAsJsonObject("GeographicalInformation");
+            if (geographicalInformation != null) {
+                if (geographicalInformation.get("typeOfShape") != null) {
+                    String csGeogTypeOfShape = geographicalInformation.get("typeOfShape").getAsString();
+                    if (!csGeogTypeOfShape.isEmpty())
+                        atiOrPsiResponse.put("csGeogTypeOfShape", csGeogTypeOfShape);
+                }
+                if (geographicalInformation.get("latitude") != null) {
+                    String csGeogLatitude = geographicalInformation.get("latitude").getAsString();
+                    if (!csGeogLatitude.isEmpty())
+                        atiOrPsiResponse.put("csGeogLatitude", csGeogLatitude);
+                }
+                if (geographicalInformation.get("longitude") != null) {
+                    String csGeogLongitude = geographicalInformation.get("longitude").getAsString();
+                    if (!csGeogLongitude.isEmpty())
+                        atiOrPsiResponse.put("csGeogLongitude", csGeogLongitude);
+                }
+                if (geographicalInformation.get("uncertainty") != null) {
+                    String csGeogUncertainty = geographicalInformation.get("uncertainty").getAsString();
+                    if (!csGeogUncertainty.isEmpty())
+                        atiOrPsiResponse.put("csGeogUncertainty", csGeogUncertainty);
+                }
             }
-            if (locationNumber.get("numberingPlanIndicator") != null) {
-                String npi = locationNumber.get("numberingPlanIndicator").getAsString();
-                if (!npi.isEmpty())
-                    atiOrPsiResponse.put("npi", npi);
+
+            JsonObject geodeticInformation = csLocationInformation.getAsJsonObject("GeodeticInformation");
+            if (geodeticInformation != null) {
+                if (geodeticInformation.get("typeOfShape") != null) {
+                    String csGeodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
+                    if (!csGeodTypeOfShape.isEmpty())
+                        atiOrPsiResponse.put("csGeodTypeOfShape", csGeodTypeOfShape);
+                }
+                if (geodeticInformation.get("latitude") != null) {
+                    String csGeodLatitude = geodeticInformation.get("latitude").getAsString();
+                    if (!csGeodLatitude.isEmpty())
+                        atiOrPsiResponse.put("csGeodLatitude", csGeodLatitude);
+                }
+                if (geodeticInformation.get("longitude") != null) {
+                    String csGeodLongitude = geodeticInformation.get("longitude").getAsString();
+                    if (!csGeodLongitude.isEmpty())
+                        atiOrPsiResponse.put("csGeodLongitude", csGeodLongitude);
+                }
+                if (geodeticInformation.get("uncertainty") != null) {
+                    String csGeodUncertainty = geodeticInformation.get("uncertainty").getAsString();
+                    if (!csGeodUncertainty.isEmpty())
+                        atiOrPsiResponse.put("csGeodUncertainty", csGeodUncertainty);
+                }
+                if (geodeticInformation.get("confidence") != null) {
+                    String csGeodConfidence = geodeticInformation.get("confidence").getAsString();
+                    if (!csGeodConfidence.isEmpty())
+                        atiOrPsiResponse.put("csGeodConfidence", csGeodConfidence);
+                }
+                if (geodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                    String csGeodScreeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                    if (!csGeodScreeningAndPresentationIndicators.isEmpty())
+                        atiOrPsiResponse.put("csGeodScreeningAndPresentationIndicators", csGeodScreeningAndPresentationIndicators);
+                }
             }
-            if (locationNumber.get("addressRepresentationRestrictedIndicator") != null) {
-                String arpi = locationNumber.get("addressRepresentationRestrictedIndicator").getAsString();
-                if (!arpi.isEmpty())
-                    atiOrPsiResponse.put("arpi", arpi);
-            }
-            if (locationNumber.get("screeningIndicator") != null) {
-                String si = locationNumber.get("screeningIndicator").getAsString();
-                if (!si.isEmpty())
-                    atiOrPsiResponse.put("si", si);
-            }
-            if (locationNumber.get("address") != null) {
-                String address = locationNumber.get("address").getAsString();
-                if (!address.isEmpty())
-                    atiOrPsiResponse.put("address", address);
+
+            JsonObject epsLocationInformation = csLocationInformation.getAsJsonObject("EPSLocationInformation");
+            if (epsLocationInformation != null) {
+                JsonObject tai = epsLocationInformation.getAsJsonObject("TAI");
+                if (tai != null) {
+                    if (tai.get("mcc") != null) {
+                        String taiMcc = tai.get("mcc").getAsString();
+                        if (!taiMcc.isEmpty())
+                            atiOrPsiResponse.put("taiMcc", taiMcc);
+                    }
+                    if (tai.get("mnc") != null) {
+                        String taiMnc = tai.get("mnc").getAsString();
+                        if (!taiMnc.isEmpty())
+                            atiOrPsiResponse.put("taiMnc", taiMnc);
+                    }
+                    if (tai.get("tac") != null) {
+                        String tac = tai.get("tac").getAsString();
+                        if (!tac.isEmpty())
+                            atiOrPsiResponse.put("tac", tac);
+                    }
+                }
+
+                JsonObject ecgi = epsLocationInformation.getAsJsonObject("ECGI");
+                if (ecgi != null) {
+                    if (ecgi.get("mcc") != null) {
+                        String ecgiMcc = ecgi.get("mcc").getAsString();
+                        if (!ecgiMcc.isEmpty())
+                            atiOrPsiResponse.put("ecgiMcc", ecgiMcc);
+                    }
+                    if (ecgi.get("mnc") != null) {
+                        String ecgiMnc = ecgi.get("mnc").getAsString();
+                        if (!ecgiMnc.isEmpty())
+                            atiOrPsiResponse.put("ecgiMnc", ecgiMnc);
+                    }
+                    if (ecgi.get("eNBId") != null) {
+                        String eNBId = ecgi.get("eNBId").getAsString();
+                        if (!eNBId.isEmpty())
+                            atiOrPsiResponse.put("ecgiENBId", eNBId);
+                    }
+                    if (ecgi.get("ci") != null) {
+                        String ecgiCi = ecgi.get("ci").getAsString();
+                        if (!ecgiCi.isEmpty())
+                            atiOrPsiResponse.put("ecgiCi", ecgiCi);
+                    }
+                }
+
+                geographicalInformation = epsLocationInformation.getAsJsonObject("GeographicalInformation");
+                if (geographicalInformation != null) {
+                    if (geographicalInformation.get("typeOfShape") != null) {
+                        String epsGeogTypeOfShape = geographicalInformation.get("typeOfShape").getAsString();
+                        if (!epsGeogTypeOfShape.isEmpty())
+                            atiOrPsiResponse.put("epsGeogTypeOfShape", epsGeogTypeOfShape);
+                    }
+                    if (geographicalInformation.get("latitude") != null) {
+                        String epsGeogLatitude = geographicalInformation.get("latitude").getAsString();
+                        if (!epsGeogLatitude.isEmpty())
+                            atiOrPsiResponse.put("epsGeogLatitude", epsGeogLatitude);
+                    }
+                    if (geographicalInformation.get("longitude") != null) {
+                        String epsGeogLongitude = geographicalInformation.get("longitude").getAsString();
+                        if (!epsGeogLongitude.isEmpty())
+                            atiOrPsiResponse.put("epsGeogLongitude", epsGeogLongitude);
+                    }
+
+                    if (geographicalInformation.get("uncertainty") != null) {
+                        String epsGeogUncertainty = geographicalInformation.get("uncertainty").getAsString();
+                        if (!epsGeogUncertainty.isEmpty())
+                            atiOrPsiResponse.put("epsGeogUncertainty", epsGeogUncertainty);
+                    }
+                }
+
+                geodeticInformation = epsLocationInformation.getAsJsonObject("GeodeticInformation");
+                if (geodeticInformation != null) {
+                    if (geodeticInformation.get("typeOfShape") != null) {
+                        String epsGeodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
+                        if (!epsGeodTypeOfShape.isEmpty())
+                            atiOrPsiResponse.put("epsGeodTypeOfShape", epsGeodTypeOfShape);
+                    }
+                    if (geodeticInformation.get("typeOfShape") != null) {
+                        String epsGeodLatitude = geodeticInformation.get("latitude").getAsString();
+                        if (!epsGeodLatitude.isEmpty())
+                            atiOrPsiResponse.put("epsGeodLatitude", epsGeodLatitude);
+                    }
+                    if (geodeticInformation.get("typeOfShape") != null) {
+                        String epsGeodLongitude = geodeticInformation.get("longitude").getAsString();
+                        if (!epsGeodLongitude.isEmpty())
+                            atiOrPsiResponse.put("epsGeodLongitude", epsGeodLongitude);
+                    }
+                    if (geodeticInformation.get("typeOfShape") != null) {
+                        String epsGeodUncertainty = geodeticInformation.get("uncertainty").getAsString();
+                        if (!epsGeodUncertainty.isEmpty())
+                            atiOrPsiResponse.put("epsGeodUncertainty", epsGeodUncertainty);
+                    }
+                    if (geodeticInformation.get("typeOfShape") != null) {
+                        String epsGeodConfidence = geodeticInformation.get("confidence").getAsString();
+                        if (!epsGeodConfidence.isEmpty())
+                            atiOrPsiResponse.put("epsGeodConfidence", epsGeodConfidence);
+                    }
+                    if (geodeticInformation.get("typeOfShape") != null) {
+                        String epsGeodScreeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                        if (!epsGeodScreeningAndPresentationIndicators.isEmpty())
+                            atiOrPsiResponse.put("epsGeodScreeningAndPresentationIndicators", epsGeodScreeningAndPresentationIndicators);
+                    }
+                }
             }
         }
 
-        JsonObject csCgiSaiLai = csLocationInformation.getAsJsonObject("CGIorSAIorLAI");
-        if (csCgiSaiLai != null) {
-            if (csCgiSaiLai.get("mcc") != null) {
-                String csMcc = csCgiSaiLai.get("mcc").getAsString();
-                if (!csMcc.isEmpty())
-                    atiOrPsiResponse.put("csMcc", csMcc);
-            }
-            if (csCgiSaiLai.get("mnc") != null) {
-                String csMnc = csCgiSaiLai.get("mnc").getAsString();
-                if (!csMnc.isEmpty())
-                    atiOrPsiResponse.put("csMnc", csMnc);
-            }
-            if (csCgiSaiLai.get("lac") != null) {
-                String csLac = csCgiSaiLai.get("lac").getAsString();
-                if (!csLac.isEmpty())
-                    atiOrPsiResponse.put("csLac", csLac);
-            }
-            if (csCgiSaiLai.get("ci") != null) {
-                String csCi = csCgiSaiLai.get("ci").getAsString();
-                if (!csCi.isEmpty())
-                    atiOrPsiResponse.put("csCi", csCi);
-            }
-            if (csCgiSaiLai.get("sac") != null) {
-                String csSac = csCgiSaiLai.get("sac").getAsString();
-                if (!csSac.isEmpty())
-                    atiOrPsiResponse.put("csSac", csSac);
-            }
-        }
-
-        JsonObject geographicalInformation = csLocationInformation.getAsJsonObject("GeographicalInformation");
-        if (geographicalInformation != null) {
-            if (geographicalInformation.get("typeOfShape") != null) {
-                String csGeogTypeOfShape = geographicalInformation.get("typeOfShape").getAsString();
-                if (!csGeogTypeOfShape.isEmpty())
-                    atiOrPsiResponse.put("csGeogTypeOfShape", csGeogTypeOfShape);
-            }
-            if (geographicalInformation.get("latitude") != null) {
-                String csGeogLatitude = geographicalInformation.get("latitude").getAsString();
-                if (!csGeogLatitude.isEmpty())
-                    atiOrPsiResponse.put("csGeogLatitude", csGeogLatitude);
-            }
-            if (geographicalInformation.get("longitude") != null) {
-                String csGeogLongitude = geographicalInformation.get("longitude").getAsString();
-                if (!csGeogLongitude.isEmpty())
-                    atiOrPsiResponse.put("csGeogLongitude", csGeogLongitude);
-            }
-            if (geographicalInformation.get("uncertainty") != null) {
-                String csGeogUncertainty = geographicalInformation.get("uncertainty").getAsString();
-                if (!csGeogUncertainty.isEmpty())
-                    atiOrPsiResponse.put("csGeogUncertainty", csGeogUncertainty);
-            }
-        }
-
-        JsonObject geodeticInformation = csLocationInformation.getAsJsonObject("GeodeticInformation");
-        if (geodeticInformation != null) {
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String csGeodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
-                if (!csGeodTypeOfShape.isEmpty())
-                    atiOrPsiResponse.put("csGeodTypeOfShape", csGeodTypeOfShape);
-            }
-            if (geodeticInformation.get("latitude") != null) {
-                String csGeodLatitude = geodeticInformation.get("latitude").getAsString();
-                if (!csGeodLatitude.isEmpty())
-                    atiOrPsiResponse.put("csGeodLatitude", csGeodLatitude);
-            }
-            if (geodeticInformation.get("longitude") != null) {
-                String csGeodLongitude = geodeticInformation.get("longitude").getAsString();
-                if (!csGeodLongitude.isEmpty())
-                    atiOrPsiResponse.put("csGeodLongitude", csGeodLongitude);
-            }
-            if (geodeticInformation.get("uncertainty") != null) {
-                String csGeodUncertainty = geodeticInformation.get("uncertainty").getAsString();
-                if (!csGeodUncertainty.isEmpty())
-                    atiOrPsiResponse.put("csGeodUncertainty", csGeodUncertainty);
-            }
-            if (geodeticInformation.get("confidence") != null) {
-                String csGeodConfidence = geodeticInformation.get("confidence").getAsString();
-                if (!csGeodConfidence.isEmpty())
-                    atiOrPsiResponse.put("csGeodConfidence", csGeodConfidence);
-            }
-            if (geodeticInformation.get("screeningAndPresentationIndicators") != null) {
-                String csGeodScreeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                if (!csGeodScreeningAndPresentationIndicators.isEmpty())
-                    atiOrPsiResponse.put("csGeodScreeningAndPresentationIndicators", csGeodScreeningAndPresentationIndicators);
-            }
-        }
-
-        JsonObject epsLocationInformation = csLocationInformation.getAsJsonObject("EPSLocationInformation");
-        JsonObject tai = epsLocationInformation.getAsJsonObject("TAI");
-        if (tai != null) {
-            if (tai.get("mcc") != null) {
-                String taiMcc = tai.get("mcc").getAsString();
-                if (!taiMcc.isEmpty())
-                    atiOrPsiResponse.put("taiMcc", taiMcc);
-            }
-            if (tai.get("mnc") != null) {
-                String taiMnc = tai.get("mnc").getAsString();
-                if (!taiMnc.isEmpty())
-                    atiOrPsiResponse.put("taiMnc", taiMnc);
-            }
-            if (tai.get("tac") != null) {
-                String tac = tai.get("tac").getAsString();
-                if (!tac.isEmpty())
-                    atiOrPsiResponse.put("tac", tac);
-            }
-        }
-
-        JsonObject ecgi = epsLocationInformation.getAsJsonObject("ECGI");
-        if (ecgi != null) {
-            if (ecgi.get("mcc") != null) {
-                String ecgiMcc = ecgi.get("mcc").getAsString();
-                if (!ecgiMcc.isEmpty())
-                    atiOrPsiResponse.put("ecgiMcc", ecgiMcc);
-            }
-            if (ecgi.get("mnc") != null) {
-                String ecgiMnc = ecgi.get("mnc").getAsString();
-                if (!ecgiMnc.isEmpty())
-                    atiOrPsiResponse.put("ecgiMnc", ecgiMnc);
-            }
-            if (ecgi.get("eNBId") != null) {
-                String eNBId = ecgi.get("eNBId").getAsString();
-                if (!eNBId.isEmpty())
-                    atiOrPsiResponse.put("ecgiENBId", eNBId);
-            }
-            if (ecgi.get("ci") != null) {
-                String ecgiCi = ecgi.get("ci").getAsString();
-                if (!ecgiCi.isEmpty())
-                    atiOrPsiResponse.put("ecgiCi", ecgiCi);
-            }
-        }
-
-        geographicalInformation = epsLocationInformation.getAsJsonObject("GeographicalInformation");
-        if (geographicalInformation != null) {
-            if (geographicalInformation.get("typeOfShape") != null) {
-                String epsGeogTypeOfShape = geographicalInformation.get("typeOfShape").getAsString();
-                if (!epsGeogTypeOfShape.isEmpty())
-                    atiOrPsiResponse.put("epsGeogTypeOfShape", epsGeogTypeOfShape);
-            }
-            if (geographicalInformation.get("latitude") != null) {
-                String epsGeogLatitude = geographicalInformation.get("latitude").getAsString();
-                if (!epsGeogLatitude.isEmpty())
-                    atiOrPsiResponse.put("epsGeogLatitude", epsGeogLatitude);
-            }
-            if (geographicalInformation.get("longitude") != null) {
-                String epsGeogLongitude = geographicalInformation.get("longitude").getAsString();
-                if (!epsGeogLongitude.isEmpty())
-                    atiOrPsiResponse.put("epsGeogLongitude", epsGeogLongitude);
-            }
-
-            if (geographicalInformation.get("uncertainty") != null) {
-                String epsGeogUncertainty = geographicalInformation.get("uncertainty").getAsString();
-                if (!epsGeogUncertainty.isEmpty())
-                    atiOrPsiResponse.put("epsGeogUncertainty", epsGeogUncertainty);
-            }
-        }
-
-        geodeticInformation = epsLocationInformation.getAsJsonObject("GeodeticInformation");
-        if (geodeticInformation != null) {
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String epsGeodTypeOfShape = geodeticInformation.get("typeOfShape").getAsString();
-                if (!epsGeodTypeOfShape.isEmpty())
-                    atiOrPsiResponse.put("epsGeodTypeOfShape", epsGeodTypeOfShape);
-            }
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String epsGeodLatitude = geodeticInformation.get("latitude").getAsString();
-                if (!epsGeodLatitude.isEmpty())
-                    atiOrPsiResponse.put("epsGeodLatitude", epsGeodLatitude);
-            }
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String epsGeodLongitude = geodeticInformation.get("longitude").getAsString();
-                if (!epsGeodLongitude.isEmpty())
-                    atiOrPsiResponse.put("epsGeodLongitude", epsGeodLongitude);
-            }
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String epsGeodUncertainty = geodeticInformation.get("uncertainty").getAsString();
-                if (!epsGeodUncertainty.isEmpty())
-                    atiOrPsiResponse.put("epsGeodUncertainty", epsGeodUncertainty);
-            }
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String epsGeodConfidence = geodeticInformation.get("confidence").getAsString();
-                if (!epsGeodConfidence.isEmpty())
-                    atiOrPsiResponse.put("epsGeodConfidence", epsGeodConfidence);
-            }
-            if (geodeticInformation.get("typeOfShape") != null) {
-                String epsGeodScreeningAndPresentationIndicators = geodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                if (!epsGeodScreeningAndPresentationIndicators.isEmpty())
-                    atiOrPsiResponse.put("epsGeodScreeningAndPresentationIndicators", epsGeodScreeningAndPresentationIndicators);
-            }
-        }
 
         JsonObject psLocationInformation = jelement.getAsJsonObject();
         psLocationInformation = psLocationInformation.getAsJsonObject("PSLocationInformation");
-        JsonObject lsa = psLocationInformation.getAsJsonObject("LSA");
-        if (lsa != null) {
-            if (lsa.get("lsaIdType") != null) {
-                String lsaIdType = lsa.get("lsaIdType").getAsString();
-                if (!lsaIdType.isEmpty())
-                    atiOrPsiResponse.put("lsaIdType", lsaIdType);
+        if (psLocationInformation != null) {
+            JsonObject lsa = psLocationInformation.getAsJsonObject("LSA");
+            if (lsa != null) {
+                if (lsa.get("lsaIdType") != null) {
+                    String lsaIdType = lsa.get("lsaIdType").getAsString();
+                    if (!lsaIdType.isEmpty())
+                        atiOrPsiResponse.put("lsaIdType", lsaIdType);
+                }
+                if (lsa.get("lsaId") != null) {
+                    String lsaId = lsa.get("lsaId").getAsString();
+                    if (!lsaId.isEmpty())
+                        atiOrPsiResponse.put("lsaId", lsaId);
+                }
             }
-            if (lsa.get("lsaId") != null) {
-                String lsaId = lsa.get("lsaId").getAsString();
-                if (!lsaId.isEmpty())
-                    atiOrPsiResponse.put("lsaId", lsaId);
+            JsonObject rai = psLocationInformation.getAsJsonObject("RAI");
+            if (rai != null) {
+                if (rai.get("mcc") != null) {
+                    String raiMcc = rai.get("mcc").getAsString();
+                    if (!raiMcc.isEmpty())
+                        atiOrPsiResponse.put("raiMcc", raiMcc);
+                }
+                if (rai.get("mnc") != null) {
+                    String raiMnc = rai.get("mnc").getAsString();
+                    if (!raiMnc.isEmpty())
+                        atiOrPsiResponse.put("raiMnc", raiMnc);
+                }
+                if (rai.get("lac") != null) {
+                    String raiLac = rai.get("lac").getAsString();
+                    if (!raiLac.isEmpty())
+                        atiOrPsiResponse.put("raiLac", raiLac);
+                }
+                if (rai.get("rac") != null) {
+                    String rac = rai.get("rac").getAsString();
+                    if (!rac.isEmpty())
+                        atiOrPsiResponse.put("rac", rac);
+                }
             }
-        }
-        JsonObject rai = psLocationInformation.getAsJsonObject("RAI");
-        if (rai != null) {
-            if (rai.get("mcc") != null) {
-                String raiMcc = rai.get("mcc").getAsString();
-                if (!raiMcc.isEmpty())
-                    atiOrPsiResponse.put("raiMcc", raiMcc);
-            }
-            if (rai.get("mnc") != null) {
-                String raiMnc = rai.get("mnc").getAsString();
-                if (!raiMnc.isEmpty())
-                    atiOrPsiResponse.put("raiMnc", raiMnc);
-            }
-            if (rai.get("lac") != null) {
-                String raiLac = rai.get("lac").getAsString();
-                if (!raiLac.isEmpty())
-                    atiOrPsiResponse.put("raiLac", raiLac);
-            }
-            if (rai.get("rac") != null) {
-                String rac = rai.get("rac").getAsString();
-                if (!rac.isEmpty())
-                    atiOrPsiResponse.put("rac", rac);
-            }
-        }
-        JsonObject psCgiSaiLai = psLocationInformation.getAsJsonObject("CGIorSAIorLAI");
-        if (psCgiSaiLai != null) {
-            if (psCgiSaiLai.get("mcc") != null) {
-                String psMcc = psCgiSaiLai.get("mcc").getAsString();
-                if (!psMcc.isEmpty())
-                    atiOrPsiResponse.put("psMcc", psMcc);
-            }
-            if (psCgiSaiLai.get("mnc") != null) {
-                String psMnc = psCgiSaiLai.get("mnc").getAsString();
-                if (!psMnc.isEmpty())
-                    atiOrPsiResponse.put("psMnc", psMnc);
-            }
-            if (psCgiSaiLai.get("lac") != null) {
-                String psLac = psCgiSaiLai.get("lac").getAsString();
-                if (!psLac.isEmpty())
-                    atiOrPsiResponse.put("psLac", psLac);
-            }
-            if (psCgiSaiLai.get("ci") != null) {
-                String psCi = psCgiSaiLai.get("ci").getAsString();
-                if (!psCi.isEmpty())
-                    atiOrPsiResponse.put("psCi", psCi);
-            }
-            if (psCgiSaiLai.get("sac") != null) {
-                String psSac = psCgiSaiLai.get("sac").getAsString();
-                if (!psSac.isEmpty())
-                    atiOrPsiResponse.put("psSac", psSac);
-            }
+            JsonObject psCgiSaiLai = psLocationInformation.getAsJsonObject("CGIorSAIorLAI");
+            if (psCgiSaiLai != null) {
+                if (psCgiSaiLai.get("mcc") != null) {
+                    String psMcc = psCgiSaiLai.get("mcc").getAsString();
+                    if (!psMcc.isEmpty())
+                        atiOrPsiResponse.put("psMcc", psMcc);
+                }
+                if (psCgiSaiLai.get("mnc") != null) {
+                    String psMnc = psCgiSaiLai.get("mnc").getAsString();
+                    if (!psMnc.isEmpty())
+                        atiOrPsiResponse.put("psMnc", psMnc);
+                }
+                if (psCgiSaiLai.get("lac") != null) {
+                    String psLac = psCgiSaiLai.get("lac").getAsString();
+                    if (!psLac.isEmpty())
+                        atiOrPsiResponse.put("psLac", psLac);
+                }
+                if (psCgiSaiLai.get("ci") != null) {
+                    String psCi = psCgiSaiLai.get("ci").getAsString();
+                    if (!psCi.isEmpty())
+                        atiOrPsiResponse.put("psCi", psCi);
+                }
+                if (psCgiSaiLai.get("sac") != null) {
+                    String psSac = psCgiSaiLai.get("sac").getAsString();
+                    if (!psSac.isEmpty())
+                        atiOrPsiResponse.put("psSac", psSac);
+                }
 
-        }
-        JsonObject psGeographicalInformation = psLocationInformation.getAsJsonObject("GeographicalInformation");
-        if (psGeographicalInformation != null) {
-            if (psGeographicalInformation.get("typeOfShape") != null) {
-                String psGeogTypeOfShape = psGeographicalInformation.get("typeOfShape").getAsString();
-                if (!psGeogTypeOfShape.isEmpty())
-                    atiOrPsiResponse.put("psGeogTypeOfShape", psGeogTypeOfShape);
             }
-            if (psGeographicalInformation.get("latitude") != null) {
-                String psGeogLatitude = psGeographicalInformation.get("latitude").getAsString();
-                if (!psGeogLatitude.isEmpty())
-                    atiOrPsiResponse.put("psGeogLatitude", psGeogLatitude);
+            JsonObject psGeographicalInformation = psLocationInformation.getAsJsonObject("GeographicalInformation");
+            if (psGeographicalInformation != null) {
+                if (psGeographicalInformation.get("typeOfShape") != null) {
+                    String psGeogTypeOfShape = psGeographicalInformation.get("typeOfShape").getAsString();
+                    if (!psGeogTypeOfShape.isEmpty())
+                        atiOrPsiResponse.put("psGeogTypeOfShape", psGeogTypeOfShape);
+                }
+                if (psGeographicalInformation.get("latitude") != null) {
+                    String psGeogLatitude = psGeographicalInformation.get("latitude").getAsString();
+                    if (!psGeogLatitude.isEmpty())
+                        atiOrPsiResponse.put("psGeogLatitude", psGeogLatitude);
+                }
+                if (psGeographicalInformation.get("longitude") != null) {
+                    String psGeogLongitude = psGeographicalInformation.get("longitude").getAsString();
+                    if (!psGeogLongitude.isEmpty())
+                        atiOrPsiResponse.put("psGeogLongitude", psGeogLongitude);
+                }
+                if (psGeographicalInformation.get("uncertainty") != null) {
+                    String psGeogUncertainty = psGeographicalInformation.get("uncertainty").getAsString();
+                    if (!psGeogUncertainty.isEmpty())
+                        atiOrPsiResponse.put("psGeogUncertainty", psGeogUncertainty);
+                }
             }
-            if (psGeographicalInformation.get("longitude") != null) {
-                String psGeogLongitude = psGeographicalInformation.get("longitude").getAsString();
-                if (!psGeogLongitude.isEmpty())
-                    atiOrPsiResponse.put("psGeogLongitude", psGeogLongitude);
-            }
-            if (psGeographicalInformation.get("uncertainty") != null) {
-                String psGeogUncertainty = psGeographicalInformation.get("uncertainty").getAsString();
-                if (!psGeogUncertainty.isEmpty())
-                    atiOrPsiResponse.put("psGeogUncertainty", psGeogUncertainty);
-            }
-        }
-        JsonObject psGeodeticInformation = psLocationInformation.getAsJsonObject("GeodeticInformation");
-        if (psGeographicalInformation != null) {
-            if (psGeodeticInformation.get("typeOfShape") != null) {
-                String psGeodTypeOfShape = psGeodeticInformation.get("typeOfShape").getAsString();
-                if (!psGeodTypeOfShape.isEmpty())
-                    atiOrPsiResponse.put("psGeodTypeOfShape", psGeodTypeOfShape);
-            }
+            JsonObject psGeodeticInformation = psLocationInformation.getAsJsonObject("GeodeticInformation");
+            if (psGeographicalInformation != null) {
+                if (psGeodeticInformation.get("typeOfShape") != null) {
+                    String psGeodTypeOfShape = psGeodeticInformation.get("typeOfShape").getAsString();
+                    if (!psGeodTypeOfShape.isEmpty())
+                        atiOrPsiResponse.put("psGeodTypeOfShape", psGeodTypeOfShape);
+                }
 
-            if (psGeodeticInformation.get("latitude") != null) {
-                String psGeodLatitude = psGeodeticInformation.get("latitude").getAsString();
-                if (!psGeodLatitude.isEmpty())
-                    atiOrPsiResponse.put("psGeodLatitude", psGeodLatitude);
-            }
-            if (psGeodeticInformation.get("longitude") != null) {
-                String psGeodLongitude = psGeodeticInformation.get("longitude").getAsString();
-                if (!psGeodLongitude.isEmpty())
-                    atiOrPsiResponse.put("psGeodLongitude", psGeodLongitude);
-            }
-            if (psGeodeticInformation.get("uncertainty") != null) {
-                String psGeodUncertainty = psGeodeticInformation.get("uncertainty").getAsString();
-                if (!psGeodUncertainty.isEmpty())
-                    atiOrPsiResponse.put("psGeodUncertainty", psGeodUncertainty);
-            }
+                if (psGeodeticInformation.get("latitude") != null) {
+                    String psGeodLatitude = psGeodeticInformation.get("latitude").getAsString();
+                    if (!psGeodLatitude.isEmpty())
+                        atiOrPsiResponse.put("psGeodLatitude", psGeodLatitude);
+                }
+                if (psGeodeticInformation.get("longitude") != null) {
+                    String psGeodLongitude = psGeodeticInformation.get("longitude").getAsString();
+                    if (!psGeodLongitude.isEmpty())
+                        atiOrPsiResponse.put("psGeodLongitude", psGeodLongitude);
+                }
+                if (psGeodeticInformation.get("uncertainty") != null) {
+                    String psGeodUncertainty = psGeodeticInformation.get("uncertainty").getAsString();
+                    if (!psGeodUncertainty.isEmpty())
+                        atiOrPsiResponse.put("psGeodUncertainty", psGeodUncertainty);
+                }
 
-            if (psGeodeticInformation.get("confidence") != null) {
-                String psGeodConfidence = psGeodeticInformation.get("confidence").getAsString();
-                if (!psGeodConfidence.isEmpty())
-                    atiOrPsiResponse.put("psGeodConfidence", psGeodConfidence);
-            }
-            if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
-                String psGeodScreeningAndPresentationIndicators = psGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                if (!psGeodScreeningAndPresentationIndicators.isEmpty())
-                    atiOrPsiResponse.put("psGeodScreeningAndPresentationIndicators", psGeodScreeningAndPresentationIndicators);
+                if (psGeodeticInformation.get("confidence") != null) {
+                    String psGeodConfidence = psGeodeticInformation.get("confidence").getAsString();
+                    if (!psGeodConfidence.isEmpty())
+                        atiOrPsiResponse.put("psGeodConfidence", psGeodConfidence);
+                }
+                if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                    String psGeodScreeningAndPresentationIndicators = psGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                    if (!psGeodScreeningAndPresentationIndicators.isEmpty())
+                        atiOrPsiResponse.put("psGeodScreeningAndPresentationIndicators", psGeodScreeningAndPresentationIndicators);
+                }
             }
         }
+
         JsonObject grpsMSClass = jelement.getAsJsonObject();
         grpsMSClass = grpsMSClass.getAsJsonObject("GPRSMSClass");
         if (grpsMSClass != null) {
@@ -2196,25 +2213,27 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         JsonObject mnpInfoResult = jelement.getAsJsonObject();
         mnpInfoResult = mnpInfoResult.getAsJsonObject("MNPInfoResult");
         if (mnpInfoResult != null) {
-            if (mnpInfoResult.get("mnpStatus") != null) {
-                String mnpStatus = mnpInfoResult.get("mnpStatus").getAsString();
-                if (!mnpStatus.isEmpty())
-                    atiOrPsiResponse.put("mnpStatus", mnpStatus);
-            }
-            if (mnpInfoResult.get("mnpMsisdn") != null) {
-                String mnpMsisdn = mnpInfoResult.get("mnpMsisdn").getAsString();
-                if (!mnpMsisdn.isEmpty())
-                    atiOrPsiResponse.put("mnpMsisdn", mnpMsisdn);
-            }
-            if (mnpInfoResult.get("mnpImsi") != null) {
-                String mnpImsi = mnpInfoResult.get("mnpImsi").getAsString();
-                if (!mnpImsi.isEmpty())
-                    atiOrPsiResponse.put("mnpImsi", mnpImsi);
-            }
-            if (mnpInfoResult.get("mnpRouteingNumber") != null) {
-                String mnpRouteingNumber = mnpInfoResult.get("mnpRouteingNumber").getAsString();
-                if (!mnpRouteingNumber.isEmpty())
-                    atiOrPsiResponse.put("mnpRouteingNumber", mnpRouteingNumber);
+            if (mnpInfoResult != null) {
+                if (mnpInfoResult.get("mnpStatus") != null) {
+                    String mnpStatus = mnpInfoResult.get("mnpStatus").getAsString();
+                    if (!mnpStatus.isEmpty())
+                        atiOrPsiResponse.put("mnpStatus", mnpStatus);
+                }
+                if (mnpInfoResult.get("mnpMsisdn") != null) {
+                    String mnpMsisdn = mnpInfoResult.get("mnpMsisdn").getAsString();
+                    if (!mnpMsisdn.isEmpty())
+                        atiOrPsiResponse.put("mnpMsisdn", mnpMsisdn);
+                }
+                if (mnpInfoResult.get("mnpImsi") != null) {
+                    String mnpImsi = mnpInfoResult.get("mnpImsi").getAsString();
+                    if (!mnpImsi.isEmpty())
+                        atiOrPsiResponse.put("mnpImsi", mnpImsi);
+                }
+                if (mnpInfoResult.get("mnpRouteingNumber") != null) {
+                    String mnpRouteingNumber = mnpInfoResult.get("mnpRouteingNumber").getAsString();
+                    if (!mnpRouteingNumber.isEmpty())
+                        atiOrPsiResponse.put("mnpRouteingNumber", mnpRouteingNumber);
+                }
             }
         }
 
@@ -2227,6 +2246,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String current = jobject.get("currentLocationRetrieved").getAsString();
             if (!current.isEmpty())
                 atiOrPsiResponse.put("currentLocationRetrieved", current);
+        }
+        if (jobject.get("msisdn") != null) {
+            String msisdn = jobject.get("msisdn").getAsString();
+            if (!msisdn.isEmpty())
+                atiOrPsiResponse.put("msisdn", msisdn);
         }
         if (jobject.get("imsi") != null) {
             String imsi = jobject.get("imsi").getAsString();
@@ -2269,7 +2293,6 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 atiOrPsiResponse.put("subscriberState", subscriberState);
         }
         if (jobject.get("notReachableReason") != null) {
-
             String notReachableReason = jobject.get("notReachableReason").getAsString();
             if (!notReachableReason.isEmpty())
                 atiOrPsiResponse.put("notReachableReason", notReachableReason);
@@ -2279,11 +2302,16 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             if (!msClassmark.isEmpty())
                 atiOrPsiResponse.put("msClassmark", msClassmark);
         }
+        if (jobject.get("errorReason") != null) {
+            String errorReason = jobject.get("errorReason").getAsString();
+            if (!errorReason.isEmpty())
+                atiOrPsiResponse.put("errorReason", errorReason);
+        }
 
         return atiOrPsiResponse;
     }
 
-    private static void putDataFromAtiOrPsiResponse(HashMap<String, String> atiOrPsiResponse, MultivaluedMap<String, String> data) {
+    private void putDataFromAtiOrPsiResponse(HashMap<String, String> atiOrPsiResponse, MultivaluedMap<String, String> data) {
 
         // CS Subscriber Location Info
         // CGI
@@ -2310,7 +2338,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         // Location Number
         String locationNumber = atiOrPsiResponse.get("address");
         if (locationNumber != null)
-            data.putSingle("LocationNumber", locationNumber);
+            data.putSingle("LocationNumberAddress", locationNumber);
 
         // Subscriber Geographic Location Info
         String csGeogTypeOfShape = atiOrPsiResponse.get("csGeogTypeOfShape");
@@ -2495,6 +2523,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         if (currentLocationRetrieved != null)
             data.putSingle("CurrentLocationRetrieved", currentLocationRetrieved);
 
+        String msisdn = atiOrPsiResponse.get("msisdn");
+        if (msisdn != null)
+            data.putSingle("MSISDN", msisdn);
+
         String imsi = atiOrPsiResponse.get("imsi");
         if (imsi != null)
             data.putSingle("IMSI", imsi);
@@ -2530,9 +2562,17 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         String notReachableReason = atiOrPsiResponse.get("notReachableReason");
         if (notReachableReason != null)
             data.putSingle("NotReachableReason", notReachableReason);
+
+        String errorReason = atiOrPsiResponse.get("errorReason");
+        if (errorReason != null) {
+            cause = errorReason;
+            rStatus = responseStatus.Failed.toString();
+            data.putSingle("Cause", cause);
+            data.putSingle("ResponseStatus", rStatus);
+        }
     }
 
-    private static HashMap<String, String> parsePslJsonString(String jsonLine) {
+    private HashMap<String, String> parsePslJsonString(String jsonLine) {
         HashMap<String, String> sriPslResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
@@ -2540,6 +2580,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         if (jobject.get("lcsReferenceNumber") != null) {
             String lcsReferenceNumber = jobject.get("lcsReferenceNumber").getAsString();
             sriPslResponse.put("lcsReferenceNumber", lcsReferenceNumber);
+        }
+        if (jobject.get("errorReason") != null) {
+            String errorReason = jobject.get("errorReason").getAsString();
+            sriPslResponse.put("errorReason", errorReason);
         }
 
         JsonObject sri = jobject.getAsJsonObject("SRIforLCS");
@@ -2782,7 +2826,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         return sriPslResponse;
     }
 
-    private static void putDataFromSriPslResponse(HashMap<String, String> sriPslResponse, MultivaluedMap<String, String> data) {
+    private void putDataFromSriPslResponse(HashMap<String, String> sriPslResponse, MultivaluedMap<String, String> data) {
         String lcsReferenceNumber = sriPslResponse.get("lcsReferenceNumber");
         if (lcsReferenceNumber != null)
             data.putSingle("ReferenceNumber", lcsReferenceNumber);
@@ -2931,6 +2975,14 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         if (sac != null)
             data.putSingle("ServiceAreaCode", sac);
 
+        String errorReason = sriPslResponse.get("errorReason");
+        if (errorReason != null) {
+            cause = errorReason;
+            rStatus = responseStatus.Failed.toString();
+            data.putSingle("Cause", cause);
+            data.putSingle("ResponseStatus", rStatus);
+        }
+
         /*String gprsNodeIndicator = sriPslResponse.get("gprsNodeIndicator");
         String deferredMTLRresponseIndicator = sriPslResponse.get("deferredMTLRresponseIndicator");
         String geranPositioningInfo = sriPslResponse.get("geranPositioningInfo");
@@ -2942,15 +2994,21 @@ public class GeolocationEndpoint extends AbstractEndpoint {
     }
 
 
-    private static HashMap<String, String> parsePlrJsonString(String jsonLine) {
+    private HashMap<String, String> parsePlrJsonString(String jsonLine) {
         HashMap <String, String> rirPlrResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
+
         if (jobject.get("lcsReferenceNumber") != null) {
             String lcsReferenceNumber = jobject.get("lcsReferenceNumber").getAsString();
             if (!lcsReferenceNumber.isEmpty())
                 rirPlrResponse.put("lcsReferenceNumber", lcsReferenceNumber);
         }
+        if (jobject.get("errorReason") != null) {
+            String errorReason = jobject.get("errorReason").getAsString();
+            rirPlrResponse.put("errorReason", errorReason);
+        }
+
         JsonObject ria = jobject.getAsJsonObject("Routing-Info-Answer");
         if (ria != null) {
             if (ria.get("msisdn") != null) {
@@ -3246,7 +3304,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         return rirPlrResponse;
     }
 
-    private static void putDataFromRirPlrResponse(HashMap<String, String> rirPlrResponse, MultivaluedMap<String, String> data) {
+    private void putDataFromRirPlrResponse(HashMap<String, String> rirPlrResponse, MultivaluedMap<String, String> data) {
         String lcsReferenceNumber = rirPlrResponse.get("lcsReferenceNumber");
         if (lcsReferenceNumber != null)
             data.putSingle("ReferenceNumber", lcsReferenceNumber);
@@ -3406,9 +3464,17 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         String barometricPressure = rirPlrResponse.get("barometricPressure");
         if (barometricPressure != null)
             data.putSingle("BarometricPressure", barometricPressure);
+
+        String errorReason = rirPlrResponse.get("errorReason");
+        if (errorReason != null) {
+            cause = errorReason;
+            rStatus = responseStatus.Failed.toString();
+            data.putSingle("Cause", cause);
+            data.putSingle("ResponseStatus", rStatus);
+        }
     }
 
-    private static HashMap<String, String> parseUdaJsonString(String jsonLine) {
+    private HashMap<String, String> parseUdaJsonString(String jsonLine) {
         HashMap <String, String> udrResponse = new HashMap<>();
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
@@ -3419,345 +3485,399 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         String operation = jobject.get("operation").getAsString();
         udrResponse.put("operation", operation);
 
+        if (jobject.get("errorReason") != null) {
+            String errorReason = jobject.get("errorReason").getAsString();
+            udrResponse.put("errorReason", errorReason);
+        }
+
+        JsonObject publicIdentifiers = jelement.getAsJsonObject();
+        publicIdentifiers = publicIdentifiers.getAsJsonObject("PublicIdentifiers");
+        if (publicIdentifiers != null) {
+            if (publicIdentifiers.get("msisdn") != null) {
+                String msisdn = publicIdentifiers.get("msisdn").getAsString();
+                udrResponse.put("msisdn", msisdn);
+            }
+            if (publicIdentifiers.get("imsPublicIdentity") != null) {
+                String imsPublicIdentity = publicIdentifiers.get("imsPublicIdentity").getAsString();
+                udrResponse.put("imsPublicIdentity", imsPublicIdentity);
+            }
+
+        }
+
         JsonObject csLocationInformation = jelement.getAsJsonObject();
         csLocationInformation = csLocationInformation.getAsJsonObject("CSLocationInformation");
-        JsonObject locationNumber = csLocationInformation.getAsJsonObject("LocationNumber");
-        if (locationNumber != null) {
-            if (locationNumber.get("oddFlag") != null) {
-                String oF = locationNumber.get("oddFlag").getAsString();
-                udrResponse.put("oddFlag", oF);
+        if (csLocationInformation != null) {
+            JsonObject locationNumber = csLocationInformation.getAsJsonObject("LocationNumber");
+            if (locationNumber != null) {
+                if (locationNumber.get("oddFlag") != null) {
+                    String oF = locationNumber.get("oddFlag").getAsString();
+                    udrResponse.put("oddFlag", oF);
+                }
+                if (locationNumber.get("natureOfAddressIndicator") != null) {
+                    String nai = locationNumber.get("natureOfAddressIndicator").getAsString();
+                    udrResponse.put("nai", nai);
+                }
+                if (locationNumber.get("internalNetworkNumberIndicator") != null) {
+                    String inni = locationNumber.get("internalNetworkNumberIndicator").getAsString();
+                    udrResponse.put("inni", inni);
+                }
+                if (locationNumber.get("numberingPlanIndicator") != null) {
+                    String npi = locationNumber.get("numberingPlanIndicator").getAsString();
+                    udrResponse.put("npi", npi);
+                }
+                if (locationNumber.get("addressRepresentationRestrictedIndicator") != null) {
+                    String arpi = locationNumber.get("addressRepresentationRestrictedIndicator").getAsString();
+                    udrResponse.put("arpi", arpi);
+                }
+                if (locationNumber.get("screeningIndicator") != null) {
+                    String si = locationNumber.get("screeningIndicator").getAsString();
+                    udrResponse.put("si", si);
+                }
+                if (locationNumber.get("address") != null) {
+                    String address = locationNumber.get("address").getAsString();
+                    udrResponse.put("address", address);
+                }
             }
-            if (locationNumber.get("natureOfAddressIndicator") != null) {
-                String nai = locationNumber.get("natureOfAddressIndicator").getAsString();
-                udrResponse.put("nai", nai);
-            }
-            if (locationNumber.get("internalNetworkNumberIndicator") != null) {
-                String inni = locationNumber.get("internalNetworkNumberIndicator").getAsString();
-                udrResponse.put("inni", inni);
-            }
-            if (locationNumber.get("numberingPlanIndicator") != null) {
-                String npi = locationNumber.get("numberingPlanIndicator").getAsString();
-                udrResponse.put("npi", npi);
-            }
-            if (locationNumber.get("addressRepresentationRestrictedIndicator") != null) {
-                String arpi = locationNumber.get("addressRepresentationRestrictedIndicator").getAsString();
-                udrResponse.put("arpi", arpi);
-            }
-            if (locationNumber.get("screeningIndicator") != null) {
-                String si = locationNumber.get("screeningIndicator").getAsString();
-                udrResponse.put("si", si);
-            }
-            if (locationNumber.get("address") != null) {
-                String address = locationNumber.get("address").getAsString();
-                udrResponse.put("address", address);
-            }
-        }
 
-        JsonObject csCgi = csLocationInformation.getAsJsonObject("CGI");
-        if (csCgi != null) {
-            if (csCgi.get("mcc") != null) {
-                String csMcc = csCgi.get("mcc").getAsString();
-                udrResponse.put("csMcc", csMcc);
+            JsonObject csCgi = csLocationInformation.getAsJsonObject("CGI");
+            if (csCgi != null) {
+                if (csCgi.get("mcc") != null) {
+                    String csMcc = csCgi.get("mcc").getAsString();
+                    udrResponse.put("csMcc", csMcc);
+                }
+                if (csCgi.get("mnc") != null) {
+                    String csMnc = csCgi.get("mnc").getAsString();
+                    udrResponse.put("csMnc", csMnc);
+                }
+                if (csCgi.get("lac") != null) {
+                    String csLac = csCgi.get("lac").getAsString();
+                    udrResponse.put("csLac", csLac);
+                }
+                if (csCgi.get("ci") != null) {
+                    String csCi = csCgi.get("ci").getAsString();
+                    udrResponse.put("csCi", csCi);
+                }
             }
-            if (csCgi.get("mnc") != null) {
-                String csMnc = csCgi.get("mnc").getAsString();
-                udrResponse.put("csMnc", csMnc);
-            }
-            if (csCgi.get("lac") != null) {
-                String csLac = csCgi.get("lac").getAsString();
-                udrResponse.put("csLac", csLac);
-            }
-            if (csCgi.get("ci") != null) {
-                String csCi = csCgi.get("ci").getAsString();
-                udrResponse.put("csCi", csCi);
-            }
-        }
 
-        JsonObject csGeographicalInformation = csLocationInformation.getAsJsonObject("GeographicalInformation");
-        if (csGeographicalInformation != null) {
-            if (csGeographicalInformation.get("typeOfShape") != null) {
-                String csTypeOfShape = csGeographicalInformation.get("typeOfShape").getAsString();
-                udrResponse.put("csGeogTypeOfShape", csTypeOfShape);
+            JsonObject csGeographicalInformation = csLocationInformation.getAsJsonObject("GeographicalInformation");
+            if (csGeographicalInformation != null) {
+                if (csGeographicalInformation.get("typeOfShape") != null) {
+                    String csTypeOfShape = csGeographicalInformation.get("typeOfShape").getAsString();
+                    udrResponse.put("csGeogTypeOfShape", csTypeOfShape);
+                }
+                if (csGeographicalInformation.get("latitude") != null) {
+                    String csLatitude = csGeographicalInformation.get("latitude").getAsString();
+                    udrResponse.put("csGeogLatitude", csLatitude);
+                }
+                if (csGeographicalInformation.get("longitude") != null) {
+                    String csLongitude = csGeographicalInformation.get("longitude").getAsString();
+                    udrResponse.put("csGeogLongitude", csLongitude);
+                }
+                if (csGeographicalInformation.get("uncertainty") != null) {
+                    String csUncertainty = csGeographicalInformation.get("uncertainty").getAsString();
+                    udrResponse.put("csGeogUncertainty", csUncertainty);
+                }
             }
-            if (csGeographicalInformation.get("latitude") != null) {
-                String csLatitude = csGeographicalInformation.get("latitude").getAsString();
-                udrResponse.put("csGeogLatitude", csLatitude);
-            }
-            if (csGeographicalInformation.get("longitude") != null) {
-                String csLongitude = csGeographicalInformation.get("longitude").getAsString();
-                udrResponse.put("csGeogLongitude", csLongitude);
-            }
-            if (csGeographicalInformation.get("uncertainty") != null) {
-                String csUncertainty = csGeographicalInformation.get("uncertainty").getAsString();
-                udrResponse.put("csGeogUncertainty", csUncertainty);
-            }
-        }
 
-        JsonObject csGeodeticInformation = csLocationInformation.getAsJsonObject("GeodeticInformation");
-        if (csGeodeticInformation != null) {
-            if (csGeodeticInformation.get("typeOfShape") != null) {
-                String csGeodTypeOfShape = csGeodeticInformation.get("typeOfShape").getAsString();
-                udrResponse.put("csGeodTypeOfShape", csGeodTypeOfShape);
+            JsonObject csGeodeticInformation = csLocationInformation.getAsJsonObject("GeodeticInformation");
+            if (csGeodeticInformation != null) {
+                if (csGeodeticInformation.get("typeOfShape") != null) {
+                    String csGeodTypeOfShape = csGeodeticInformation.get("typeOfShape").getAsString();
+                    udrResponse.put("csGeodTypeOfShape", csGeodTypeOfShape);
+                }
+                logger.info("csGeodeticInformation.get(\"latitude\")= "+csGeodeticInformation);
+                if (csGeodeticInformation.get("latitude") != null) {
+                    String csGeodLatitude = csGeodeticInformation.get("latitude").getAsString();
+                    udrResponse.put("csGeodLatitude", csGeodLatitude);
+                }
+                if (csGeodeticInformation.get("longitude") != null) {
+                    String csGeodLongitude = csGeodeticInformation.get("longitude").getAsString();
+                    udrResponse.put("csGeodLongitude", csGeodLongitude);
+                }
+                if (csGeodeticInformation.get("uncertainty") != null) {
+                    String csGeodUncertainty = csGeodeticInformation.get("uncertainty").getAsString();
+                    udrResponse.put("csGeodUncertainty", csGeodUncertainty);
+                }
+                if (csGeodeticInformation.get("confidence") != null) {
+                    String csConfidence = csGeodeticInformation.get("confidence").getAsString();
+                    udrResponse.put("csGeodConfidence", csConfidence);
+                }
+                if (csGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                    String csScreeningAndPresentationIndicators = csGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                    udrResponse.put("csGeodScreeningAndPresentationIndicators", csScreeningAndPresentationIndicators);
+                }
             }
-            if (csGeodeticInformation.get("latitude") != null) {
-                String csGeodLatitude = csGeodeticInformation.get("latitude").getAsString();
-                udrResponse.put("csGeodLatitude", csGeodLatitude);
-            }
-            if (csGeodeticInformation.get("longitude") != null) {
-                String csGeodLongitude = csGeodeticInformation.get("longitude").getAsString();
-                udrResponse.put("csGeodLongitude", csGeodLongitude);
-            }
-            if (csGeodeticInformation.get("uncertainty") != null) {
-                String csGeodUncertainty = csGeodeticInformation.get("uncertainty").getAsString();
-                udrResponse.put("csGeodUncertainty", csGeodUncertainty);
-            }
-            if (csGeodeticInformation.get("confidence") != null) {
-                String csConfidence = csGeodeticInformation.get("confidence").getAsString();
-                udrResponse.put("csGeodConfidence", csConfidence);
-            }
-            if (csGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
-                String csScreeningAndPresentationIndicators = csGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                udrResponse.put("csGeodScreeningAndPresentationIndicators", csScreeningAndPresentationIndicators);
-            }
-        }
 
-        String mscNumber = csLocationInformation.get("mscNumber").getAsString();
-        if (mscNumber != null) {
-            udrResponse.put("mscNumber", mscNumber);
-        }
+            if (csLocationInformation.get("mscNumber") != null) {
+                String mscNumber = csLocationInformation.get("mscNumber").getAsString();
+                if (mscNumber != null) {
+                    udrResponse.put("mscNumber", mscNumber);
+                }
+            }
 
-        String vlrNumber = csLocationInformation.get("vlrNumber").getAsString();
-        if (vlrNumber != null) {
-            udrResponse.put("vlrNumber", vlrNumber);
-        }
+            if (csLocationInformation.get("vlrNumber") != null) {
+                String vlrNumber = csLocationInformation.get("vlrNumber").getAsString();
+                if (vlrNumber != null) {
+                    udrResponse.put("vlrNumber", vlrNumber);
+                }
+            }
 
-        String csAgeOfLocationInfo = csLocationInformation.get("ageOfLocationInformation").getAsString();
-        if (csAgeOfLocationInfo != null) {
-            udrResponse.put("csAgeOfLocationInformation", csAgeOfLocationInfo);
-        }
+            if (csLocationInformation.get("ageOfLocationInformation") != null) {
+                String csAgeOfLocationInfo = csLocationInformation.get("ageOfLocationInformation").getAsString();
+                if (csAgeOfLocationInfo != null) {
+                    udrResponse.put("csAgeOfLocationInformation", csAgeOfLocationInfo);
+                }
+            }
 
-        String csCurrentLocationRetrieved = csLocationInformation.get("currentLocationRetrieved").getAsString();
-        if (csCurrentLocationRetrieved != null) {
-            udrResponse.put("csCurrentLocationRetrieved", csCurrentLocationRetrieved);
+            if (csLocationInformation.get("currentLocationRetrieved") != null) {
+                String csCurrentLocationRetrieved = csLocationInformation.get("currentLocationRetrieved").getAsString();
+                if (csCurrentLocationRetrieved != null) {
+                    udrResponse.put("csCurrentLocationRetrieved", csCurrentLocationRetrieved);
+                }
+            }
         }
 
         JsonObject psLocationInformation = jelement.getAsJsonObject();
         psLocationInformation = psLocationInformation.getAsJsonObject("PSLocationInformation");
-        JsonObject routingAreaId = psLocationInformation.getAsJsonObject("RAI");
-        if (routingAreaId != null) {
-            if (routingAreaId.get("mcc") != null) {
-                String raiMcc = routingAreaId.get("mcc").getAsString();
-                udrResponse.put("raiMcc", raiMcc);
-            }
-            if (routingAreaId.get("mnc") != null) {
-                String raiMnc = routingAreaId.get("mnc").getAsString();
-                udrResponse.put("raiMnc", raiMnc);
-            }
-            if (routingAreaId.get("lac") != null) {
-                String raiLac = routingAreaId.get("lac").getAsString();
-                udrResponse.put("raiLac", raiLac);
-            }
-            if (routingAreaId.get("rac") != null) {
-                String rac = routingAreaId.get("rac").getAsString();
-                udrResponse.put("rac", rac);
+        if (psLocationInformation != null) {
+            JsonObject routingAreaId = psLocationInformation.getAsJsonObject("RAI");
+            if (routingAreaId != null) {
+                if (routingAreaId.get("mcc") != null) {
+                    String raiMcc = routingAreaId.get("mcc").getAsString();
+                    udrResponse.put("raiMcc", raiMcc);
+                }
+                if (routingAreaId.get("mnc") != null) {
+                    String raiMnc = routingAreaId.get("mnc").getAsString();
+                    udrResponse.put("raiMnc", raiMnc);
+                }
+                if (routingAreaId.get("lac") != null) {
+                    String raiLac = routingAreaId.get("lac").getAsString();
+                    udrResponse.put("raiLac", raiLac);
+                }
+                if (routingAreaId.get("rac") != null) {
+                    String rac = routingAreaId.get("rac").getAsString();
+                    udrResponse.put("rac", rac);
+                }
+
             }
 
-        }
+            JsonObject psCgi = psLocationInformation.getAsJsonObject("CGI");
+            if (psCgi != null) {
+                if (psCgi.get("mcc") != null) {
+                    String psMcc = psCgi.get("mcc").getAsString();
+                    udrResponse.put("psMcc", psMcc);
+                }
+                if (psCgi.get("mnc") != null) {
+                    String psMnc = psCgi.get("mnc").getAsString();
+                    udrResponse.put("psMnc", psMnc);
+                }
+                if (psCgi.get("lac") != null) {
+                    String psLac = psCgi.get("lac").getAsString();
+                    udrResponse.put("psLac", psLac);
+                }
+                if (psCgi.get("ci") != null) {
+                    String psCi = psCgi.get("ci").getAsString();
+                    udrResponse.put("psCi", psCi);
+                }
+                if (psCgi.get("sac") != null) {
+                    String psSac = psCgi.get("psSac").getAsString();
+                    udrResponse.put("psSac", psSac);
+                }
+            }
 
-        JsonObject psCgi = psLocationInformation.getAsJsonObject("CGI");
-        if (psCgi != null) {
-            if (psCgi.get("mcc") != null) {
-                String psMcc = psCgi.get("mcc").getAsString();
-                udrResponse.put("psMcc", psMcc);
+            JsonObject psGeographicalInformation = psLocationInformation.getAsJsonObject("GeographicalInformation");
+            if (psGeographicalInformation != null) {
+                if (psGeographicalInformation.get("typeOfShape") != null) {
+                    String psTypeOfShape = psGeographicalInformation.get("typeOfShape").getAsString();
+                    udrResponse.put("psGeogTypeOfShape", psTypeOfShape);
+                }
+                if (psGeographicalInformation.get("latitude") != null) {
+                    String psLatitude = psGeographicalInformation.get("latitude").getAsString();
+                    udrResponse.put("psGeogLatitude", psLatitude);
+                }
+                if (psGeographicalInformation.get("longitude") != null) {
+                    String psLongitude = psGeographicalInformation.get("longitude").getAsString();
+                    udrResponse.put("psGeogLongitude", psLongitude);
+                }
+                if (psGeographicalInformation.get("uncertainty") != null) {
+                    String psUncertainty = psGeographicalInformation.get("uncertainty").getAsString();
+                    udrResponse.put("psGeogUncertainty", psUncertainty);
+                }
             }
-            if (psCgi.get("mnc") != null) {
-                String psMnc = psCgi.get("mnc").getAsString();
-                udrResponse.put("psMnc", psMnc);
-            }
-            if (psCgi.get("lac") != null) {
-                String psLac = psCgi.get("lac").getAsString();
-                udrResponse.put("psLac", psLac);
-            }
-            if (psCgi.get("ci") != null) {
-                String psCi = psCgi.get("ci").getAsString();
-                udrResponse.put("psCi", psCi);
-            }
-            if (psCgi.get("sac") != null) {
-                String psSac = psCgi.get("psSac").getAsString();
-                udrResponse.put("psSac", psSac);
-            }
-        }
 
-        JsonObject psGeographicalInformation = psLocationInformation.getAsJsonObject("GeographicalInformation");
-        if (psGeographicalInformation != null) {
-            if (psGeographicalInformation.get("typeOfShape") != null) {
-                String psTypeOfShape = psGeographicalInformation.get("typeOfShape").getAsString();
-                udrResponse.put("psGeogTypeOfShape", psTypeOfShape);
+            JsonObject psGeodeticInformation = psLocationInformation.getAsJsonObject("GeodeticInformation");
+            if (psGeodeticInformation != null) {
+                if (psGeodeticInformation.get("typeOfShape") != null) {
+                    String psGeodTypeOfShape = psGeodeticInformation.get("typeOfShape").getAsString();
+                    udrResponse.put("psGeodTypeOfShape", psGeodTypeOfShape);
+                }
+                if (psGeodeticInformation.get("latitude") != null) {
+                    String psGeodLatitude = psGeodeticInformation.get("latitude").getAsString();
+                    udrResponse.put("psGeodLatitude", psGeodLatitude);
+                }
+                if (psGeodeticInformation.get("longitude") != null) {
+                    String psGeodLongitude = psGeodeticInformation.get("longitude").getAsString();
+                    udrResponse.put("psGeodLongitude", psGeodLongitude);
+                }
+                if (psGeodeticInformation.get("uncertainty") != null) {
+                    String psGeodUncertainty = psGeodeticInformation.get("uncertainty").getAsString();
+                    udrResponse.put("psGeodUncertainty", psGeodUncertainty);
+                }
+                if (psGeodeticInformation.get("confidence") != null) {
+                    String psConfidence = psGeodeticInformation.get("confidence").getAsString();
+                    udrResponse.put("psGeodConfidence", psConfidence);
+                }
+                if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                    String psScreeningAndPresentationIndicators = psGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                    udrResponse.put("psGeodScreeningAndPresentationIndicators", psScreeningAndPresentationIndicators);
+                }
             }
-            if (psGeographicalInformation.get("latitude") != null) {
-                String psLatitude = psGeographicalInformation.get("latitude").getAsString();
-                udrResponse.put("psGeogLatitude", psLatitude);
-            }
-            if (psGeographicalInformation.get("longitude") != null) {
-                String psLongitude = psGeographicalInformation.get("longitude").getAsString();
-                udrResponse.put("psGeogLongitude", psLongitude);
-            }
-            if (psGeographicalInformation.get("uncertainty") != null) {
-                String psUncertainty = psGeographicalInformation.get("uncertainty").getAsString();
-                udrResponse.put("psGeogUncertainty", psUncertainty);
-            }
-        }
 
-        JsonObject psGeodeticInformation = psLocationInformation.getAsJsonObject("GeodeticInformation");
-        if (psGeodeticInformation != null) {
-            if (psGeodeticInformation.get("typeOfShape") != null) {
-                String psGeodTypeOfShape = psGeodeticInformation.get("typeOfShape").getAsString();
-                udrResponse.put("psGeodTypeOfShape", psGeodTypeOfShape);
+            if (psLocationInformation.get("sgsnNumber") != null) {
+                String sgsnNumber = psLocationInformation.get("sgsnNumber").getAsString();
+                if (sgsnNumber != null) {
+                    udrResponse.put("sgsnNumber", sgsnNumber);
+                }
             }
-            if (psGeodeticInformation.get("latitude") != null) {
-                String psGeodLatitude = psGeodeticInformation.get("latitude").getAsString();
-                udrResponse.put("psGeodLatitude", psGeodLatitude);
-            }
-            if (psGeodeticInformation.get("longitude") != null) {
-                String psGeodLongitude = psGeodeticInformation.get("longitude").getAsString();
-                udrResponse.put("psGeodLongitude", psGeodLongitude);
-            }
-            if (psGeodeticInformation.get("uncertainty") != null) {
-                String psGeodUncertainty = psGeodeticInformation.get("uncertainty").getAsString();
-                udrResponse.put("psGeodUncertainty", psGeodUncertainty);
-            }
-            if (psGeodeticInformation.get("confidence") != null) {
-                String psConfidence = psGeodeticInformation.get("confidence").getAsString();
-                udrResponse.put("psGeodConfidence", psConfidence);
-            }
-            if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
-                String psScreeningAndPresentationIndicators = psGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                udrResponse.put("psGeodScreeningAndPresentationIndicators", psScreeningAndPresentationIndicators);
-            }
-        }
 
-        String sgsnNumber = psLocationInformation.get("sgsnNumber").getAsString();
-        if (sgsnNumber != null) {
-            udrResponse.put("sgsnNumber", sgsnNumber);
-        }
+            if (psLocationInformation.get("ageOfLocationInformation") != null) {
+                String psAgeOfLocationInfo = psLocationInformation.get("ageOfLocationInformation").getAsString();
+                if (psAgeOfLocationInfo != null) {
+                    udrResponse.put("psAgeOfLocationInformation", psAgeOfLocationInfo);
+                }
+            }
 
-        String psAgeOfLocationInfo = psLocationInformation.get("ageOfLocationInformation").getAsString();
-        if (psAgeOfLocationInfo != null) {
-            udrResponse.put("psAgeOfLocationInformation", psAgeOfLocationInfo);
-        }
-
-        String psCurrentLocationRetrieved = psLocationInformation.get("currentLocationRetrieved").getAsString();
-        if (psCurrentLocationRetrieved != null) {
-            //String csCurrent = vlrNumber.get("currentLocationRetrieved").getAsString();
-            udrResponse.put("psCurrentLocationRetrieved", psCurrentLocationRetrieved);
+            if (psLocationInformation.get("currentLocationRetrieved") != null) {
+                String psCurrentLocationRetrieved = psLocationInformation.get("currentLocationRetrieved").getAsString();
+                if (psCurrentLocationRetrieved != null) {
+                    udrResponse.put("psCurrentLocationRetrieved", psCurrentLocationRetrieved);
+                }
+            }
         }
 
         JsonObject epsLocationInformation = jelement.getAsJsonObject();
         epsLocationInformation = epsLocationInformation.getAsJsonObject("EPSLocationInformation");
-        JsonObject trackingAreaId = epsLocationInformation.getAsJsonObject("TAI");
-        if (trackingAreaId != null) {
-            if (trackingAreaId.get("mcc") != null) {
-                String taiMcc = trackingAreaId.get("mcc").getAsString();
-                udrResponse.put("taiMcc", taiMcc);
-            }
-            if (trackingAreaId.get("mnc") != null) {
-                String taiMnc = trackingAreaId.get("mnc").getAsString();
-                udrResponse.put("taiMnc", taiMnc);
-            }
-            if (trackingAreaId.get("tac") != null) {
-                String tac = trackingAreaId.get("tac").getAsString();
-                udrResponse.put("tac", tac);
+        if (epsLocationInformation != null) {
+            JsonObject trackingAreaId = epsLocationInformation.getAsJsonObject("TAI");
+            if (trackingAreaId != null) {
+                if (trackingAreaId.get("mcc") != null) {
+                    String taiMcc = trackingAreaId.get("mcc").getAsString();
+                    udrResponse.put("taiMcc", taiMcc);
+                }
+                if (trackingAreaId.get("mnc") != null) {
+                    String taiMnc = trackingAreaId.get("mnc").getAsString();
+                    udrResponse.put("taiMnc", taiMnc);
+                }
+                if (trackingAreaId.get("tac") != null) {
+                    String tac = trackingAreaId.get("tac").getAsString();
+                    udrResponse.put("tac", tac);
+                }
             }
 
-        }
+            JsonObject epsCgi = epsLocationInformation.getAsJsonObject("ECGI");
+            if (epsCgi != null) {
+                if (epsCgi.get("mcc") != null) {
+                    String epsMcc = epsCgi.get("mcc").getAsString();
+                    udrResponse.put("epsMcc", epsMcc);
+                }
+                if (epsCgi.get("mnc") != null) {
+                    String epsMnc = epsCgi.get("mnc").getAsString();
+                    udrResponse.put("epsMnc", epsMnc);
+                }
+                if (epsCgi.get("eNBId") != null) {
+                    String eNBId = epsCgi.get("eNBId").getAsString();
+                    udrResponse.put("eNBId", eNBId);
+                }
+                if (epsCgi.get("ci") != null) {
+                    String epsCi = epsCgi.get("ci").getAsString();
+                    udrResponse.put("epsCi", epsCi);
+                }
+            }
 
-        JsonObject epsCgi = epsLocationInformation.getAsJsonObject("ECGI");
-        if (epsCgi != null) {
-            if (epsCgi.get("mcc") != null) {
-                String epsMcc = epsCgi.get("mcc").getAsString();
-                udrResponse.put("epsMcc", epsMcc);
+            JsonObject epsGeographicalInformation = epsLocationInformation.getAsJsonObject("GeographicalInformation");
+            if (epsGeographicalInformation != null) {
+                if (epsGeographicalInformation.get("typeOfShape") != null) {
+                    String epsTypeOfShape = epsGeographicalInformation.get("typeOfShape").getAsString();
+                    udrResponse.put("epsGeogTypeOfShape", epsTypeOfShape);
+                }
+                if (epsGeographicalInformation.get("latitude") != null) {
+                    String epsLatitude = epsGeographicalInformation.get("latitude").getAsString();
+                    udrResponse.put("epsGeogLatitude", epsLatitude);
+                }
+                if (epsGeographicalInformation.get("longitude") != null) {
+                    String epsLongitude = epsGeographicalInformation.get("longitude").getAsString();
+                    udrResponse.put("epsGeogLongitude", epsLongitude);
+                }
+                if (epsGeographicalInformation.get("uncertainty") != null) {
+                    String epsUncertainty = epsGeographicalInformation.get("uncertainty").getAsString();
+                    udrResponse.put("epsGeogUncertainty", epsUncertainty);
+                }
             }
-            if (epsCgi.get("mnc") != null) {
-                String epsMnc = epsCgi.get("mnc").getAsString();
-                udrResponse.put("epsMnc", epsMnc);
-            }
-            if (epsCgi.get("eNBId") != null) {
-                String eNBId = epsCgi.get("eNBId").getAsString();
-                udrResponse.put("eNBId", eNBId);
-            }
-            if (epsCgi.get("ci") != null) {
-                String epsCi = epsCgi.get("ci").getAsString();
-                udrResponse.put("epsCi", epsCi);
-            }
-        }
 
-        JsonObject epsGeographicalInformation = epsLocationInformation.getAsJsonObject("GeographicalInformation");
-        if (epsGeographicalInformation != null) {
-            if (epsGeographicalInformation.get("typeOfShape") != null) {
-                String epsTypeOfShape = epsGeographicalInformation.get("typeOfShape").getAsString();
-                udrResponse.put("epsGeogTypeOfShape", epsTypeOfShape);
+            JsonObject epsGeodeticInformation = epsLocationInformation.getAsJsonObject("GeodeticInformation");
+            if (epsGeodeticInformation != null) {
+                if (epsGeodeticInformation.get("typeOfShape") != null) {
+                    String epsGeodTypeOfShape = epsGeodeticInformation.get("typeOfShape").getAsString();
+                    udrResponse.put("epsGeodTypeOfShape", epsGeodTypeOfShape);
+                }
+                if (epsGeodeticInformation.get("latitude") != null) {
+                    String epsGeodLatitude = epsGeodeticInformation.get("latitude").getAsString();
+                    udrResponse.put("epsGeodLatitude", epsGeodLatitude);
+                }
+                if (epsGeodeticInformation.get("longitude") != null) {
+                    String epsGeodLongitude = epsGeodeticInformation.get("longitude").getAsString();
+                    udrResponse.put("epsGeodLongitude", epsGeodLongitude);
+                }
+                if (epsGeodeticInformation.get("uncertainty") != null) {
+                    String epsGeodUncertainty = epsGeodeticInformation.get("uncertainty").getAsString();
+                    udrResponse.put("epsGeodUncertainty", epsGeodUncertainty);
+                }
+                if (epsGeodeticInformation.get("confidence") != null) {
+                    String epsConfidence = epsGeodeticInformation.get("confidence").getAsString();
+                    udrResponse.put("epsGeodConfidence", epsConfidence);
+                }
+                if (epsGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
+                    String epsScreeningAndPresentationIndicators = epsGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
+                    udrResponse.put("epsGeodScreeningAndPresentationIndicators", epsScreeningAndPresentationIndicators);
+                }
             }
-            if (epsGeographicalInformation.get("latitude") != null) {
-                String epsLatitude = epsGeographicalInformation.get("latitude").getAsString();
-                udrResponse.put("epsGeogLatitude", epsLatitude);
-            }
-            if (epsGeographicalInformation.get("longitude") != null) {
-                String epsLongitude = epsGeographicalInformation.get("longitude").getAsString();
-                udrResponse.put("epsGeogLongitude", epsLongitude);
-            }
-            if (epsGeographicalInformation.get("uncertainty") != null) {
-                String epsUncertainty = epsGeographicalInformation.get("uncertainty").getAsString();
-                udrResponse.put("epsGeogUncertainty", epsUncertainty);
-            }
-        }
 
-        JsonObject epsGeodeticInformation = epsLocationInformation.getAsJsonObject("GeodeticInformation");
-        if (epsGeodeticInformation != null) {
-            if (epsGeodeticInformation.get("typeOfShape") != null) {
-                String epsGeodTypeOfShape = epsGeodeticInformation.get("typeOfShape").getAsString();
-                udrResponse.put("epsGeodTypeOfShape", epsGeodTypeOfShape);
+            if (epsLocationInformation.get("mmeName") != null) {
+                String mmeName = epsLocationInformation.get("mmeName").getAsString();
+                if (mmeName != null) {
+                    udrResponse.put("mmeName", mmeName);
+                }
             }
-            if (epsGeodeticInformation.get("latitude") != null) {
-                String epsGeodLatitude = epsGeodeticInformation.get("latitude").getAsString();
-                udrResponse.put("epsGeodLatitude", epsGeodLatitude);
-            }
-            if (epsGeodeticInformation.get("longitude") != null) {
-                String epsGeodLongitude = epsGeodeticInformation.get("longitude").getAsString();
-                udrResponse.put("epsGeodLongitude", epsGeodLongitude);
-            }
-            if (epsGeodeticInformation.get("uncertainty") != null) {
-                String epsGeodUncertainty = epsGeodeticInformation.get("uncertainty").getAsString();
-                udrResponse.put("epsGeodUncertainty", epsGeodUncertainty);
-            }
-            if (epsGeodeticInformation.get("confidence") != null) {
-                String epsConfidence = epsGeodeticInformation.get("confidence").getAsString();
-                udrResponse.put("epsGeodConfidence", epsConfidence);
-            }
-            if (psGeodeticInformation.get("screeningAndPresentationIndicators") != null) {
-                String epsScreeningAndPresentationIndicators = epsGeodeticInformation.get("screeningAndPresentationIndicators").getAsString();
-                udrResponse.put("epsGeodScreeningAndPresentationIndicators", epsScreeningAndPresentationIndicators);
-            }
-        }
 
-        String mmeName = epsLocationInformation.get("mmeName").getAsString();
-        if (mmeName != null) {
-            udrResponse.put("mmeName", mmeName);
-        }
+            if (epsLocationInformation.get("ageOfLocationInformation") != null) {
+                String epsAgeOfLocationInfo = epsLocationInformation.get("ageOfLocationInformation").getAsString();
+                if (epsAgeOfLocationInfo != null) {
+                    udrResponse.put("epsAgeOfLocationInformation", epsAgeOfLocationInfo);
+                }
+            }
 
-        String epsAgeOfLocationInfo = epsLocationInformation.get("ageOfLocationInformation").getAsString();
-        if (epsAgeOfLocationInfo != null) {
-            udrResponse.put("epsAgeOfLocationInformation", epsAgeOfLocationInfo);
-        }
-
-        String epsCurrentLocationRetrieved = epsLocationInformation.get("currentLocationRetrieved").getAsString();
-        if (epsCurrentLocationRetrieved != null) {
-            udrResponse.put("epsCurrentLocationRetrieved", epsCurrentLocationRetrieved);
+            if (epsLocationInformation.get("currentLocationRetrieved") != null) {
+                String epsCurrentLocationRetrieved = epsLocationInformation.get("currentLocationRetrieved").getAsString();
+                if (epsCurrentLocationRetrieved != null) {
+                    udrResponse.put("epsCurrentLocationRetrieved", epsCurrentLocationRetrieved);
+                }
+            }
         }
 
         return udrResponse;
     }
 
-    private static void putDataFromShUdrResponse(HashMap<String, String> udrResponse, MultivaluedMap<String, String> data) {
+    private void putDataFromShUdrResponse(HashMap<String, String> udrResponse, MultivaluedMap<String, String> data) {
+
+        // Public Identifiers
+        String msisdn = udrResponse.get("msisdn");
+        if (msisdn != null)
+            data.putSingle("MSISDN", msisdn);
+
+        String imsPublicIdentity = udrResponse.get("imsPublicIdentity");
+        if (msisdn != null)
+            data.putSingle("ImsPublicIdentity", imsPublicIdentity);
+
         // CS Subscriber Location Info
         // CGI
         String csMcc = udrResponse.get("csMcc");
@@ -3779,7 +3899,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         // Location Number
         String locationNumber = udrResponse.get("address");
         if (locationNumber != null)
-            data.putSingle("LocationNumber", locationNumber);
+            data.putSingle("LocationNumberAddress", locationNumber);
 
         // Subscriber Geographic Location Info
         String csGeogTypeOfShape = udrResponse.get("csGeogTypeOfShape");
@@ -3831,11 +3951,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         if (mscNumber != null)
             data.putSingle("NetworkEntityAddress", mscNumber);
 
-        String csSubscriberState = udrResponse.get("csSubscriberState");
-        if (csSubscriberState != null)
-            data.putSingle("SubscriberState", csSubscriberState);
-
-        String csAgeOfLocationInfo = udrResponse.get("csAgeOfLocationInfo");
+        String csAgeOfLocationInfo = udrResponse.get("csAgeOfLocationInformation");
         if (csAgeOfLocationInfo != null)
             data.putSingle("LocationAge", csAgeOfLocationInfo);
 
@@ -3925,11 +4041,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         if (sgsnNumber != null)
             data.putSingle("NetworkEntityAddress", sgsnNumber);
 
-        String psSubscriberState = udrResponse.get("psSubscriberState");
-        if (psSubscriberState != null)
-            data.putSingle("SubscriberState", psSubscriberState);
-
-        String psAgeOfLocationInfo = udrResponse.get("psAgeOfLocationInfo");
+        String psAgeOfLocationInfo = udrResponse.get("psAgeOfLocationInformation");
         if (psAgeOfLocationInfo != null)
             data.putSingle("LocationAge", psAgeOfLocationInfo);
 
@@ -4015,18 +4127,27 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         if (mmeName != null)
             data.putSingle("NetworkEntityName", mmeName);
 
-        String epsSubscriberState = udrResponse.get("epsSubscriberState");
-        if (epsSubscriberState != null)
-            data.putSingle("SubscriberState", epsSubscriberState);
-
-        String epsAgeOfLocationInfo = udrResponse.get("epsAgeOfLocationInfo");
+        String epsAgeOfLocationInfo = udrResponse.get("epsAgeOfLocationInformation");
         if (epsAgeOfLocationInfo != null)
             data.putSingle("LocationAge", epsAgeOfLocationInfo);
 
         String epsCurrentLocationRetrieved = udrResponse.get("psCurrentLocationRetrieved");
         if (epsCurrentLocationRetrieved != null)
             data.putSingle("CurrentLocationRetrieved", epsCurrentLocationRetrieved);
+
+        String errorReason = udrResponse.get("errorReason");
+        if (errorReason != null) {
+            cause = errorReason;
+            rStatus = responseStatus.Failed.toString();
+            data.putSingle("Cause", cause);
+            data.putSingle("ResponseStatus", rStatus);
+        }
     }
+
+
+    /*********************************************/
+    // ***   Immediate type of Geolocation   ***//
+    /*******************************************/
 
     @Path("/Immediate/{sid}")
     @DELETE

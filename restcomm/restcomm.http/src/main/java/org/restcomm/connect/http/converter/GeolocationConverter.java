@@ -269,11 +269,12 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileCountryCode(geolocation.getMobileCountryCode(), writer);
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), writer);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), writer);
-            writeCellId(geolocation.getCi(), writer);
-            writeSac(geolocation.getSac(), writer);
-            writeEnbid(geolocation.getEnbid(), writer);
-            writeTrackingAreaCode(geolocation.getTac(), writer);
-            writeRoutingAreaCode(geolocation.getRac(), writer);
+            writeCellId(geolocation.getCellId(), writer);
+            writeSac(geolocation.getServiceAreaCode(), writer);
+            writeEnbid(geolocation.getEnodebId(), writer);
+            writeTrackingAreaCode(geolocation.getTrackingAreaCode(), writer);
+            writeRoutingAreaCode(geolocation.getRoutingAreaCode(), writer);
+            writeLocationNumberAddress(geolocation.getLocationNumberAddress(), writer);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), writer);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), writer);
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), writer);
@@ -316,11 +317,12 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileCountryCode(geolocation.getMobileCountryCode(), locationDataJsonObject);
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), locationDataJsonObject);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), locationDataJsonObject);
-            writeCellId(geolocation.getCi(), locationDataJsonObject);
-            writeSac(geolocation.getSac(), locationDataJsonObject);
-            writeEnbid(geolocation.getEnbid(), locationDataJsonObject);
-            writeTrackingAreaCode(geolocation.getTac(), locationDataJsonObject);
-            writeRoutingAreaCode(geolocation.getRac(), locationDataJsonObject);
+            writeCellId(geolocation.getCellId(), locationDataJsonObject);
+            writeSac(geolocation.getServiceAreaCode(), locationDataJsonObject);
+            writeEnbid(geolocation.getEnodebId(), locationDataJsonObject);
+            writeTrackingAreaCode(geolocation.getTrackingAreaCode(), locationDataJsonObject);
+            writeRoutingAreaCode(geolocation.getRoutingAreaCode(), locationDataJsonObject);
+            writeLocationNumberAddress(geolocation.getLocationNumberAddress(), locationDataJsonObject);
             writeNetworkEntityAddress(geolocation.getNetworkEntityAddress(), locationDataJsonObject);
             writeNetworkEntityName(geolocation.getNetworkEntityName(), locationDataJsonObject);
             writeAgeOfLocationInfo(geolocation.getAgeOfLocationInfo(), locationDataJsonObject);
@@ -455,15 +457,47 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeLocationNumberAddress(final String address, final HierarchicalStreamWriter writer) {
-        if (address != null) {
-            writer.startNode("LocationNumberAddress");
-            writer.setValue(address);
+    protected void writeTrackingAreaCode(final Integer tac, final HierarchicalStreamWriter writer) {
+        if (tac != null) {
+            writer.startNode("TrackingAreaCode");
+            writer.setValue(String.valueOf(tac));
             writer.endNode();
         }
     }
 
-    protected void writeLocationNumberAddress(final String address, final JsonObject object) {
+    protected void writeTrackingAreaCode(final Integer tac, final JsonObject object) {
+        if (tac != null) {
+            object.addProperty("tracking_area_code", tac);
+        } else {
+            object.add("tracking_area_code", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeRoutingAreaCode(final Integer rac, final HierarchicalStreamWriter writer) {
+        if (rac != null) {
+            writer.startNode("RoutingAreaCode");
+            writer.setValue(String.valueOf(rac));
+            writer.endNode();
+        }
+    }
+
+    protected void writeRoutingAreaCode(final Integer rac, final JsonObject object) {
+        if (rac != null) {
+            object.addProperty("routing_area_code", rac);
+        } else {
+            object.add("routing_area_code", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeLocationNumberAddress(final Long address, final HierarchicalStreamWriter writer) {
+        if (address != null) {
+            writer.startNode("LocationNumberAddress");
+            writer.setValue(address.toString());
+            writer.endNode();
+        }
+    }
+
+    protected void writeLocationNumberAddress(final Long address, final JsonObject object) {
         if (address != null) {
             object.addProperty("location_number_address", address);
         } else {
@@ -548,38 +582,6 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             object.addProperty("not_reachable_reason", notReachableReason);
         } else {
             object.add("not_reachable_reason", JsonNull.INSTANCE);
-        }
-    }
-
-    protected void writeTrackingAreaCode(final Integer tac, final HierarchicalStreamWriter writer) {
-        if (tac != null) {
-            writer.startNode("TrackingAreaCode");
-            writer.setValue(String.valueOf(tac));
-            writer.endNode();
-        }
-    }
-
-    protected void writeTrackingAreaCode(final Integer tac, final JsonObject object) {
-        if (tac != null) {
-            object.addProperty("tracking_area_code", tac);
-        } else {
-            object.add("tracking_area_code", JsonNull.INSTANCE);
-        }
-    }
-
-    protected void writeRoutingAreaCode(final Integer rac, final HierarchicalStreamWriter writer) {
-        if (rac != null) {
-            writer.startNode("RoutingAreaCode");
-            writer.setValue(String.valueOf(rac));
-            writer.endNode();
-        }
-    }
-
-    protected void writeRoutingAreaCode(final Integer rac, final JsonObject object) {
-        if (rac != null) {
-            object.addProperty("routing_area_code", rac);
-        } else {
-            object.add("routing_area_code", JsonNull.INSTANCE);
         }
     }
 
@@ -972,7 +974,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
                                                    final HierarchicalStreamWriter writer) {
         if (geofenceEventType != null) {
             writer.startNode("GeofenceEventType");
-            writer.setValue(geofenceEventType.toString());
+            writer.setValue(geofenceEventType);
             writer.endNode();
         }
     }
@@ -1037,7 +1039,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
     protected void writeLastGeolocationResponse(final String lastGeolocationResponse, final HierarchicalStreamWriter writer) {
         if (lastGeolocationResponse != null) {
             writer.startNode("LastGeolocationResponse");
-            writer.setValue(lastGeolocationResponse.toString());
+            writer.setValue(lastGeolocationResponse);
             writer.endNode();
         }
     }
@@ -1053,7 +1055,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
     protected void writeCause(final String cause, final HierarchicalStreamWriter writer) {
         if (cause != null) {
             writer.startNode("Cause");
-            writer.setValue(cause.toString());
+            writer.setValue(cause);
             writer.endNode();
         }
     }
