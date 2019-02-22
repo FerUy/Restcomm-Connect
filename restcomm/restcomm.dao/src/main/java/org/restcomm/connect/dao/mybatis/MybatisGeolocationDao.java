@@ -188,10 +188,10 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("uncertainty_horizontal_speed", gl.getUncertaintyHorizontalSpeed());
         map.put("uncertainty_vertical_speed", gl.getUncertaintyVerticalSpeed());
         map.put("bearing", gl.getBearing());
+        map.put("deferred_location_event_type", gl.getDeferredLocationEventType());
         map.put("geofence_type", gl.getGeofenceType());
         map.put("geofence_id", gl.getGeofenceId());
-        map.put("geofence_event_type", gl.getGeofenceEventType());
-        map.put("event_range", gl.getEventRange());
+        map.put("motion_event_range", gl.getMotionEventRange());
         map.put("civic_address", gl.getCivicAddress());
         map.put("barometric_pressure", gl.getBarometricPressure());
         map.put("physical_address", gl.getPhysicalAddress());
@@ -252,10 +252,10 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final Integer uncertainty_horizontal_speed = readInteger(map.get("uncertainty_horizontal_speed"));
         final Integer uncertainty_vertical_speed = readInteger(map.get("uncertainty_vertical_speed"));
         final Integer bearing = readInteger(map.get("bearing"));
+        final String deferred_location_event_type = readString(map.get("deferred_location_event_type"));
         final String geofence_type = readString(map.get("geofence_type"));
         final String geofence_id = readString(map.get("geofence_id"));
-        final String geofence_event_type = readString(map.get("geofence_event_type"));
-        final Long event_range = readLong(map.get("event_range"));
+        final Long motion_event_range = readLong(map.get("motion_event_range"));
         final String civic_address = readString(map.get("civic_address"));
         final Long barometric_pressure = readLong(map.get("barometric_pressure"));
         final String physical_address = readString(map.get("physical_address"));
@@ -270,7 +270,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
             age_of_location_info, subscriber_state, not_reachable_reason, type_of_shape, device_latitude, device_longitude,
             uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis, confidence, altitude, uncertainty_altitude,
             inner_radius, uncertainty_inner_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,
-            uncertainty_vertical_speed, bearing, geofence_type, geofence_id, geofence_event_type, event_range, civic_address, barometric_pressure,
+            uncertainty_vertical_speed, bearing, deferred_location_event_type, geofence_type, geofence_id, motion_event_range, civic_address, barometric_pressure,
             physical_address, internet_address, last_geolocation_response, cause, api_version, uri);
     }
 

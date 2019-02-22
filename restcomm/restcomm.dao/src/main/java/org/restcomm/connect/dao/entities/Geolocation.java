@@ -80,10 +80,10 @@ public final class Geolocation {
     private final Integer uncertaintyHorizontalSpeed;
     private final Integer uncertaintyVerticalSpeed;
     private final Integer bearing;
+    private final String deferredLocationEventType;
     private final String geofenceType;
     private final String geofenceId;
-    private final String geofenceEventType;
-    private final Long eventRange;
+    private final Long motionEventRange;
     private final String civicAddress;
     private Long barometricPressure;
     private final String physicalAddress;
@@ -103,7 +103,7 @@ public final class Geolocation {
                        Double uncertaintySemiMinorAxis, Double angleOfMajorAxis, Integer confidence, Integer altitude, Double uncertaintyAltitude,
                        Integer innerRadius, Double uncertaintyInnerRadius, Double offsetAngle, Double includedAngle,
                        Integer horizontalSpeed, Integer verticalSpeed, Integer uncertaintyHorizontalSpeed, Integer uncertaintyVerticalSpeed, Integer bearing,
-                       String geofenceType, String geofenceId, String geofenceEventType, Long eventRange, String civicAddress, Long barometricPressure,
+                       String deferredLocationEventType, String geofenceType, String geofenceId, Long motionEventRange, String civicAddress, Long barometricPressure,
                        String physicalAddress, String internetAddress, String lastGeolocationResponse, String cause, String apiVersion, URI uri) {
         super();
         this.sid = sid;
@@ -154,10 +154,10 @@ public final class Geolocation {
         this.uncertaintyHorizontalSpeed = uncertaintyHorizontalSpeed;
         this.uncertaintyVerticalSpeed = uncertaintyVerticalSpeed;
         this.bearing = bearing;
+        this.deferredLocationEventType = deferredLocationEventType;
         this.geofenceType = geofenceType;
         this.geofenceId = geofenceId;
-        this.geofenceEventType = geofenceEventType;
-        this.eventRange = eventRange;
+        this.motionEventRange = motionEventRange;
         this.civicAddress = civicAddress;
         this.barometricPressure = barometricPressure;
         this.physicalAddress = physicalAddress;
@@ -360,6 +360,10 @@ public final class Geolocation {
         return bearing;
     }
 
+    public String getDeferredLocationEventType() {
+        return deferredLocationEventType;
+    }
+
     public String getGeofenceType() {
         return geofenceType;
     }
@@ -368,12 +372,8 @@ public final class Geolocation {
         return geofenceId;
     }
 
-    public String getGeofenceEventType() {
-        return geofenceEventType;
-    }
-
-    public Long getEventRange() {
-        return eventRange;
+    public Long getMotionEventRange() {
+        return motionEventRange;
     }
 
     public String getCivicAddress() {
@@ -443,7 +443,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -455,7 +455,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -467,7 +467,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -479,7 +479,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -491,7 +491,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -503,7 +503,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -515,7 +515,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -527,7 +527,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -539,7 +539,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -551,7 +551,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -563,7 +563,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -575,7 +575,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -587,7 +587,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -599,7 +599,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -611,7 +611,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -623,7 +623,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -635,7 +635,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -647,7 +647,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -659,7 +659,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -671,7 +671,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -683,7 +683,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -695,7 +695,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -707,7 +707,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -719,7 +719,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -731,7 +731,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -743,7 +743,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -755,7 +755,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -767,7 +767,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -779,7 +779,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -792,7 +792,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -804,7 +804,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -816,7 +816,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -828,7 +828,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -840,7 +840,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -852,7 +852,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -864,7 +864,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -876,7 +876,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -888,7 +888,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -900,7 +900,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -912,7 +912,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -924,7 +924,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -936,7 +936,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -948,7 +948,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -960,7 +960,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -972,7 +972,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -984,7 +984,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -996,7 +996,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1008,7 +1008,19 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
+            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+    }
+
+    public Geolocation setDeferredLocationEventType(String deferredLocationEventType) {
+        return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
+            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
+            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            subscriberState, notReachableReason,
+            typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
+            confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
+            horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1020,7 +1032,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1032,11 +1044,11 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
-    public Geolocation setGeofenceEventType(String geofenceEventType) {
+    public Geolocation setMotionEventRange(Long motionEventRange) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
             imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
             enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
@@ -1044,19 +1056,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
-    }
-
-    public Geolocation setEventRange(Long eventRange) {
-        return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
-            subscriberState, notReachableReason,
-            typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
-            confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
-            horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1068,7 +1068,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1080,7 +1080,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1092,7 +1092,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1104,7 +1104,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1116,7 +1116,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1128,7 +1128,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1140,7 +1140,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1152,7 +1152,7 @@ public final class Geolocation {
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
             physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
@@ -1211,10 +1211,10 @@ public final class Geolocation {
         private Integer uncertaintyHorizontalSpeed;
         private Integer uncertaintyVerticalSpeed;
         private Integer bearing;
+        private String deferredLocationEventType;
         private String geofenceType;
         private String geofenceId;
-        private String geofenceEventType;
-        private Long eventRange;
+        private Long motionEventRange;
         private String civicAddress;
         private Long barometricPressure;
         private String physicalAddress;
@@ -1237,7 +1237,7 @@ public final class Geolocation {
                 typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
                 confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
                 horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-                geofenceType, geofenceId, geofenceEventType, eventRange, civicAddress, barometricPressure,
+                deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
                 physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
         }
 
@@ -1438,6 +1438,10 @@ public final class Geolocation {
             this.internetAddress = internetAddress;
         }
 
+        public void setDeferredLocationEventType(String deferredLocationEventType) {
+            this.deferredLocationEventType = deferredLocationEventType;
+        }
+
         public void setGeofenceType(String geofenceType) {
             this.geofenceType = geofenceType;
         }
@@ -1446,12 +1450,8 @@ public final class Geolocation {
             this.geofenceId = geofenceId;
         }
 
-        public void setGeofenceEventType(String geofenceEventType) {
-            this.geofenceEventType = geofenceEventType;
-        }
-
-        public void setEventRange(Long eventRange) {
-            this.eventRange = eventRange;
+        public void setMotionEventRange(Long motionEventRange) {
+            this.motionEventRange = motionEventRange;
         }
 
         public void setCivicAddress(String civicAddress) {

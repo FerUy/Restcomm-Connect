@@ -298,10 +298,10 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeUncertaintyHorizontalSpeed(geolocation.getUncertaintyHorizontalSpeed(), writer);
             writeUncertaintyVerticalSpeed(geolocation.getUncertaintyVerticalSpeed(), writer);
             writeBearing(geolocation.getBearing(), writer);
+            writeDeferredLocationEventType(geolocation.getDeferredLocationEventType(), writer);
             writeGeofenceType(geolocation.getGeofenceType(), writer);
             writeGeofenceId(geolocation.getGeofenceId(), writer);
-            writeGeofenceEventType(geolocation.getGeofenceEventType(), writer);
-            writeEventRange(geolocation.getEventRange(), writer);
+            writeMotionEventRange(geolocation.getMotionEventRange(), writer);
             writeCivicAddress(geolocation.getCivicAddress(), writer);
             writeBarometricPressure(geolocation.getBarometricPressure(), writer);
             writeInternetAddress(geolocation.getInternetAddress(), writer);
@@ -347,10 +347,10 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeUncertaintyHorizontalSpeed(geolocation.getUncertaintyHorizontalSpeed(), locationDataJsonObject);
             writeUncertaintyVerticalSpeed(geolocation.getUncertaintyVerticalSpeed(), locationDataJsonObject);
             writeBearing(geolocation.getBearing(), locationDataJsonObject);
+            writeDeferredLocationEventType(geolocation.getDeferredLocationEventType(), locationDataJsonObject);
             writeGeofenceType(geolocation.getGeofenceType(), locationDataJsonObject);
             writeGeofenceId(geolocation.getGeofenceId(), locationDataJsonObject);
-            writeGeofenceEventType(geolocation.getGeofenceEventType(), locationDataJsonObject);
-            writeEventRange(geolocation.getEventRange(), locationDataJsonObject);
+            writeMotionEventRange(geolocation.getMotionEventRange(), locationDataJsonObject);
             writeCivicAddress(geolocation.getCivicAddress(), locationDataJsonObject);
             writeBarometricPressure(geolocation.getBarometricPressure(), locationDataJsonObject);
             writeInternetAddress(geolocation.getInternetAddress(), locationDataJsonObject);
@@ -970,36 +970,36 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
-    protected void writeGeofenceEventType(final String geofenceEventType,
+    protected void writeDeferredLocationEventType(final String geofenceEventType,
                                                    final HierarchicalStreamWriter writer) {
         if (geofenceEventType != null) {
-            writer.startNode("GeofenceEventType");
+            writer.startNode("DeferredLocationEventType");
             writer.setValue(geofenceEventType);
             writer.endNode();
         }
     }
 
-    protected void writeGeofenceEventType(final String geofenceEventType, final JsonObject object) {
+    protected void writeDeferredLocationEventType(final String geofenceEventType, final JsonObject object) {
         if (geofenceEventType != null) {
-            object.addProperty("geofence_event_type", geofenceEventType);
+            object.addProperty("deferred_location_event_type", geofenceEventType);
         } else {
-            object.add("geofence_event_type", JsonNull.INSTANCE);
+            object.add("deferred_location_event_type", JsonNull.INSTANCE);
         }
     }
 
-    protected void writeEventRange(final Long eventRange, final HierarchicalStreamWriter writer) {
-        if (eventRange != null) {
-            writer.startNode("EventRange");
-            writer.setValue(eventRange.toString());
+    protected void writeMotionEventRange(final Long motionEventRange, final HierarchicalStreamWriter writer) {
+        if (motionEventRange != null) {
+            writer.startNode("MotionEventRange");
+            writer.setValue(motionEventRange.toString());
             writer.endNode();
         }
     }
 
-    protected void writeEventRange(final Long eventRange, final JsonObject object) {
-        if (eventRange != null) {
-            object.addProperty("event_range", eventRange);
+    protected void writeMotionEventRange(final Long motionEventRange, final JsonObject object) {
+        if (motionEventRange != null) {
+            object.addProperty("motion_event_range", motionEventRange);
         } else {
-            object.add("event_range", JsonNull.INSTANCE);
+            object.add("motion_event_range", JsonNull.INSTANCE);
         }
     }
 

@@ -11,7 +11,7 @@
     "type_of_shape", "device_latitude", "device_longitude", "uncertainty", "uncertainty_semi_major_axis", "uncertainty_semi_minor_axis", "angle_of_major_axis",
     "confidence", "altitude", "uncertainty_altitude", "inner_radius", "uncertainty_inner_radius", "offset_angle", "included_angle",
     "horizontal_speed", "vertical_speed", "uncertainty_horizontal_speed", "uncertainty_vertical_speed", "bearing",
-    "geofence_type", "geofence_id", "geofence_event_type", "event_range", "civic_address", "barometric_pressure",
+    "deferred_location_event_type", "geofence_type", "geofence_id", "motion_event_range", "civic_address", "barometric_pressure",
     "physical_address", "internet_address", "last_geolocation_response", "cause", "api_version", "uri")
     VALUES(#{sid}, #{date_created}, #{date_updated}, #{date_executed}, #{location_timestamp}, #{account_sid}, #{source},
     #{device_identifier}, #{msisdn}, #{imsi}, #{imei}, #{lmsi}, #{reference_number}, #{geolocation_type}, #{response_status},
@@ -21,7 +21,7 @@
     #{type_of_shape}, #{device_latitude}, #{device_longitude}, #{uncertainty}, #{uncertainty_semi_major_axis}, #{uncertainty_semi_minor_axis}, #{angle_of_major_axis},
     #{confidence},  #{altitude},  #{uncertainty_altitude}, #{inner_radius}, #{uncertainty_inner_radius}, #{offset_angle}, #{included_angle},
     #{horizontal_speed}, #{vertical_speed}, #{uncertainty_horizontal_speed}, #{uncertainty_vertical_speed}, #{bearing},
-    #{geofence_type}, #{geofence_id}, #{geofence_event_type}, #{event_range}, #{civic_address}, #{barometric_pressure},
+    #{deferred_location_event_type}, #{geofence_type}, #{geofence_id}, #{motion_event_range}, #{civic_address}, #{barometric_pressure},
     #{physical_address}, #{internet_address}, #{last_geolocation_response}, #{cause}, #{api_version}, #{uri});
   </insert>
 
@@ -50,8 +50,9 @@
     "angle_of_major_axis"=#{angle_of_major_axis}, "confidence"=#{confidence}, "altitude"=#{altitude}, "uncertainty_altitude"=#{uncertainty_altitude},
     "inner_radius"=#{inner_radius}, "uncertainty_inner_radius"=#{uncertainty_inner_radius}, "offset_angle"=#{offset_angle}, "included_angle"=#{included_angle},
     "horizontal_speed"=#{horizontal_speed}, "vertical_speed"=#{vertical_speed}, "uncertainty_horizontal_speed"=#{uncertainty_horizontal_speed},
-    "uncertainty_vertical_speed"=#{uncertainty_vertical_speed}, "bearing"=#{bearing}, "geofence_type"=#{geofence_type}, "geofence_id"=#{geofence_id},
-    "geofence_event_type"=#{geofence_event_type}, "event_range"=#{event_range}, "civic_address"=#{civic_address}, "barometric_pressure"=#{barometric_pressure},
+    "uncertainty_vertical_speed"=#{uncertainty_vertical_speed}, "bearing"=#{bearing},
+    "deferred_location_event_type"=#{deferred_location_event_type}, "geofence_type"=#{geofence_type}, "geofence_id"=#{geofence_id}, "motion_event_range"=#{motion_event_range},
+    "civic_address"=#{civic_address}, "barometric_pressure"=#{barometric_pressure},
     "physical_address"=#{physical_address}, "internet_address"=#{internet_address}, "last_geolocation_response"=#{last_geolocation_response}, "cause"=#{cause}
     WHERE "sid"=#{sid};
   </update>
