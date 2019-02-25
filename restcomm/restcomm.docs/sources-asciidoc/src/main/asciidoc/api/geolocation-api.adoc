@@ -27,11 +27,11 @@ geofence. Use cases like mobile advertising use cases apply to this type of Geol
 
 * Parental control: Notify a parent when their child/children are further than X metres away.
 
-* Hanging out: Notify friends when they are within X Kms.
+* Hanging out: Notify friends when they are within X Kms..
 
-* Business matching: at a conference, notify attendees of other attendees within range who also have related interest based on LinkedIn profile.
+* Business matching: at a conference, notify attendees of other attendees within range who also have related interest based on LinkedIn profile.
 
-* Court restraining order: when someone is legally not allowed to be writhing certain range of another individual.
+* Court restraining order: when someone is legally not allowed to be writhing certain range of another individual.
 
 Other use cases will be covered in future iterations of the API based on
 community and customer feedback.
@@ -59,7 +59,6 @@ further below for description of those terms).
 
 
 === Geolocation Resource properties
-
 
 
 [width="100%",cols="50%,50%",]
@@ -102,40 +101,28 @@ available; when a sensor/beacon detects a threshold surpassed, etc.
 A string that uniquely identifies the current state of this Geolocation
 service. Possible values are:
 
-**_queued_**: whenever the location request is buffered due to abnormal
-causes (e.g. congestion at the GMLC);
-
-**_sent_**: when the location request has already been sent but no
-response has arrived yet;
-
-**_processing_**: when the location response has been received but being
-under computational process for delivery to the requesting location
-client.
-
 **_successful_**: when the location response has been received and
 processed with complete fulfilment of quality of geolocation
 information.
-
-**_partially-successful_**: when the location response has been received
-and processed, but not fulfilled the whole set of geolocation
-information or desired accuracy, e.g.: geographic coordinates were not
-possible to retrieve, but at least other location information such as
-Cell/Service and Location/Service Area identifiers were obtained; location information
-was retrieved, but the age of location estimate denotes it may be
-outdated; location information was retrieved, but informed that
-precision is not reliable due to high error margin.
-
-**_last-known_**: when location information could not be retrieved from
-the network but there is a previous persisted location information for
-the targeted DeviceIdentifier of this Geolocation service.
 
 **_failed_**: when location information could not be retrieved from the
 network and there is no previous location information persisted for the
 targeted DeviceIdentifier of this Geolocation service, or when an
 attempt to update this Geolocation service was malformed or not API
 compliant. In the latter situation, the record persists, but previous
-geolocation information is erased (expecting a correct geolocation
-update).
+geolocation information is erased (a proper geolocation
+update is feasible).
+
+**_last-known_**: when location information was retrieved, but the age of
+location denotes it might be outdated (at least 2 minutes old);
+
+**_partially-successful_**: when the location response has been received
+and processed, but most important parameters have not been received, e.g.:
+geographic coordinates were not possible to retrieve, but at least other
+location information such as Cell or Service Area Identity were obtained
+in notification type of geolocation, or the latter were not gathered but
+at least Location/Service/Routing/Tracking Area identifiers were retrieved
+on immediate type of geolocation.
 
 **_unauthorized_**: when the location request is or has become
 disallowed from the network, the location client requesting this service
@@ -143,10 +130,9 @@ is not authorized for such operation or the target device is marked for
 not authorizing this kind of location requests. A record is persisted
 for security and analytics purposes.
 
-**_rejected_**: when the location request does not meet the API's
-requirements for mandatory parameters (or some of them are missing), or
-prohibited parameters are included for a certain type of Geolocation. No
-records are persisted in this eventuality.
+**_rejected_**: when the location request doesn't meet the previously
+described response status requirements. No records are persisted in this
+eventuality.
 
 |GeolocationData a|
 An array that uniquely identifies the location information that might be

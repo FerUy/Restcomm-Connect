@@ -111,9 +111,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
     private boolean httpBadRequest = false;
 
     private enum responseStatus {
-        Queued("queued"), Sent("sent"), Processing("processing"), Successful("successful"), PartiallySuccessful(
-                "partially-successful"), LastKnown(
-                        "last-known"), Failed("failed"), Unauthorized("unauthorized"), Rejected("rejected");
+        Successful("successful"), PartiallySuccessful("partially-successful"), LastKnown("last-known"), Failed("failed"),
+        Unauthorized("unauthorized"), Rejected("rejected");
 
         private final String rs;
 
@@ -773,27 +772,27 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         // ** Validation of Geolocation POST requests with valid type **/
         if (!glType.toString().equals(ImmediateGT) && !glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("Geolocation Type can not be null, but either \"Immediate\" or \"Notification\".");
+            throw new NullPointerException("Rejected: Geolocation Type can not be null, but either \"Immediate\" or \"Notification\".");
         }
 
         /*** DeviceIdentifier can not be null ***/
         if (!data.containsKey("DeviceIdentifier")) {
-            throw new NullPointerException("DeviceIdentifier value can not be null");
+            throw new NullPointerException("Rejected: DeviceIdentifier value can not be null");
         }
 
         /*** StatusCallback can not be null ***/
         if (!data.containsKey("StatusCallback")) {
-            throw new NullPointerException("StatusCallback value can not be null");
+            throw new NullPointerException("Rejected: StatusCallback value can not be null");
         }
 
         /*** CoreNetwork must not be null or different than GSM or LTE for Notification type of Geolocation ***/
         if (!data.containsKey("CoreNetwork") && glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("CoreNetwork value con not be null for Notification type of Geolocation");
+            throw new NullPointerException("Rejected: CoreNetwork value con not be null for Notification type of Geolocation");
         } else if (data.containsKey("CoreNetwork") && glType.toString().equals(NotificationGT)) {
             String coreNetwork = data.getFirst("CoreNetwork");
             if (!coreNetwork.equalsIgnoreCase("umts") && !coreNetwork.equalsIgnoreCase("lte")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("CoreNetwork value not API compliant, must be UMTS or LTE for Notification type of Geolocation");
+                throw new IllegalArgumentException("Rejected: CoreNetwork value not API compliant, must be UMTS or LTE for Notification type of Geolocation");
             }
         }
 
@@ -802,7 +801,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String psiService = data.getFirst("Domain");
             if (!psiService.equalsIgnoreCase("cs") && !psiService.equalsIgnoreCase("ps")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Domain values can be only cs or ps for Circuit-Switched or Packet-Switched networks respectively");
+                throw new IllegalArgumentException("Rejected: Domain values can be only cs or ps for Circuit-Switched or Packet-Switched networks respectively");
             }
         }
 
@@ -811,18 +810,18 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String psiService = data.getFirst("PsiService");
             if (!psiService.equalsIgnoreCase("true") && !psiService.equalsIgnoreCase("false")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("PsiService values can be only true or false");
+                throw new IllegalArgumentException("Rejected: PsiService values can be only true or false");
             }
         }
 
         /*** ClientType must be API compliant: emergency, vas, operator, lawful or sip for Notification type of Geolocation only ***/
         if (data.containsKey("ClientType") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("ClientType only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: ClientType only applies for Notification type of Geolocation");
         }
         if (!data.containsKey("ClientType") && glType.toString().equals(NotificationGT)) {
             String network = data.getFirst("CoreNetwork");
             if (network.equalsIgnoreCase("LTE") || network.equalsIgnoreCase("UMTS")) {
-                throw new NullPointerException("ClientType value can not be null for Notification type of Geolocation");
+                throw new NullPointerException("Rejected: ClientType value can not be null for Notification type of Geolocation");
             }
         }
         if (data.containsKey("ClientType") && glType.toString().equals(NotificationGT)) {
@@ -832,7 +831,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (!locationEstimateType.equalsIgnoreCase("emergency") && !locationEstimateType.equalsIgnoreCase("vas")
                     && !locationEstimateType.equalsIgnoreCase("operator") && !locationEstimateType.equalsIgnoreCase("lawful")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("ClientType value not API compliant, must be emergency, vas, operator or lawful " +
+                    throw new IllegalArgumentException("Rejected: ClientType value not API compliant, must be emergency, vas, operator or lawful " +
                         "for Notification type of Geolocation");
                 }
             }
@@ -840,10 +839,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         /*** LocationEstimateType must be API compliant: fast or slow for Notification type of Geolocation only ***/
         if (data.containsKey("LocationEstimateType") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("LocationEstimateType only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: LocationEstimateType only applies for Notification type of Geolocation");
         }
         if (!data.containsKey("LocationEstimateType") && glType.toString().equals(NotificationGT)) {
-            throw new NullPointerException("LocationEstimateType value can not be null for Notification type of Geolocation");
+            throw new NullPointerException("Rejected: LocationEstimateType value can not be null for Notification type of Geolocation");
         }
         if (data.containsKey("LocationEstimateType") && glType.toString().equals(NotificationGT)) {
             String locationEstimateType = data.getFirst("LocationEstimateType");
@@ -851,30 +850,30 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 && !locationEstimateType.equalsIgnoreCase("current") && !locationEstimateType.equalsIgnoreCase("activateDeferred")
                 && !locationEstimateType.equalsIgnoreCase("cancelDeferred") && !locationEstimateType.equalsIgnoreCase("notificationVerificationOnly")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("LocationEstimateType value not API compliant, must be lastKnown, initial, current, activateDeferred," +
+                throw new IllegalArgumentException("Rejected: LocationEstimateType value not API compliant, must be lastKnown, initial, current, activateDeferred," +
                     " cancelDeferred or notificationVerificationOnly");
             }
         }
 
         /*** ClientName must be API compliant: not null for Notification type of Geolocation for LTE ***/
         if (data.containsKey("ClientName") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("ClientName only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: ClientName only applies for Notification type of Geolocation");
         }
         if (!data.containsKey("ClientName") && glType.toString().equals(NotificationGT)) {
             String network = data.getFirst("CoreNetwork");
             if (network.equalsIgnoreCase("LTE")) {
-                throw new NullPointerException("ClientName value can not be null for Notification type of Geolocation in LTE");
+                throw new NullPointerException("Rejected: ClientName value can not be null for Notification type of Geolocation in LTE");
             }
         }
 
         /*** ClientNameFormat must be API compliant: name, email, msisdn, url or sip for Notification type of Geolocation only ***/
         if (data.containsKey("ClientNameFormat") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("ClientNameFormat only applies for Notification type of Geolocation in LTE");
+            throw new UnsupportedOperationException("Rejected: ClientNameFormat only applies for Notification type of Geolocation in LTE");
         }
         if (!data.containsKey("ClientNameFormat") && glType.toString().equals(NotificationGT)) {
             String network = data.getFirst("CoreNetwork");
             if (network.equalsIgnoreCase("LTE")) {
-                throw new NullPointerException("ClientNameFormat value can not be null for Notification type of Geolocation in LTE");
+                throw new NullPointerException("Rejected: ClientNameFormat value can not be null for Notification type of Geolocation in LTE");
             }
         }
         if (data.containsKey("ClientNameFormat") && glType.toString().equals(NotificationGT)) {
@@ -885,9 +884,29 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     && !locationEstimateType.equalsIgnoreCase("msisdn") && !locationEstimateType.equalsIgnoreCase("url")
                     && !locationEstimateType.equalsIgnoreCase("sip")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("ClientNameFormat value not API compliant, must be name, email, msisdn, url or sip " +
+                    throw new IllegalArgumentException("Rejected: ClientNameFormat value not API compliant, must be name, email, msisdn, url or sip " +
                         "for Notification type of Geolocation in LTE");
                 }
+            }
+        }
+
+        /*** ReferenceNumber must be API compliant: not null and a positive integer value for Notification type of Geolocation only ***/
+        if (data.containsKey("ReferenceNumber") && !glType.toString().equals(NotificationGT)) {
+            throw new UnsupportedOperationException("Rejected: ReferenceNumber only applies for Notification type of Geolocation");
+        }
+        if (!data.containsKey("ReferenceNumber") && glType.toString().equals(NotificationGT)) {
+            throw new NullPointerException("Rejected: ReferenceNumber value can not be null for Notification type of Geolocation");
+        }
+        if (data.containsKey("ReferenceNumber") && glType.toString().equals(NotificationGT)) {
+            try {
+                Integer lcsReferenceNumber = Integer.valueOf(data.getFirst("ReferenceNumber"));
+                if (lcsReferenceNumber > Integer.MAX_VALUE || lcsReferenceNumber < 0) {
+                    httpBadRequest = true;
+                    throw new IllegalArgumentException("Rejected: ReferenceNumber value not API compliant, must be a positive integer value");
+                }
+            } catch (NumberFormatException nfe) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Rejected: ReferenceNumber value not API compliant, must be a positive integer value");
             }
         }
 
@@ -895,97 +914,97 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         /***************************/
         /*** HorizontalAccuracy must be API compliant: a positive integer value for Notification type of Geolocation only ***/
         if (data.containsKey("HorizontalAccuracy") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("HorizontalAccuracy only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: HorizontalAccuracy only applies for Notification type of Geolocation");
         }
         if (data.containsKey("HorizontalAccuracy") && glType.toString().equals(NotificationGT)) {
             try {
                 Integer horizontalAccuracy = Integer.valueOf(data.getFirst("HorizontalAccuracy"));
                 if (horizontalAccuracy > Integer.MAX_VALUE || horizontalAccuracy < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("HorizontalAccuracy value not API compliant, must be a positive integer value");
+                    throw new IllegalArgumentException("Rejected: HorizontalAccuracy value not API compliant, must be a positive integer value");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("HorizontalAccuracy value not API compliant, must be a positive integer value");
+                throw new IllegalArgumentException("Rejected: HorizontalAccuracy value not API compliant, must be a positive integer value");
             }
         }
         /*** VerticalAccuracy must be API compliant: a positive integer value for Notification type of Geolocation only***/
         if (data.containsKey("VerticalAccuracy") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("VerticalAccuracy only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: VerticalAccuracy only applies for Notification type of Geolocation");
         }
         if (data.containsKey("VerticalAccuracy") && glType.toString().equals(NotificationGT)) {
             Integer verticalAccuracy = Integer.valueOf(data.getFirst("VerticalAccuracy"));
             try {
                 if (verticalAccuracy > Integer.MAX_VALUE || verticalAccuracy < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("VerticalAccuracy value not API compliant, must be a positive integer value");
+                    throw new IllegalArgumentException("Rejected: VerticalAccuracy value not API compliant, must be a positive integer value");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("VerticalAccuracy value not API compliant, must be a positive integer value");
+                throw new IllegalArgumentException("Rejected: VerticalAccuracy value not API compliant, must be a positive integer value");
             }
         }
         /*** VerticalCoordinateRequest must be API compliant: a boolean value for Notification type of Geolocation only***/
         if (data.containsKey("VerticalCoordinateRequest") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("VerticalCoordinateRequest only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: VerticalCoordinateRequest only applies for Notification type of Geolocation");
         }
         if (data.containsKey("VerticalCoordinateRequest") && glType.toString().equals(NotificationGT)) {
             String verticalCoordinateRequest = data.getFirst("VerticalCoordinateRequest");
             if (!verticalCoordinateRequest.equalsIgnoreCase("true") && !verticalCoordinateRequest.equalsIgnoreCase("false")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("VerticalCoordinateRequest value not API compliant, must be true or false");
+                throw new IllegalArgumentException("Rejected: VerticalCoordinateRequest value not API compliant, must be true or false");
             }
         }
         /*** ResponseTime must be API compliant: fast or slow for Notification type of Geolocation***/
         if (data.containsKey("ResponseTime") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("ResponseTime only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: ResponseTime only applies for Notification type of Geolocation");
         }
         if (data.containsKey("ResponseTime") && glType.toString().equals(NotificationGT)) {
             String priority = data.getFirst("ResponseTime");
             if (!priority.equalsIgnoreCase("low") && !priority.equalsIgnoreCase("tolerant")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("ResponseTime value not API compliant, must be low or tolerant");
+                throw new IllegalArgumentException("Rejected: ResponseTime value not API compliant, must be low or tolerant");
             }
         }
 
         /*** VelocityRequested must be API compliant: true of false for Notification type of Geolocation only ***/
         if (data.containsKey("VelocityRequested") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("VelocityRequested only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: VelocityRequested only applies for Notification type of Geolocation");
         }
         if (data.containsKey("VelocityRequested") && glType.toString().equals(NotificationGT)) {
             String priority = data.getFirst("VelocityRequested");
             if (!priority.equalsIgnoreCase("true") && !priority.equalsIgnoreCase("false")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("VelocityRequested value not API compliant, must be true or false");
+                throw new IllegalArgumentException("Rejected: VelocityRequested value not API compliant, must be true or false");
             }
         }
 
         /*** Priority must be API compliant: normal or high for Notification type of Geolocation only ***/
         if (data.containsKey("Priority") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("Priority only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: Priority only applies for Notification type of Geolocation");
         }
         if (data.containsKey("Priority") && glType.toString().equals(NotificationGT)) {
             String priority = data.getFirst("Priority");
             if (!priority.equalsIgnoreCase("normal") && !priority.equalsIgnoreCase("high")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Priority value not API compliant, must be normal or high");
+                throw new IllegalArgumentException("Rejected: Priority value not API compliant, must be normal or high");
             }
         }
 
         /*** ServiceTypeID must belong to Notification type of Geolocation only and API compliant ***/
         if (data.containsKey("ServiceTypeID") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("ServiceTypeID only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: ServiceTypeID only applies for Notification type of Geolocation");
         }
         if (data.containsKey("ServiceTypeID") && glType.toString().equals(NotificationGT)) {
             try {
                 Long lcsServiceTypeId = Long.valueOf(data.getFirst("ServiceTypeID"));
                 if (lcsServiceTypeId > 127 || lcsServiceTypeId < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("ServiceTypeID value not API compliant, must be a positive integer value");
+                    throw new IllegalArgumentException("Rejected: ServiceTypeID value not API compliant, must be a positive integer value");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("ServiceTypeID value not API compliant, must be a positive integer value");
+                throw new IllegalArgumentException("Rejected: ServiceTypeID value not API compliant, must be a positive integer value");
             }
         }
 
@@ -994,7 +1013,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String deviceLat = data.getFirst("DeviceLatitude");
             Boolean devLatWGS84 = validateGeoCoordinatesFormat(deviceLat);
             if (!devLatWGS84) {
-                throw new IllegalArgumentException("DeviceLatitude not API compliant");
+                throw new IllegalArgumentException("Rejected: DeviceLatitude not API compliant");
             }
         }
 
@@ -1003,7 +1022,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String deviceLong = data.getFirst("DeviceLongitude");
             Boolean devLongWGS84 = validateGeoCoordinatesFormat(deviceLong);
             if (!devLongWGS84) {
-                throw new IllegalArgumentException("DeviceLongitude not API compliant");
+                throw new IllegalArgumentException("Rejected: DeviceLongitude not API compliant");
             }
         }
 
@@ -1011,7 +1030,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         /**********************************************/
         /*** DeferredLocationEventType must belong to Notification type of Geolocation and API compliant ***/
         if (data.containsKey("DeferredLocationEventType") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("DeferredLocationEventType only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: DeferredLocationEventType only applies for Notification type of Geolocation");
         }
         if (data.containsKey("DeferredLocationEventType") && glType.toString().equals(NotificationGT)) {
             String eventGeofenceType = data.getFirst("DeferredLocationEventType");
@@ -1020,7 +1039,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
                     && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("DeferredLocationEventType value not API compliant, must be one of available, inside, " +
+                    throw new IllegalArgumentException("Rejected: DeferredLocationEventType value not API compliant, must be one of available, inside, " +
                         "entering or leaving for Notification type of Geolocation in UMTS");
                 }
             } else if (network.equalsIgnoreCase("LTE")) {
@@ -1030,7 +1049,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     && !eventGeofenceType.equalsIgnoreCase("ldr-activated")
                     && !eventGeofenceType.equalsIgnoreCase("max-interval-expiration")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("DeferredLocationEventType value not API compliant, " +
+                    throw new IllegalArgumentException("Rejected: DeferredLocationEventType value not API compliant, " +
                         "must be one of available, inside, entering, leaving, periodic-ldr, motion-event, ldr-activated or max-interval-expiration " +
                         "for Notification type of Geolocation in LTE");
                 }
@@ -1041,7 +1060,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         /*********************************************/
         /*** GeofenceType must belong to to Notification type of Geolocation and API compliant and specific DeferredLocationEventType values ***/
         if (data.containsKey("GeofenceType") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("GeofenceType only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: GeofenceType only applies for Notification type of Geolocation");
         }
         if (data.containsKey("GeofenceType") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1049,7 +1068,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
                     && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Not API compliant, GeofenceType only applies when DeferredLocationEventType value equals " +
+                    throw new IllegalArgumentException("Rejected: Not API compliant, GeofenceType only applies when DeferredLocationEventType value equals " +
                         "available, inside, entering, leaving");
                 }
             }
@@ -1061,7 +1080,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     && !geofenceType.equalsIgnoreCase("routingAreaId") && !geofenceType.equalsIgnoreCase("utranCellId")
                     && !geofenceType.equalsIgnoreCase("trackingAreaId") && !geofenceType.equalsIgnoreCase("eUtranCellId")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, countryCode, " +
+                    throw new IllegalArgumentException("Rejected: GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, countryCode, " +
                         "plmnId, routingAreaId, utranCellId, trackingAreaId or eUtranCellId for Notification type of Geolocation in LTE");
                 }
             } else if (network.equalsIgnoreCase("UMTS")) {
@@ -1069,18 +1088,18 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     && !geofenceType.equalsIgnoreCase("countryCode") && !geofenceType.equalsIgnoreCase("plmnId")
                     && !geofenceType.equalsIgnoreCase("routingAreaId") && !geofenceType.equalsIgnoreCase("utranCellId")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, countryCode, " +
+                    throw new IllegalArgumentException("Rejected: GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, countryCode, " +
                         "plmnId, routingAreaId or utranCellId for Notification type of Geolocation in UMTS");
                 }
             }
             if (!data.containsKey("GeofenceId")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("GeofenceId argument must not be null when a valid GeofenceType is provided");
+                throw new IllegalArgumentException("Rejected: GeofenceId argument must not be null when a valid GeofenceType is provided");
             }
         }
         /*** GeofenceId must belong to Notification type of Geolocation only ***/
         if (data.containsKey("GeofenceId") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("GeofenceId only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: GeofenceId only applies for Notification type of Geolocation");
         }
         if (data.containsKey("GeofenceId") && glType.toString().equals(NotificationGT)) {
             String geofenceIdString = data.getFirst("GeofenceId");
@@ -1089,11 +1108,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 Long geofenceId = Long.valueOf(geofenceIdString);
                 if (geofenceIdStringLength < 2 && geofenceIdStringLength > 7) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("GeofenceId value not API compliant, must be a positive integer value according to the GeofenceType");
+                    throw new IllegalArgumentException("Rejected: GeofenceId value not API compliant, must be a positive integer value according to the GeofenceType");
                 }
                 if (!data.containsKey("GeofenceType")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("GeofenceType argument must not be null when a valid GeofenceId is provided");
+                    throw new IllegalArgumentException("Rejected: GeofenceType argument must not be null when a valid GeofenceId is provided");
                 } else {
                     String geofenceType = data.getFirst("GeofenceType");
                     if (geofenceType.equalsIgnoreCase("locationAreaId") || geofenceType.equalsIgnoreCase("cellGlobalId")
@@ -1101,61 +1120,61 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         || geofenceType.equalsIgnoreCase("utranCellId")) {
                         if (geofenceIdStringLength < 2 || geofenceIdStringLength > 7) {
                             httpBadRequest = true;
-                            throw new IllegalArgumentException("Error: GeofenceId must be a positive integer value according to the GeofenceType");
+                            throw new IllegalArgumentException("Rejected: Error: GeofenceId must be a positive integer value according to the GeofenceType");
                         }
                     } else if (geofenceType.equalsIgnoreCase("trackingAreaId")) {
                         if (geofenceIdStringLength != 5) {
                             httpBadRequest = true;
-                            throw new IllegalArgumentException("Error: GeofenceId must be a positive integer value according to the GeofenceType");
+                            throw new IllegalArgumentException("Rejected: Error: GeofenceId must be a positive integer value according to the GeofenceType");
                         }
                     } else if (geofenceType.equalsIgnoreCase("eUtranCellId")) {
                         if (geofenceIdStringLength != 7) {
                             httpBadRequest = true;
-                            throw new IllegalArgumentException("Error: GeofenceId must be a positive integer value according to the GeofenceType");
+                            throw new IllegalArgumentException("Rejected: Error: GeofenceId must be a positive integer value according to the GeofenceType");
                         }
                     }
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("GeofenceId value not API compliant, must be a positive integer value");
+                throw new IllegalArgumentException("Rejected: GeofenceId value not API compliant, must be a positive integer value");
             }
         }
         /*** GeofenceOccurrenceInfo ***/
         if (data.containsKey("GeofenceOccurrenceInfo") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("GeofenceOccurrenceInfo only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: GeofenceOccurrenceInfo only applies for Notification type of Geolocation");
         }
         if (data.containsKey("GeofenceOccurrenceInfo") && glType.toString().equals(NotificationGT)) {
             String occurrenceInfo = data.getFirst("GeofenceOccurrenceInfo");
             if (!occurrenceInfo.equalsIgnoreCase("once") && !occurrenceInfo.equalsIgnoreCase("multiple")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("GeofenceOccurrenceInfo value not API compliant, " +
+                throw new IllegalArgumentException("Rejected: GeofenceOccurrenceInfo value not API compliant, " +
                     "must be one of once (for one time event) or multiple (for multiple time events)");
             }
             if (!data.containsKey("GeofenceType") || !data.containsKey("GeofenceId") && !data.containsKey("GeofenceIntervalTime")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("GeofenceType and/or GeofenceId and/or GeofenceIntervalTime arguments must not be null when " +
+                throw new IllegalArgumentException("Rejected: GeofenceType and/or GeofenceId and/or GeofenceIntervalTime arguments must not be null when " +
                     "a valid GeofenceOccurrenceInfo is provided");
             }
         }
         /*** GeofenceIntervalTime must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("GeofenceIntervalTime") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("GeofenceIntervalTime only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: GeofenceIntervalTime only applies for Notification type of Geolocation");
         }
         if (data.containsKey("GeofenceIntervalTime") && glType.toString().equals(NotificationGT)) {
             try {
                 Long eventIntervalTime = Long.valueOf(data.getFirst("GeofenceIntervalTime"));
                 if (eventIntervalTime > 32767 || eventIntervalTime < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("GeofenceIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
+                    throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
                 }
                 if (!data.containsKey("GeofenceOccurrenceInfo") && !data.containsKey("GeofenceType") || !data.containsKey("GeofenceId")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("GeofenceType and/or GeofenceId and/or GeofenceOccurrenceInfo arguments must not be null when" +
+                    throw new IllegalArgumentException("Rejected: GeofenceType and/or GeofenceId and/or GeofenceOccurrenceInfo arguments must not be null when" +
                         " a valid GeofenceIntervalTime is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("GeofenceIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
+                throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
             }
         }
 
@@ -1163,7 +1182,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         /*********************************/
         /*** MotionEventRange must belong to Notification type of Geolocation only and specific DeferredLocationEventType value ***/
         if (data.containsKey("MotionEventRange") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("EventRange only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: EventRange only applies for Notification type of Geolocation");
         }
         if (data.containsKey("MotionEventRange") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1172,36 +1191,36 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, EventRange only applies when DeferredLocationEventType value equals " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, EventRange only applies when DeferredLocationEventType value equals " +
                             "motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, EventRange only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, EventRange only applies when DeferredLocationEventType value equals " +
                     "motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long eventRange = Long.valueOf(data.getFirst("MotionEventRange"));
                 if (eventRange > 10000 || eventRange < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("EventRange value not API compliant, must be a positive integer value lower than 10000 (meters)");
+                    throw new IllegalArgumentException("Rejected: EventRange value not API compliant, must be a positive integer value lower than 10000 (meters)");
                 }
                 if (!data.containsKey("MotionEventReportingDuration") && !data.containsKey("MotionEventOccurrence") && !data.containsKey("MotionEventInterval") &&
                     !data.containsKey("MotionEventMaxInterval") && !data.containsKey("MotionEventSamplingInterval")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventOccurrence and/or MotionEventInterval and/or MotionEventMaxInterval and/or " +
+                    throw new IllegalArgumentException("Rejected: MotionEventOccurrence and/or MotionEventInterval and/or MotionEventMaxInterval and/or " +
                         "MotionEventSamplingInterval and/or MotionEventSamplingInterval arguments must not be null when a valid " +
                         "MotionEventRange is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("EventRange value not API compliant, must be a positive integer value");
+                throw new IllegalArgumentException("Rejected: EventRange value not API compliant, must be a positive integer value");
             }
         }
         /*** MotionEventOccurrence must belong to Notification type of Geolocation only ***/
         if (data.containsKey("MotionEventOccurrence") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("MotionEventOccurrence only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: MotionEventOccurrence only applies for Notification type of Geolocation");
         }
         if (data.containsKey("MotionEventOccurrence") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1210,32 +1229,32 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value equals " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value equals " +
                             "motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value equals " +
                     "motion-event for Notification type of Geolocation in LTE");
             }
             String motionEventOccurrence = data.getFirst("MotionEventOccurrence");
             if (!motionEventOccurrence.equalsIgnoreCase("once") && !motionEventOccurrence.equalsIgnoreCase("multiple")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MotionEventOccurrence value not API compliant, " +
+                throw new IllegalArgumentException("Rejected: MotionEventOccurrence value not API compliant, " +
                     "must be one of once (for one time event) or multiple (for multiple time events)");
             }
             if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventReportingDuration") && !data.containsKey("MotionEventInterval") &&
                 !data.containsKey("MotionEventMaxInterval") && !data.containsKey("MotionEventSamplingInterval")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MotionEventRange and/or MotionEventReportingDuration and/or MotionEventInterval " +
+                throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventReportingDuration and/or MotionEventInterval " +
                     "and/or MotionEventMaxInterval and/or MotionEventSamplingInterval arguments must not be null when a valid " +
                     "MotionEventOccurrence is provided");
             }
         }
         /*** MotionEventInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventInterval") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("MotionEventInterval only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: MotionEventInterval only applies for Notification type of Geolocation");
         }
         if (data.containsKey("MotionEventInterval") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1244,41 +1263,41 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value equals " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value equals " +
                             "motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value equals " +
                     "motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventInterval = Long.valueOf(data.getFirst("MotionEventInterval"));
                 if (motionEventInterval > 3600 || motionEventInterval < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventInterval value not API compliant, must be a positive integer value not greater than 3600");
+                    throw new IllegalArgumentException("Rejected: MotionEventInterval value not API compliant, must be a positive integer value not greater than 3600");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventOccurrence")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventRange and MotionEventOccurrence arguments must not be null when a valid " +
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and MotionEventOccurrence arguments must not be null when a valid " +
                         "MotionEventInterval is provided");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventReportingDuration") && !data.containsKey("MotionEventOccurrence") &&
                     !data.containsKey("MotionEventMaxInterval") && !data.containsKey("MotionEventSamplingInterval")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventRange and/or MotionEventReportingDuration and/or MotionEventOccurrence " +
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventReportingDuration and/or MotionEventOccurrence " +
                         "and/or MotionEventMaxInterval and/or MotionEventSamplingInterval arguments must not be null when a valid " +
                         "MotionEventInterval is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MotionEventInterval value not API compliant, must be a positive integer value not greater than 3600");
+                throw new IllegalArgumentException("Rejected: MotionEventInterval value not API compliant, must be a positive integer value not greater than 3600");
             }
         }
         /*** MotionEventMaxInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventMaxInterval") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("MotionEventMaxInterval only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: MotionEventMaxInterval only applies for Notification type of Geolocation");
         }
         if (data.containsKey("MotionEventMaxInterval") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1287,42 +1306,42 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, MotionEventMaxInterval only applies when DeferredLocationEventType " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventMaxInterval only applies when DeferredLocationEventType " +
                             "value equals motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, MotionEventMaxInterval only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventMaxInterval only applies when DeferredLocationEventType value equals " +
                     "motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventMaxInterval = Long.valueOf(data.getFirst("MotionEventMaxInterval"));
                 if (motionEventMaxInterval > 86400 || motionEventMaxInterval < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventMaxInterval value not API compliant, must be a positive integer value " +
+                    throw new IllegalArgumentException("Rejected: MotionEventMaxInterval value not API compliant, must be a positive integer value " +
                         "not greater than 86400");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventOccurrence") && !data.containsKey("MotionEventInterval")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval arguments must not be null " +
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval arguments must not be null " +
                         "when a valid MotionEventMaxInterval is provided");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventReportingDuration") && !data.containsKey("MotionEventOccurrence") &&
                     !data.containsKey("MotionEventInterval") && !data.containsKey("MotionEventSamplingInterval")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventRange and/or MotionEventReportingDuration and/or MotionEventOccurrence " +
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventReportingDuration and/or MotionEventOccurrence " +
                         "and/or MotionEventInterval and/or MotionEventSamplingInterval arguments must not be null when a valid " +
                         "MotionEventMaxInterval is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MotionEventMaxInterval value not API compliant, must be a positive integer value not greater than 86400");
+                throw new IllegalArgumentException("Rejected: MotionEventMaxInterval value not API compliant, must be a positive integer value not greater than 86400");
             }
         }
         /*** MotionEventSamplingInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventSamplingInterval") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("MotionEventSamplingInterval only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: MotionEventSamplingInterval only applies for Notification type of Geolocation");
         }
         if (data.containsKey("MotionEventSamplingInterval") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1331,38 +1350,38 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, MotionEventSamplingInterval only applies when DeferredLocationEventType " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventSamplingInterval only applies when DeferredLocationEventType " +
                             "value equals motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, MotionEventSamplingInterval only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventSamplingInterval only applies when DeferredLocationEventType value equals " +
                     "motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventSamplingInterval = Long.valueOf(data.getFirst("MotionEventSamplingInterval"));
                 if (motionEventSamplingInterval > 32767 || motionEventSamplingInterval < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventSamplingInterval value not API compliant, must be a positive integer value " +
+                    throw new IllegalArgumentException("Rejected: MotionEventSamplingInterval value not API compliant, must be a positive integer value " +
                         "not greater than 32767");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventOccurrence") && !data.containsKey("MotionEventInterval") &&
                     !data.containsKey("MotionEventMaxInterval") && !data.containsKey("MotionEventReportingDuration")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval " +
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval " +
                         "and/or MotionEventMaxInterval and/or MotionEventReportingDuration arguments must not be null when a valid " +
                         "MotionEventSamplingInterval is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MotionEventSamplingInterval value not API compliant, must be a positive integer value " +
+                throw new IllegalArgumentException("Rejected: MotionEventSamplingInterval value not API compliant, must be a positive integer value " +
                     "not greater than 32767");
             }
         }
         /*** MotionEventReportingDuration must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventReportingDuration") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("MotionEventReportingDuration only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: MotionEventReportingDuration only applies for Notification type of Geolocation");
         }
         if (data.containsKey("MotionEventReportingDuration") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1371,32 +1390,32 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, MotionEventReportingDuration only applies when DeferredLocationEventType " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventReportingDuration only applies when DeferredLocationEventType " +
                             "value equals motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, MotionEventReportingDuration only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventReportingDuration only applies when DeferredLocationEventType value equals " +
                     "motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventReportingDuration = Long.valueOf(data.getFirst("MotionEventReportingDuration"));
                 if (motionEventReportingDuration > 8640000 || motionEventReportingDuration < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventReportingDuration value not API compliant, must be a positive integer value " +
+                    throw new IllegalArgumentException("Rejected: MotionEventReportingDuration value not API compliant, must be a positive integer value " +
                         "not greater than 8640000");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventOccurrence") && !data.containsKey("MotionEventInterval") &&
                     !data.containsKey("MotionEventMaxInterval") && !data.containsKey("MotionEventSamplingInterval")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval " +
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval " +
                         "and/or MotionEventMaxInterval and/or MotionEventSamplingInterval arguments must not be null when a valid " +
                         "MotionEventReportingDuration is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MotionEventReportingDuration value not API compliant, must be a positive integer value " +
+                throw new IllegalArgumentException("Rejected: MotionEventReportingDuration value not API compliant, must be a positive integer value " +
                     "not greater than 8640000");
             }
         }
@@ -1405,7 +1424,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         /******************************************************/
         /*** EventReportingAmount must be API compliant if present for Notification Geolocation only: integer value between 1 and 8639999 ***/
         if (data.containsKey("EventReportingAmount") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("EventReportingAmount only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: EventReportingAmount only applies for Notification type of Geolocation");
         }
         if (data.containsKey("EventReportingAmount") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1415,31 +1434,32 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     if (!deferredLocationEventType.equalsIgnoreCase("periodic-ldr") && !deferredLocationEventType.equalsIgnoreCase("ldr-activated")
                         && !deferredLocationEventType.equalsIgnoreCase("max-interval-expiration")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value " +
                             "equals periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value equals " +
                     "periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
             }
             try {
                 Long eventReportingAmount = Long.valueOf(data.getFirst("EventReportingAmount"));
                 if (eventReportingAmount > 8639999 || eventReportingAmount < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("EventReportingAmount value not API compliant, must be a positive integer value not greater " +
+                    throw new IllegalArgumentException("Rejected: EventReportingAmount value not API compliant, must be a positive integer value not greater " +
                         "than 8639999");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("EventReportingAmount value not API compliant, must be a positive integer value not greater than 8639999");
+                throw new IllegalArgumentException("Rejected: EventReportingAmount value not API compliant, must be a positive integer value not greater " +
+                    "than 8639999");
             }
         }
 
         /*** EventReportingInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 8639999 ***/
         if (data.containsKey("EventReportingInterval") && !glType.toString().equals(NotificationGT)) {
-            throw new UnsupportedOperationException("EventReportingInterval only applies for Notification type of Geolocation");
+            throw new UnsupportedOperationException("Rejected: EventReportingInterval only applies for Notification type of Geolocation");
         }
         if (data.containsKey("EventReportingInterval") && glType.toString().equals(NotificationGT)) {
             if (data.containsKey("DeferredLocationEventType")) {
@@ -1449,29 +1469,29 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     if (!deferredLocationEventType.equalsIgnoreCase("periodic-ldr") && !deferredLocationEventType.equalsIgnoreCase("ldr-activated")
                         && !deferredLocationEventType.equalsIgnoreCase("max-interval-expiration")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Not API compliant, EventReportingInterval only applies when DeferredLocationEventType value " +
+                        throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingInterval only applies when DeferredLocationEventType value " +
                             "equals periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value equals " +
+                throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value equals " +
                     "periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
             }
             try {
                 Long eventReportingInterval = Long.valueOf(data.getFirst("EventReportingInterval"));
                 if (eventReportingInterval > 8639999 || eventReportingInterval < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("EventReportingInterval value not API compliant, must be a positive integer value not greater " +
+                    throw new IllegalArgumentException("Rejected: EventReportingInterval value not API compliant, must be a positive integer value not greater " +
                         "than 8639999");
                 }
                 if (!data.containsKey("EventReportingAmount")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("EventReportingAmount argument must not be null when a valid EventReportingInterval is provided");
+                    throw new IllegalArgumentException("Rejected: EventReportingAmount argument must not be null when a valid EventReportingInterval is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("EventReportingInterval value not API compliant, must be a positive integer value not greater " +
+                throw new IllegalArgumentException("Rejected: EventReportingInterval value not API compliant, must be a positive integer value not greater " +
                     "than 8639999");
             }
         }
@@ -1483,7 +1503,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 DateTime locationTimestamp = getDateTime("LocationTimestamp", data);
             }
         } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException("LocationTimestamp value is not API compliant");
+            throw new IllegalArgumentException("Rejected: LocationTimestamp value is not API compliant");
         }
     }
 
@@ -1516,7 +1536,36 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         builder.setLmsi(getLong("LMSI", data));
         builder.setReferenceNumber(getLong("ReferenceNumber", data));
         builder.setGeolocationType(glType);
-        builder.setResponseStatus(data.getFirst("ResponseStatus"));
+        if (glType.equals(GeolocationType.Immediate)) {
+            if ((getInteger("CellId", data) != null || getInteger("ServiceAreaCode", data) != null ||
+                (data.getFirst("DeviceLatitude") != null && data.getFirst("DeviceLongitude") != null)) && getInteger("LocationAge", data) < 2) {
+                rStatus = responseStatus.Successful.toString();
+            } else if ((getInteger("CellId", data) != null || getInteger("ServiceAreaCode", data) != null ||
+                (data.getFirst("DeviceLatitude") != null && data.getFirst("DeviceLongitude") != null)) && (getInteger("LocationAge", data) > 1 ||
+                data.getFirst("NotReachableReason") != null)) {
+                rStatus = responseStatus.LastKnown.toString();
+            } else if ((getInteger("CellId", data) == null || getInteger("ServiceAreaCode", data) == null ||
+                (data.getFirst("DeviceLatitude") == null || data.getFirst("DeviceLongitude") == null)) &&
+                (getInteger("TrackingAreaCode", data) != null || getInteger("RoutingAreaCode", data) != null ||
+                    getInteger("LocationAreaCode", data) != null)) {
+                rStatus = responseStatus.PartiallySuccessful.toString();
+            }
+        } else if (glType.equals(GeolocationType.Notification)) {
+            if ((data.getFirst("DeviceLatitude") != null && data.getFirst("DeviceLongitude") != null) && getInteger("LocationAge", data) < 2) {
+                rStatus = responseStatus.Successful.toString();
+            } else if ((data.getFirst("DeviceLatitude") != null && data.getFirst("DeviceLongitude") != null) && getInteger("LocationAge", data) > 1) {
+                rStatus = responseStatus.LastKnown.toString();
+            } else if ((getInteger("CellId", data) != null || getInteger("ServiceAreaCode", data) != null ||
+                getInteger("TrackingAreaCode", data) != null || getInteger("RoutingAreaCode", data) != null ||
+                getInteger("LocationAreaCode", data) != null) && getInteger("LocationAge", data) < 2) {
+                rStatus = responseStatus.PartiallySuccessful.toString();
+            } else if ((getInteger("CellId", data) != null || getInteger("ServiceAreaCode", data) != null ||
+                getInteger("TrackingAreaCode", data) != null || getInteger("RoutingAreaCode", data) != null ||
+                getInteger("LocationAreaCode", data) != null) && getInteger("LocationAge", data) > 1) {
+                rStatus = responseStatus.LastKnown.toString();
+            }
+        }
+        builder.setResponseStatus(rStatus);
         builder.setCause(data.getFirst("Cause"));
         builder.setMobileCountryCode(getInteger("MobileCountryCode", data));
         builder.setMobileNetworkCode(getInteger("MobileNetworkCode", data));
@@ -1663,11 +1712,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (msisdn.length() > 15) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MSISDN amount of digits must not be greater than 15");
+                    throw new IllegalArgumentException("Rejected: MSISDN amount of digits must not be greater than 15");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MSISDN must be a number with an amount of digits not greater than 15");
+                throw new IllegalArgumentException("Rejected: MSISDN must be a number with an amount of digits not greater than 15");
             }
             updatedGeolocation = updatedGeolocation.setMsisdn(getLong("MSISDN", data));
         }
@@ -1677,11 +1726,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (imsi.length() > 15) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("IMSI amount of digits must not be greater than 15");
+                    throw new IllegalArgumentException("Rejected: IMSI amount of digits must not be greater than 15");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("IMSI must be a number with an amount of digits not greater than 15");
+                throw new IllegalArgumentException("Rejected: IMSI must be a number with an amount of digits not greater than 15");
             }
             updatedGeolocation = updatedGeolocation.setImsi(getLong("IMSI", data));
         }
@@ -1691,11 +1740,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (imei.length() > 15) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("IMEI amount of digits must not be greater than 15");
+                    throw new IllegalArgumentException("Rejected: IMEI amount of digits must not be greater than 15");
                 }
             } catch (Exception e) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("IMEI must be a number with an amount of digits not greater than 15");
+                throw new IllegalArgumentException("Rejected: IMEI must be a number with an amount of digits not greater than 15");
             }
             updatedGeolocation = updatedGeolocation.setImei(data.getFirst("IMEI"));
         }
@@ -1705,11 +1754,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (lmsi > 4294967295L) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("IMEI value must not be greater than 4294967295");
+                    throw new IllegalArgumentException("Rejected: IMEI value must not be greater than 4294967295");
                 }
             } catch (Exception e) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("IMEI must be a number with a value not greater than 4294967295");
+                throw new IllegalArgumentException("Rejected: IMEI must be a number with a value not greater than 4294967295");
             }
             updatedGeolocation = updatedGeolocation.setLmsi(getLong("LMSI", data));
         }
@@ -1748,11 +1797,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (mcc.length() > 3) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("MobileCountryCode amount of digits must not be greater than 3");
+                    throw new IllegalArgumentException("Rejected: MobileCountryCode amount of digits must not be greater than 3");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MobileCountryCode must be a number with an amount of digits not greater than 3");
+                throw new IllegalArgumentException("Rejected: MobileCountryCode must be a number with an amount of digits not greater than 3");
             }
             updatedGeolocation = updatedGeolocation.setMobileCountryCode(getInteger("MobileCountryCode", data));
         }
@@ -1761,7 +1810,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String mnc = data.getFirst("MobileNetworkCode");
             if (mnc.length() > 3) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("MobileNetworkCode amount of digits must not be greater than 3");
+                throw new IllegalArgumentException("Rejected: MobileNetworkCode amount of digits must not be greater than 3");
             } else {
                 updatedGeolocation = updatedGeolocation.setMobileNetworkCode(getInteger("MobileNetworkCode", data));
 
@@ -1774,11 +1823,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("LocationAreaCode must be a number not greater than 65535");
+                    throw new IllegalArgumentException("Rejected: LocationAreaCode must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("LocationAreaCode must be a number not greater than 65535");
+                throw new IllegalArgumentException("Rejected: LocationAreaCode must be a number not greater than 65535");
             }
             updatedGeolocation = updatedGeolocation.setLocationAreaCode(getInteger("LocationAreaCode", data));
         }
@@ -1789,11 +1838,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("CellId must be a number not greater than 65535");
+                    throw new IllegalArgumentException("Rejected: CellId must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("CellId must be a number not greater than 65535");
+                throw new IllegalArgumentException("Rejected: CellId must be a number not greater than 65535");
             }
             updatedGeolocation = updatedGeolocation.setCellId(getInteger("CellId", data));
         }
@@ -1804,28 +1853,28 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("SAI must be a number not greater than 65535");
+                    throw new IllegalArgumentException("Rejected: SAI must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("SAI must be a number not greater than 65535");
+                throw new IllegalArgumentException("Rejected: SAI must be a number not greater than 65535");
             }
             updatedGeolocation = updatedGeolocation.setServiceAreaCode(getInteger("ServiceAreaCode", data));
         }
 
-        if (data.containsKey("LteCellId")) {
-            String ecid = data.getFirst("LteCellId");
+        if (data.containsKey("ENodeBId")) {
+            String ecid = data.getFirst("ENodeBId");
             Long digits = Long.valueOf(ecid);
             try {
-                if (digits > 65535) {
+                if (digits > 1048575) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("LteCellId must be a number not greater than 65535");
+                    throw new IllegalArgumentException("Rejected: ENodeBId must be a number not greater than 1048575");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("LteCellId must be a number not greater than 65535");
+                throw new IllegalArgumentException("Rejected: ENodeBId must be a number not greater than 1048575");
             }
-            updatedGeolocation = updatedGeolocation.setEnodebId(getInteger("LteCellId", data));
+            updatedGeolocation = updatedGeolocation.setEnodebId(getInteger("ENodeBId", data));
         }
 
         if (data.containsKey("TrackingAreaCode")) {
@@ -1834,11 +1883,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+                    throw new IllegalArgumentException("Rejected: TrackingAreaCode must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+                throw new IllegalArgumentException("Rejected: TrackingAreaCode must be a number not greater than 65535");
             }
             updatedGeolocation = updatedGeolocation.setTrackingAreaCode(getInteger("TrackingAreaCode", data));
         }
@@ -1849,18 +1898,18 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > 65535) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("RoutingAreaCode must be a number not greater than 65535");
+                    throw new IllegalArgumentException("Rejected: RoutingAreaCode must be a number not greater than 65535");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("TrackingAreaCode must be a number not greater than 65535");
+                throw new IllegalArgumentException("Rejected: TrackingAreaCode must be a number not greater than 65535");
             }
             updatedGeolocation = updatedGeolocation.setRoutingAreaCode(getInteger("RoutingAreaCode", data));
         }
 
         if (data.containsKey("LocationNumberAddress")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("LocationNumberAddress value can not be updated");
+            throw new IllegalArgumentException("Rejected: LocationNumberAddress value can not be updated");
         }
 
         if (data.containsKey("NetworkEntityAddress")) {
@@ -1869,11 +1918,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > Long.MAX_VALUE) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("NetworkEntityAddress must be a number compliant with Long data type");
+                    throw new IllegalArgumentException("Rejected: NetworkEntityAddress must be a number compliant with Long data type");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("NetworkEntityAddress must be a number compliant with Long data type");
+                throw new IllegalArgumentException("Rejected: NetworkEntityAddress must be a number compliant with Long data type");
             }
             updatedGeolocation = updatedGeolocation.setNetworkEntityAddress(getLong("NetworkEntityAddress", data));
         }
@@ -1882,7 +1931,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String entityName = data.getFirst("NetworkEntityName");
             if (entityName.length() > 254) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("NetworkEntityName length must not be greater than 254 characters");
+                throw new IllegalArgumentException("Rejected: NetworkEntityName length must not be greater than 254 characters");
             } else {
                 updatedGeolocation = updatedGeolocation.setNetworkEntityName(data.getFirst("NetworkEntityName"));
             }
@@ -1894,11 +1943,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             try {
                 if (digits > Long.MAX_VALUE) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("LocationAge must be a number compliant with Integer data type");
+                    throw new IllegalArgumentException("Rejected: LocationAge must be a number compliant with Integer data type");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("LocationAge must be a number compliant with Integer data type");
+                throw new IllegalArgumentException("Rejected: LocationAge must be a number compliant with Integer data type");
             }
             updatedGeolocation = updatedGeolocation.setAgeOfLocationInfo(getInteger("LocationAge", data));
         }
@@ -1911,7 +1960,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 !state.equalsIgnoreCase("psAttachedNotReachableForPaging") && !state.equalsIgnoreCase("notProvidedFromSGSNorMME") &&
                 !state.equalsIgnoreCase("psPDPActiveNotReachableForPaging") && !state.equalsIgnoreCase("psPDPActiveReachableForPaging")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("SubscriberState \""+state+"\" is not API compliant. " +
+                throw new IllegalArgumentException("Rejected: SubscriberState \""+state+"\" is not API compliant. " +
                     "It must be one of assumedIdle, camelBusy, notProvidedFromVLR (CS domain), " +
                     "psDetached, psAttachedReachableForPaging, psAttachedNotReachableForPaging, notProvidedFromSGSNorMME, " +
                     "psPDPActiveNotReachableForPaging, psPDPActiveReachableForPaging (PS domain), or netDetNotReachable");
@@ -1925,7 +1974,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             if (!notReachableReason.equalsIgnoreCase("msPurged") && !notReachableReason.equalsIgnoreCase("imsiDetached") &&
                 !notReachableReason.equalsIgnoreCase("restrictedArea") && !notReachableReason.equalsIgnoreCase("notRegistered")) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("NotReachableReason \""+notReachableReason+"\" is not API compliant. " +
+                throw new IllegalArgumentException("Rejected: NotReachableReason \""+notReachableReason+"\" is not API compliant. " +
                     "It must be one of msPurged, imsiDetached, restrictedArea or notRegistered");
             } else {
                 updatedGeolocation = updatedGeolocation.setSubscriberState(data.getFirst("SubscriberState"));
@@ -1970,69 +2019,69 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("Uncertainty")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("Uncertainty value can not be updated");
+            throw new IllegalArgumentException("Rejected: Uncertainty value can not be updated");
         }
 
         if (data.containsKey("UncertaintySemiMajorAxis")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintySemiMajorAxis value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintySemiMajorAxis value can not be updated");
         }
 
         if (data.containsKey("UncertaintySemiMinorAxis")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintySemiMinorAxis value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintySemiMinorAxis value can not be updated");
         }
 
         if (data.containsKey("AngleOfMajorAxis")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("AngleOfMajorAxis value can not be updated");
+            throw new IllegalArgumentException("Rejected: AngleOfMajorAxis value can not be updated");
         }
 
         if (data.containsKey("Confidence")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("Confidence value can not be updated");
+            throw new IllegalArgumentException("Rejected: Confidence value can not be updated");
         }
 
         if (data.containsKey("DeviceAltitude")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("DeviceAltitude value can not be updated");
+            throw new IllegalArgumentException("Rejected: DeviceAltitude value can not be updated");
         }
 
         if (data.containsKey("UncertaintyAltitude")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintyAltitude value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintyAltitude value can not be updated");
         }
 
         if (data.containsKey("InnerRadius")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("InnerRadius value can not be updated");
+            throw new IllegalArgumentException("Rejected: InnerRadius value can not be updated");
         }
 
         if (data.containsKey("UncertaintyInnerRadius")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintyInnerRadius value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintyInnerRadius value can not be updated");
         }
 
         if (data.containsKey("UncertaintyInnerRadius")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintyInnerRadius value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintyInnerRadius value can not be updated");
         }
 
         if (data.containsKey("OffsetAngle")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("OffsetAngle value can not be updated");
+            throw new IllegalArgumentException("Rejected: OffsetAngle value can not be updated");
         }
 
         if (data.containsKey("IncludedAngle")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("IncludedAngle value can not be updated");
+            throw new IllegalArgumentException("Rejected: IncludedAngle value can not be updated");
         }
 
         if (data.containsKey("HorizontalSpeed")) {
             String horizontalSpeed = data.getFirst("HorizontalSpeed");
             if (horizontalSpeed.length() > 30) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("HorizontalSpeed length must not be greater than 30 digits");
+                throw new IllegalArgumentException("Rejected: HorizontalSpeed length must not be greater than 30 digits");
             } else {
                 updatedGeolocation = updatedGeolocation.setHorizontalSpeed(getInteger("HorizontalSpeed", data));
             }
@@ -2042,7 +2091,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String verticalSpeed = data.getFirst("VerticalSpeed");
             if (verticalSpeed.length() > 30) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("VerticalSpeed length must not be greater than 30 digits");
+                throw new IllegalArgumentException("Rejected: VerticalSpeed length must not be greater than 30 digits");
             } else {
                 updatedGeolocation = updatedGeolocation.setVerticalSpeed(getInteger("VerticalSpeed", data));
             }
@@ -2050,64 +2099,64 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
         if (data.containsKey("UncertaintyHorizontalSpeed")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintyHorizontalSpeed value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintyHorizontalSpeed value can not be updated");
         }
 
         if (data.containsKey("UncertaintyVerticalSpeed")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("UncertaintyVerticalSpeed value can not be updated");
+            throw new IllegalArgumentException("Rejected: UncertaintyVerticalSpeed value can not be updated");
         }
 
         if (data.containsKey("Bearing")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("Bearing value can not be updated");
+            throw new IllegalArgumentException("Rejected: Bearing value can not be updated");
         }
 
         if (data.containsKey("DeferredLocationEventType")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("DeferredLocationEventType value can not be updated");
+            throw new IllegalArgumentException("Rejected: DeferredLocationEventType value can not be updated");
         }
 
         if (data.containsKey("GeofenceType")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("GeofenceType value can not be updated");
+            throw new IllegalArgumentException("Rejected: GeofenceType value can not be updated");
         }
 
         if (data.containsKey("GeofenceId")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("GeofenceId value can not be updated");
+            throw new IllegalArgumentException("Rejected: GeofenceId value can not be updated");
         }
 
         if (data.containsKey("GeofenceOccurrenceInfo")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("GeofenceType value can not be updated");
+            throw new IllegalArgumentException("Rejected: GeofenceType value can not be updated");
         }
 
         if (data.containsKey("GeofenceIntervalTime")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("GeofenceIntervalTime value can not be updated");
+            throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value can not be updated");
         }
 
         if (data.containsKey("MotionEventRange")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("EventRange value can not be updated");
+            throw new IllegalArgumentException("Rejected: EventRange value can not be updated");
         }
 
         if (data.containsKey("EventReportingAmount")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("EventReportingAmount value can not be updated");
+            throw new IllegalArgumentException("Rejected: EventReportingAmount value can not be updated");
         }
 
         if (data.containsKey("EventReportingInterval")) {
             httpBadRequest = true;
-            throw new IllegalArgumentException("EventReportingInterval value can not be updated");
+            throw new IllegalArgumentException("Rejected: EventReportingInterval value can not be updated");
         }
 
         if (data.containsKey("CivicAddress")) {
             String civicAddress = data.getFirst("CivicAddress");
             if (civicAddress.length() > 200) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("CivicAddress length must not be greater than 200 digits");
+                throw new IllegalArgumentException("Rejected: CivicAddress length must not be greater than 200 digits");
             } else {
                 updatedGeolocation = updatedGeolocation.setCivicAddress(data.getFirst("CivicAddress"));
             }
@@ -2117,7 +2166,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             Long barometricPressure = Long.valueOf(data.getFirst("BarometricPressure"));
             if (barometricPressure > Long.MAX_VALUE) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("BarometricPressure must not be a number not greater than maximum value for Long data type");
+                throw new IllegalArgumentException("Rejected: BarometricPressure must not be a number not greater than maximum value for Long data type");
             } else {
                 updatedGeolocation = updatedGeolocation.setBarometricPressure(getLong("BarometricPressure", data));
             }
@@ -2127,7 +2176,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String physicalAddress = data.getFirst("PhysicalAddress");
             if (physicalAddress.length() > 50) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("PhysicalAddress length must not be greater than 50 characters");
+                throw new IllegalArgumentException("Rejected: PhysicalAddress length must not be greater than 50 characters");
             } else {
                 updatedGeolocation = updatedGeolocation.setPhysicalAddress(data.getFirst("PhysicalAddress"));
             }
@@ -2137,7 +2186,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String internetAddress = data.getFirst("InternetAddress");
             if (internetAddress.length() > 50) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("InternetAddress length must not be greater than 50 characters");
+                throw new IllegalArgumentException("Rejected: InternetAddress length must not be greater than 50 characters");
             } else {
                 updatedGeolocation = updatedGeolocation.setInternetAddress(data.getFirst("InternetAddress"));
             }
@@ -2149,7 +2198,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 updatedGeolocation = updatedGeolocation.setLastGeolocationResponse(data.getFirst("LastGeolocationResponse"));
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("LastGeolocationResponse value must be true or false");
+                throw new IllegalArgumentException("Rejected: LastGeolocationResponse value must be true or false");
             }
         }
 
