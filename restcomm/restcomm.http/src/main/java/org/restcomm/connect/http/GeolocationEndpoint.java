@@ -1080,22 +1080,28 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     && !geofenceType.equalsIgnoreCase("routingAreaId") && !geofenceType.equalsIgnoreCase("utranCellId")
                     && !geofenceType.equalsIgnoreCase("trackingAreaId") && !geofenceType.equalsIgnoreCase("eUtranCellId")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, countryCode, " +
-                        "plmnId, routingAreaId, utranCellId, trackingAreaId or eUtranCellId for Notification type of Geolocation in LTE");
+                    throw new IllegalArgumentException("Rejected: GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, " +
+                        "countryCode, plmnId, routingAreaId, utranCellId, trackingAreaId or eUtranCellId for Notification type of Geolocation in LTE");
                 }
             } else if (network.equalsIgnoreCase("UMTS")) {
                 if (!geofenceType.equalsIgnoreCase("locationAreaId") && !geofenceType.equalsIgnoreCase("cellGlobalId")
                     && !geofenceType.equalsIgnoreCase("countryCode") && !geofenceType.equalsIgnoreCase("plmnId")
                     && !geofenceType.equalsIgnoreCase("routingAreaId") && !geofenceType.equalsIgnoreCase("utranCellId")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, countryCode, " +
-                        "plmnId, routingAreaId or utranCellId for Notification type of Geolocation in UMTS");
+                    throw new IllegalArgumentException("Rejected: GeofenceType value not API compliant, must be one of locationAreaId, cellGlobalId, " +
+                        "countryCode, plmnId, routingAreaId or utranCellId for Notification type of Geolocation in UMTS");
                 }
             }
             if (!data.containsKey("GeofenceId")) {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("Rejected: GeofenceId argument must not be null when a valid GeofenceType is provided");
             }
+        }
+        if (!data.containsKey("GeofenceType") && (data.containsKey("GeofenceId") && data.containsKey("GeofenceOccurrenceInfo") &&
+            data.containsKey("GeofenceIntervalTime"))) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Rejected: GeofenceType argument must not be null when valid GeofenceId, GeofenceOccurrenceInfo and " +
+                    "GeofenceIntervalTime are provided");
         }
         /*** GeofenceId must belong to Notification type of Geolocation only ***/
         if (data.containsKey("GeofenceId") && !glType.toString().equals(NotificationGT)) {
@@ -1108,7 +1114,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 Long geofenceId = Long.valueOf(geofenceIdString);
                 if (geofenceIdStringLength < 2 && geofenceIdStringLength > 7) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: GeofenceId value not API compliant, must be a positive integer value according to the GeofenceType");
+                    throw new IllegalArgumentException("Rejected: GeofenceId value not API compliant, must be a positive integer value according " +
+                        "to the GeofenceType");
                 }
                 if (!data.containsKey("GeofenceType")) {
                     httpBadRequest = true;
@@ -1139,6 +1146,12 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("Rejected: GeofenceId value not API compliant, must be a positive integer value");
             }
         }
+        if (!data.containsKey("GeofenceId") && (data.containsKey("GeofenceType") && data.containsKey("GeofenceOccurrenceInfo") &&
+            data.containsKey("GeofenceIntervalTime"))) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Rejected: GeofenceId argument must not be null when valid GeofenceType, GeofenceOccurrenceInfo and " +
+                    "GeofenceIntervalTime are provided");
+        }
         /*** GeofenceOccurrenceInfo ***/
         if (data.containsKey("GeofenceOccurrenceInfo") && !glType.toString().equals(NotificationGT)) {
             throw new UnsupportedOperationException("Rejected: GeofenceOccurrenceInfo only applies for Notification type of Geolocation");
@@ -1150,11 +1163,17 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("Rejected: GeofenceOccurrenceInfo value not API compliant, " +
                     "must be one of once (for one time event) or multiple (for multiple time events)");
             }
-            if (!data.containsKey("GeofenceType") || !data.containsKey("GeofenceId") && !data.containsKey("GeofenceIntervalTime")) {
+            if (!data.containsKey("GeofenceType") && !data.containsKey("GeofenceId") && !data.containsKey("GeofenceIntervalTime")) {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("Rejected: GeofenceType and/or GeofenceId and/or GeofenceIntervalTime arguments must not be null when " +
                     "a valid GeofenceOccurrenceInfo is provided");
             }
+        }
+        if (!data.containsKey("GeofenceOccurrenceInfo") && (data.containsKey("GeofenceId") && data.containsKey("GeofenceType") &&
+            data.containsKey("GeofenceIntervalTime"))) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Rejected: GeofenceOccurrenceInfo argument must not be null when valid GeofenceId, GeofenceType and " +
+                    "GeofenceIntervalTime are provided");
         }
         /*** GeofenceIntervalTime must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("GeofenceIntervalTime") && !glType.toString().equals(NotificationGT)) {
@@ -1165,17 +1184,25 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 Long eventIntervalTime = Long.valueOf(data.getFirst("GeofenceIntervalTime"));
                 if (eventIntervalTime > 32767 || eventIntervalTime < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
+                    throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value not API compliant, must be a positive integer value " +
+                        "not greater than 32767");
                 }
-                if (!data.containsKey("GeofenceOccurrenceInfo") && !data.containsKey("GeofenceType") || !data.containsKey("GeofenceId")) {
+                if (!data.containsKey("GeofenceOccurrenceInfo") && !data.containsKey("GeofenceType") && !data.containsKey("GeofenceId")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: GeofenceType and/or GeofenceId and/or GeofenceOccurrenceInfo arguments must not be null when" +
-                        " a valid GeofenceIntervalTime is provided");
+                    throw new IllegalArgumentException("Rejected: GeofenceType and/or GeofenceId and/or GeofenceOccurrenceInfo arguments must not be null " +
+                        "when a valid GeofenceIntervalTime is provided");
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value not API compliant, must be a positive integer value not greater than 32767");
+                throw new IllegalArgumentException("Rejected: GeofenceIntervalTime value not API compliant, must be a positive integer value " +
+                    "not greater than 32767");
             }
+        }
+        if (!data.containsKey("GeofenceIntervalTime") && (data.containsKey("GeofenceId") && data.containsKey("GeofenceType") &&
+            data.containsKey("GeofenceOccurrenceInfo"))) {
+                httpBadRequest = true;
+                throw new IllegalArgumentException("Rejected: GeofenceIntervalTime argument must not be null when valid GeofenceId, GeofenceType and " +
+                    "GeofenceOccurrenceInfo are provided");
         }
 
         /**** Motion Event parameters ****/
@@ -1218,6 +1245,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("Rejected: EventRange value not API compliant, must be a positive integer value");
             }
         }
+        if (!data.containsKey("MotionEventRange") && (data.containsKey("MotionEventOccurrence") && data.containsKey("MotionEventInterval") &&
+            data.containsKey("MotionEventMaxInterval") && data.containsKey("MotionEventSamplingInterval") &&
+            data.containsKey("MotionEventReportingDuration"))) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: MotionEventRange must not be null when valid MotionEventOccurrence, MotionEventInterval, " +
+                "MotionEventMaxInterval, MotionEventSamplingInterval, MotionEventSamplingInterval and MotionEventReportingDuration arguments are provided");
+        }
         /*** MotionEventOccurrence must belong to Notification type of Geolocation only ***/
         if (data.containsKey("MotionEventOccurrence") && !glType.toString().equals(NotificationGT)) {
             throw new UnsupportedOperationException("Rejected: MotionEventOccurrence only applies for Notification type of Geolocation");
@@ -1229,14 +1263,14 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value equals " +
-                            "motion-event for Notification type of Geolocation in LTE");
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType " +
+                            "value equals motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value equals " +
-                    "motion-event for Notification type of Geolocation in LTE");
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventOccurrence only applies when DeferredLocationEventType value " +
+                    "equals motion-event for Notification type of Geolocation in LTE");
             }
             String motionEventOccurrence = data.getFirst("MotionEventOccurrence");
             if (!motionEventOccurrence.equalsIgnoreCase("once") && !motionEventOccurrence.equalsIgnoreCase("multiple")) {
@@ -1252,6 +1286,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     "MotionEventOccurrence is provided");
             }
         }
+        if (!data.containsKey("MotionEventOccurrence") && (data.containsKey("MotionEventRange") && data.containsKey("MotionEventInterval") &&
+            data.containsKey("MotionEventMaxInterval") && data.containsKey("MotionEventSamplingInterval") &&
+            data.containsKey("MotionEventReportingDuration"))) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: MotionEventOccurrence must not be null when valid MotionEventRange, MotionEventInterval, " +
+                "MotionEventMaxInterval, MotionEventSamplingInterval, MotionEventSamplingInterval and MotionEventReportingDuration arguments are provided");
+        }
         /*** MotionEventInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventInterval") && !glType.toString().equals(NotificationGT)) {
             throw new UnsupportedOperationException("Rejected: MotionEventInterval only applies for Notification type of Geolocation");
@@ -1263,20 +1304,21 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 if (network.equalsIgnoreCase("LTE")) {
                     if (!deferredLocationEventType.equalsIgnoreCase("motion-event")) {
                         httpBadRequest = true;
-                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value equals " +
-                            "motion-event for Notification type of Geolocation in LTE");
+                        throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventInterval only applies when DeferredLocationEventType " +
+                            "value equals motion-event for Notification type of Geolocation in LTE");
                     }
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value equals " +
-                    "motion-event for Notification type of Geolocation in LTE");
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventInterval only applies when DeferredLocationEventType value " +
+                    "equals motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventInterval = Long.valueOf(data.getFirst("MotionEventInterval"));
                 if (motionEventInterval > 3600 || motionEventInterval < 0) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: MotionEventInterval value not API compliant, must be a positive integer value not greater than 3600");
+                    throw new IllegalArgumentException("Rejected: MotionEventInterval value not API compliant, must be a positive integer value not " +
+                        "greater than 3600");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventOccurrence")) {
                     httpBadRequest = true;
@@ -1292,8 +1334,16 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: MotionEventInterval value not API compliant, must be a positive integer value not greater than 3600");
+                throw new IllegalArgumentException("Rejected: MotionEventInterval value not API compliant, must be a positive integer value not " +
+                    "greater than 3600");
             }
+        }
+        if (!data.containsKey("MotionEventInterval") && (data.containsKey("MotionEventRange") && data.containsKey("MotionEventOccurrence") &&
+            data.containsKey("MotionEventMaxInterval") && data.containsKey("MotionEventSamplingInterval") &&
+            data.containsKey("MotionEventReportingDuration"))) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: MotionEventInterval must not be null when valid MotionEventRange, MotionEventOccurrence, " +
+                "MotionEventMaxInterval, MotionEventSamplingInterval, MotionEventSamplingInterval and MotionEventReportingDuration arguments are provided");
         }
         /*** MotionEventMaxInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventMaxInterval") && !glType.toString().equals(NotificationGT)) {
@@ -1312,8 +1362,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventMaxInterval only applies when DeferredLocationEventType value equals " +
-                    "motion-event for Notification type of Geolocation in LTE");
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventMaxInterval only applies when DeferredLocationEventType " +
+                    "value equals motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventMaxInterval = Long.valueOf(data.getFirst("MotionEventMaxInterval"));
@@ -1324,8 +1374,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventOccurrence") && !data.containsKey("MotionEventInterval")) {
                     httpBadRequest = true;
-                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval arguments must not be null " +
-                        "when a valid MotionEventMaxInterval is provided");
+                    throw new IllegalArgumentException("Rejected: MotionEventRange and/or MotionEventOccurrence and/or MotionEventInterval arguments " +
+                        "must not be null when a valid MotionEventMaxInterval is provided");
                 }
                 if (!data.containsKey("MotionEventRange") && !data.containsKey("MotionEventReportingDuration") && !data.containsKey("MotionEventOccurrence") &&
                     !data.containsKey("MotionEventInterval") && !data.containsKey("MotionEventSamplingInterval")) {
@@ -1336,8 +1386,16 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
             } catch (NumberFormatException nfe) {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: MotionEventMaxInterval value not API compliant, must be a positive integer value not greater than 86400");
+                throw new IllegalArgumentException("Rejected: MotionEventMaxInterval value not API compliant, must be a positive integer value " +
+                    "not greater than 86400");
             }
+        }
+        if (!data.containsKey("MotionEventMaxInterval") && (data.containsKey("MotionEventRange") && data.containsKey("MotionEventOccurrence") &&
+            data.containsKey("MotionEventInterval") && data.containsKey("MotionEventSamplingInterval") &&
+            data.containsKey("MotionEventReportingDuration"))) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: MotionEventMaxInterval must not be null when valid MotionEventRange, MotionEventOccurrence, " +
+                ", MotionEventInterval, MotionEventSamplingInterval, MotionEventSamplingInterval and MotionEventReportingDuration arguments are provided");
         }
         /*** MotionEventSamplingInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventSamplingInterval") && !glType.toString().equals(NotificationGT)) {
@@ -1356,8 +1414,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventSamplingInterval only applies when DeferredLocationEventType value equals " +
-                    "motion-event for Notification type of Geolocation in LTE");
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventSamplingInterval only applies when DeferredLocationEventType " +
+                    "value equals motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventSamplingInterval = Long.valueOf(data.getFirst("MotionEventSamplingInterval"));
@@ -1379,6 +1437,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     "not greater than 32767");
             }
         }
+        if (!data.containsKey("MotionEventSamplingInterval") && (data.containsKey("MotionEventRange") && data.containsKey("MotionEventOccurrence") &&
+            data.containsKey("MotionEventInterval") && data.containsKey("MotionEventMaxInterval") &&
+            data.containsKey("MotionEventReportingDuration"))) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: MotionEventSamplingInterval must not be null when valid MotionEventRange, MotionEventOccurrence, " +
+                ", MotionEventInterval, MotionEventMaxInterval, MotionEventSamplingInterval and MotionEventReportingDuration arguments are provided");
+        }
         /*** MotionEventReportingDuration must be API compliant if present for Notification Geolocation only: integer value between 1 and 32767 ***/
         if (data.containsKey("MotionEventReportingDuration") && !glType.toString().equals(NotificationGT)) {
             throw new UnsupportedOperationException("Rejected: MotionEventReportingDuration only applies for Notification type of Geolocation");
@@ -1396,8 +1461,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
             } else {
                 httpBadRequest = true;
-                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventReportingDuration only applies when DeferredLocationEventType value equals " +
-                    "motion-event for Notification type of Geolocation in LTE");
+                throw new IllegalArgumentException("Rejected: Not API compliant, MotionEventReportingDuration only applies when DeferredLocationEventType " +
+                    "value equals motion-event for Notification type of Geolocation in LTE");
             }
             try {
                 Long motionEventReportingDuration = Long.valueOf(data.getFirst("MotionEventReportingDuration"));
@@ -1418,6 +1483,13 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("Rejected: MotionEventReportingDuration value not API compliant, must be a positive integer value " +
                     "not greater than 8640000");
             }
+        }
+        if (!data.containsKey("MotionEventReportingDuration") && (data.containsKey("MotionEventRange") && data.containsKey("MotionEventOccurrence") &&
+            data.containsKey("MotionEventInterval") && data.containsKey("MotionEventMaxInterval") &&
+            data.containsKey("MotionEventSamplingInterval"))) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: MotionEventReportingDuration must not be null when valid MotionEventRange, MotionEventOccurrence, " +
+                ", MotionEventInterval, MotionEventMaxInterval, MotionEventSamplingInterval and MotionEventSamplingInterval arguments are provided");
         }
 
         /**** Periodic Location Deferred Request parameters ****/
@@ -1455,6 +1527,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("Rejected: EventReportingAmount value not API compliant, must be a positive integer value not greater " +
                     "than 8639999");
             }
+        }
+        if (!data.containsKey("EventReportingAmount") && data.containsKey("EventReportingInterval")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: EventReportingAmount must not be null when valid EventReportingInterval is provided");
         }
 
         /*** EventReportingInterval must be API compliant if present for Notification Geolocation only: integer value between 1 and 8639999 ***/
@@ -1494,6 +1570,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 throw new IllegalArgumentException("Rejected: EventReportingInterval value not API compliant, must be a positive integer value not greater " +
                     "than 8639999");
             }
+        }
+        if (!data.containsKey("EventReportingInterval") && data.containsKey("EventReportingAmount")) {
+            httpBadRequest = true;
+            throw new IllegalArgumentException("Rejected: EventReportingInterval must not be null when valid EventReportingAmount is provided");
         }
 
         /*** LocationTimestamp must be API compliant: DateTime format only ***/
