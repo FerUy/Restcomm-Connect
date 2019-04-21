@@ -430,7 +430,10 @@ public class GeolocationEndpoint extends AbstractEndpoint {
 
             if (deferredLocationEventType != null && coreNetwork != null) {
                 if (coreNetwork.equalsIgnoreCase("UMTS")) {
-                    uriBuilder.addParameter("deferredLocationEventType", deferredLocationEventType);
+                    if (deferredLocationEventType.equalsIgnoreCase("periodic-ldr"))
+                        uriBuilder.addParameter("deferredLocationEventType", "periodicLDR");
+                    else
+                        uriBuilder.addParameter("deferredLocationEventType", deferredLocationEventType);
                 } else if (coreNetwork.equalsIgnoreCase("LTE")) {
                     if (deferredLocationEventType.equalsIgnoreCase("available"))
                         deferredLocationEventType = "0";
@@ -1037,10 +1040,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String network = data.getFirst("CoreNetwork");
             if (network.equalsIgnoreCase("UMTS")) {
                 if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
-                    && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")) {
+                    && !eventGeofenceType.equalsIgnoreCase("leaving") && !eventGeofenceType.equalsIgnoreCase("available")
+                    && !eventGeofenceType.equalsIgnoreCase("periodic-ldr")) {
                     httpBadRequest = true;
                     throw new IllegalArgumentException("Rejected: DeferredLocationEventType value not API compliant, must be one of available, inside, " +
-                        "entering or leaving for Notification type of Geolocation in UMTS");
+                        "entering, leaving or periodic-ldr for Notification type of Geolocation in UMTS");
                 }
             } else if (network.equalsIgnoreCase("LTE")) {
                 if (!eventGeofenceType.equalsIgnoreCase("inside") && !eventGeofenceType.equalsIgnoreCase("entering")
@@ -1509,11 +1513,17 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value " +
                             "equals periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
                     }
+                } else if (network.equalsIgnoreCase("UMTS")) {
+                    if (!deferredLocationEventType.equalsIgnoreCase("periodic-ldr")) {
+                        httpBadRequest = true;
+                        throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value " +
+                            "equals periodic-ldr for Notification type of Geolocation in UMTS");
+                    }
                 }
             } else {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value equals " +
-                    "periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
+                    "periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation");
             }
             try {
                 Long eventReportingAmount = Long.valueOf(data.getFirst("EventReportingAmount"));
@@ -1548,11 +1558,17 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                         throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingInterval only applies when DeferredLocationEventType value " +
                             "equals periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
                     }
+                } else if (network.equalsIgnoreCase("UMTS")) {
+                    if (!deferredLocationEventType.equalsIgnoreCase("periodic-ldr")) {
+                        httpBadRequest = true;
+                        throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingInterval only applies when DeferredLocationEventType value " +
+                            "equals periodic-ldr for Notification type of Geolocation in UMTS");
+                    }
                 }
             } else {
                 httpBadRequest = true;
                 throw new IllegalArgumentException("Rejected: Not API compliant, EventReportingAmount only applies when DeferredLocationEventType value equals " +
-                    "periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation in LTE");
+                    "periodic-ldr, ldr-activated or max-interval-expiration for Notification type of Geolocation");
             }
             try {
                 Long eventReportingInterval = Long.valueOf(data.getFirst("EventReportingInterval"));
@@ -3669,7 +3685,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     rirPlrResponse.put("ageOfLocationEstimate", ageOfLocationEstimate);
             }
 
-            JsonObject cgiSaiEsmlcCell = pla.getAsJsonObject("CGIorSAIorESMLCCellInfo");
+            JsonObject cgiSaiEsmlcCell = pla.getAsJsonObject("CGIorSAIorECGIorESMLCCellInfo");
             JsonObject cgi = cgiSaiEsmlcCell.getAsJsonObject("CGI");
             if (cgi.get("mcc") != null) {
                 String lteCgiMcc = cgi.get("mcc").getAsString();
@@ -3714,7 +3730,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                     rirPlrResponse.put("sac", eSaiSac);
             }
 
-            JsonObject ecgi = cgiSaiEsmlcCell.getAsJsonObject("ECGI");
+            JsonObject ecgi = cgiSaiEsmlcCell.getAsJsonObject("ECGIorESMLCCellInfo");
             if (ecgi.get("mcc") != null) {
                 String ecgiMcc = ecgi.get("mcc").getAsString();
                 if (!ecgiMcc.isEmpty())

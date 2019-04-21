@@ -139,22 +139,40 @@ An array that uniquely identifies the location information that might be
 obtained by this Geolocation service. The fields of this array are
 described next:
 
-**_CellId_**: an identifier assigned to a specific radio coverage area
-known as cell or service area;
-
-**_LocationAreaCode_**: an identifier assigned to a group of cells or service area;
-
 **_MobileCountryCode_**: code number of the country of the mobile
 network as specified by E.212.
 
 **_MobileNetworkCode_**: code number of the mobile network in a specific
 country as specified by E.212.
 
+**_LocationAreaCode_**: an identifier assigned to a group of cells or service area;
+
+**_CellId_**: an identifier assigned to a specific radio coverage area
+known as cell or service area;
+
+**_ServiceAreaCode_**: used to identify an area consisting of one or more cells belonging to the same location area.
+
+**_ENodeBId_**: identity of the LTE base station, known as eNodeB or eNB.
+
+**_TrackingAreaCode_**: a fixed length code of 2 octets identifying a Tracking Area within an LTE network.
+
+**_RoutingAreaCode_**: a fixed 1 octet length code identifying a routing area within a location area.
+
+**_LocationNumberAddress_**: address digits of a number which defines a specific location within a Mobile Network Operator.
+
+**_LocationAge_**: indication of how long ago the network location
+information was gathered (in minutes);
+
+**_SubscriberState_**: indication of whether the subscriber is idle or busy, attached or detached, not provide by VLR (CS domain), not provided by SGSN or MME (PS domain), PDP active reachable or not for paging (PS domain), or determined not reachable by the network. The values may vary as follows: assumedIdle, camelBusy, notProvidedFromVLR (CS domain only), psAttachedReachableForPaging, psAttachedNotReachableForPaging, psPDPActiveReachableForPaging, psPDPActiveNotReachableForPaging, notProvidedFromSGSNorMME, psDetached (PS domain only) and netDetNotReachable (applicable for both CS and PS domain).
+
+**_NotReachableReason_**: whenever the Subscriber State is determined not reachable by the network, the reason may vary from IMSI detached, restricted area, MS purged or not registered.
+
 **_NetworkEntityAddress_**: code number of the mobile network entity
 addressed for this Geolocation service.
 
-**_LocationAge_**: indication of how long ago the network location
-identifiers were recorded (informed in minutes);
+**_NetworkEntityName_**: string which contains the MME or SGSN Diameter identity User-Name in a format consistent with the NAI specification.
+
+**_TypeOfShape_**: as described in 3GPP TS 23.032 (Geographical Area Description), it can take the following values: ellipsoidPoint, ellipsoidPointWithUncertaintyCircle, ellipsoidPointWithUncertaintyEllipse, polygon, getEllipsoidPointWithAltitudeAndUncertaintyEllipsoid, ellipsoidArc.
 
 **_DeviceLatitude_**: an estimate of the location of the phone number,
 device/beacon or closest WiFi Access Point in the geographic
@@ -204,9 +222,53 @@ longitudes are negative. The following longitude variants are also allowed:
 
    116 14 28.86W
 
-**_Accuracy_**: quality of location information or estimated precision
-for this Geolocation service in meters. This information will be present
-depending on available location procedures at the radio access network.
+**_Uncertainty_**: method of describing the uncertainty for latitude and longitude indicating a radius,
+thus the subscriber is located within the circle defined by an ellipsoid and the radius.
+The uncertainty r, expressed in metres, is mapped to a number K, with the following formula:
+r = C((1+x)^k -1), with C = 10 and x = 0,1. With 0 * K * 127,
+a suitably useful range between 0 and 1800 kilometres is achieved for the uncertainty,
+while still being able to code down to values as small as 1 metre.
+The uncertainty can then be coded on 7 bits, as the binary encoding of K.
+
+**_AngleOfMajorAxis_**: angle in degrees between the major axis of the GAD shape and North.
+
+**_UncertaintySemiMajorAxis_**: uncertainty of the angle in degrees between the major axis of the GAD shape and North.
+
+**_UncertaintySemiMinorAxis_**: uncertainty of the angle in degrees between the minor axis of the GAD shape and North
+
+**_Confidence_**: the confidence by which the position of a target entity is known to be within the shape description (expressed as a percentage).
+
+**_DeviceAltitude_**: altitude in meters representing the height above or below the WGS84 ellipsoid surface.
+
+**_UncertaintyAltitude_**: uncertainty in altitude, h, expressed in metres is mapped from the binary number K,
+with the following formula: h = C((1+x)^k -1), with C = 45 and x = 0,025. With 0 * K * 127, a suitably useful range between 0 and 990 meters is achieved for the uncertainty altitude.
+The uncertainty can then be coded on 7 bits, as the binary encoding of K.
+
+**_InnerRadius_**: Inner radius is encoded in increments of 5 meters using a 16 bit binary coded number N.
+The relation between the number N and the range of radius r (in metres) it encodes is described by the following equation:
+5N ≤ r < 5(N+1).
+
+**_UncertaintyInnerRadius_**: uncertainty of the inner radius is encoded as for the uncertainty latitude and longitude.
+
+**_OffsetAngle_**: offset angle is encoded in increments of 2º using an 8 bit binary coded number N in the range 0 to 179.
+The relation between the number N and the range offset of angles (ao, in degrees) it encodes is described by the following equation:
+ 2N ≤ ao < 2 (N+1)
+ Accepted values for ao are within the range from 0 to 359,9...9 degrees.
+
+**_IncludedAngle_**: included angle is encoded in increments of 2º using an 8 bit binary coded number N in the range 0 to 179.
+The relation between the number N and the range of angles included (ai, in degrees) it encodes is described by the following equation:
+ 2N < ai ≤ 2 (N+1)
+ Accepted values for ao are within the range from 0,0...1 to 360 degrees.
+
+**_HorizontalSpeed_**:
+
+**_VerticalSpeed_**:
+
+**_UncertaintyHorizontalSpeed_**:
+
+**_UncertaintyVerticalSpeed_**:
+
+**_Bearing_**:
 
 **_PhysicalAddress_**: MAC address of the device/beacon or closest
 closest WiFi Access Point.
@@ -214,11 +276,13 @@ closest WiFi Access Point.
 **_InternetAddress_**: IP address of the phone number, device/beacon or
 closest closest WiFi Access Point.
 
-*__FormattedAddress__:* refers to the civic location of the phone
+**_CivicAddress_**: refers to the civic location of the phone
 number, device/beacon or closest WiFi Access Point, expressed as civic
 data (e.g. floor, street number, city.) It shall be represented in a
 well-defined universal format, compliant with Google Geolocation API
 "formatted_address" json/xml field.
+
+**_BarometricPressure_**:
 
 **_LocationTimestamp_**: indication of when the geolocation information
 was gathered (informed as a time stamp);
