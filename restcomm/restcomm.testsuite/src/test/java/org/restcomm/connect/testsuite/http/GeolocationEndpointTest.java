@@ -315,8 +315,8 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"MAP\",\n" +
         "  \"operation\": \"SRIforLCS-PSL\",\n" +
         "  \"result\": \"SUCCESS\",\n" +
-        "  \"lcsReferenceNumber\": 153,\n" +
-        "  \"gmlcTransactionId\": 4,\n" +
+        "  \"lcsReferenceNumber\": 4,\n" +
+        "  \"clientReferenceNumber\": 153,\n" +
         "  \"SRIforLCS\": {\n" +
         "    \"msisdn\": 59899077937,\n" +
         "    \"imsi\": 748026871012345,\n" +
@@ -375,8 +375,8 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"MAP\",\n" +
         "  \"operation\": \"SRIforLCS-PSL\",\n" +
         "  \"result\": \"SUCCESS\",\n" +
-        "  \"lcsReferenceNumber\": 153,\n" +
-        "  \"gmlcTransactionId\": 1,\n" +
+        "  \"lcsReferenceNumber\": 1,\n" +
+        "  \"clientReferenceNumber\": 153,\n" +
         "  \"SRIforLCS\": {\n" +
         "    \"msisdn\": 59899077937,\n" +
         "    \"imsi\": 748026871012345,\n" +
@@ -434,8 +434,8 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"MAP\",\n" +
         "  \"operation\": \"SRIforLCS-PSL\",\n" +
         "  \"result\": \"SUCCESS\",\n" +
-        "  \"lcsReferenceNumber\": 1591,\n" +
-        "  \"gmlcTransactionId\": 54,\n" +
+        "  \"lcsReferenceNumber\": 54,\n" +
+        "  \"clientReferenceNumber\": 1591,\n" +
         "  \"SRIforLCS\": {\n" +
         "    \"msisdn\": 59899077937,\n" +
         "    \"imsi\": 748026871012345,\n" +
@@ -513,7 +513,7 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"MAP\",\n" +
         "  \"operation\": \"SRIforLCS\",\n" +
         "  \"subscriberIdentity\": 59899077937,\n" +
-        "  \"lcsReferenceNumber\": 153,\n" +
+        "  \"clientReferenceNumber\": 153,\n" +
         "  \"result\": \"ERROR\",\n" +
         "  \"errorReason\": \"[POSITION METHOD FAILURE, MAP error code: 54]\"\n" +
         "}";
@@ -693,8 +693,8 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"Diameter\",\n" +
         "  \"operation\": \"RIR-RIA-PLR-PLA\",\n" +
         "  \"result\": \"SUCCESS\",\n" +
-        "  \"lcsReferenceNumber\": 875,\n" +
-        "  \"gmlcTransactionId\": 1,\n" +
+        "  \"lcsReferenceNumber\": 1,\n" +
+        "  \"clientReferenceNumber\": 875,\n" +
         "  \"Routing-Info-Answer\": {\n" +
         "    \"msisdn\": 573195897484,\n" +
         "    \"imsi\": 732101509580853,\n" +
@@ -770,8 +770,8 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"Diameter\",\n" +
         "  \"operation\": \"RIR-RIA-PLR-PLA\",\n" +
         "  \"result\": \"SUCCESS\",\n" +
-        "  \"lcsReferenceNumber\": 359,\n" +
-        "  \"gmlcTransactionId\": 20,\n" +
+        "  \"lcsReferenceNumber\": 20,\n" +
+        "  \"clientReferenceNumber\": 359,\n" +
         "  \"Routing-Info-Answer\": {\n" +
         "    \"msisdn\": 59899077937,\n" +
         "    \"imsi\": 748026871012345,\n" +
@@ -846,7 +846,7 @@ public class GeolocationEndpointTest {
         "  \"protocol\": \"Diameter SLg (ELP)\",\n" +
         "  \"operation\": \"PLR\",\n" +
         "  \"subscriberIdentity\": 59894455666,\n" +
-        "  \"lcsReferenceNumber\": 875,\n" +
+        "  \"clientReferenceNumber\": 875,\n" +
         "  \"result\": \"ERROR\",\n" +
         "  \"errorReason\": \"[PLR/PLA SLg POSITIONING FAILED, Diameter error code: 4225]\"\n" +
         "}";

@@ -285,7 +285,7 @@ public class GeolocationEndpoint extends AbstractEndpoint {
             String motionEventMaxInterval = data.getFirst("MotionEventMaxInterval");
             String motionEventSamplingInterval = data.getFirst("MotionEventSamplingInterval");
             String motionEventReportingDuration = data.getFirst("MotionEventReportingDuration");
-            String lcsReferenceNumber = data.getFirst("ReferenceNumber");
+            String referenceNumber = data.getFirst("ReferenceNumber");
             String reportingAmount = data.getFirst("EventReportingAmount");
             String reportingInterval = data.getFirst("EventReportingInterval");
             String callbackUrl = data.getFirst("StatusCallback");
@@ -548,11 +548,11 @@ public class GeolocationEndpoint extends AbstractEndpoint {
                 }
             }
 
-            if (lcsReferenceNumber != null) {
+            if (referenceNumber != null) {
                 if (coreNetwork.equalsIgnoreCase("UMTS")) {
-                    uriBuilder.addParameter("lcsReferenceNumber", lcsReferenceNumber);
+                    uriBuilder.addParameter("clientReferenceNumber", referenceNumber);
                 } else if (coreNetwork.equalsIgnoreCase("LTE")) {
-                    uriBuilder.addParameter("slgLcsReferenceNumber", lcsReferenceNumber);
+                    uriBuilder.addParameter("clientReferenceNumber", referenceNumber);
                 }
             }
 
@@ -902,8 +902,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         }
         if (data.containsKey("ReferenceNumber") && glType.toString().equals(NotificationGT)) {
             try {
-                Integer lcsReferenceNumber = Integer.valueOf(data.getFirst("ReferenceNumber"));
-                if (lcsReferenceNumber > Integer.MAX_VALUE || lcsReferenceNumber < 0) {
+                Integer refNumber = Integer.valueOf(data.getFirst("ReferenceNumber"));
+                if (refNumber > Integer.MAX_VALUE || refNumber < 0) {
                     httpBadRequest = true;
                     throw new IllegalArgumentException("Rejected: ReferenceNumber value not API compliant, must be a positive integer value");
                 }
@@ -3109,8 +3109,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
 
-        if (jobject.get("lcsReferenceNumber") != null) {
-            String lcsReferenceNumber = jobject.get("lcsReferenceNumber").getAsString();
+        if (jobject.get("clientReferenceNumber") != null) {
+            String lcsReferenceNumber = jobject.get("clientReferenceNumber").getAsString();
             sriPslResponse.put("lcsReferenceNumber", lcsReferenceNumber);
         }
         if (jobject.get("errorReason") != null) {
@@ -3531,8 +3531,8 @@ public class GeolocationEndpoint extends AbstractEndpoint {
         JsonElement jelement = new JsonParser().parse(jsonLine);
         JsonObject jobject = jelement.getAsJsonObject();
 
-        if (jobject.get("lcsReferenceNumber") != null) {
-            String lcsReferenceNumber = jobject.get("lcsReferenceNumber").getAsString();
+        if (jobject.get("clientReferenceNumber") != null) {
+            String lcsReferenceNumber = jobject.get("clientReferenceNumber").getAsString();
             if (!lcsReferenceNumber.isEmpty())
                 rirPlrResponse.put("lcsReferenceNumber", lcsReferenceNumber);
         }
