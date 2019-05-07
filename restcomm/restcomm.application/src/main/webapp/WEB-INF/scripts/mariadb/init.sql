@@ -391,7 +391,8 @@ internet_address VARCHAR(50),
 last_geolocation_response VARCHAR(15),
 cause VARCHAR(500),
 api_version VARCHAR(10) NOT NULL,
-uri MEDIUMTEXT NOT NULL);
+uri MEDIUMTEXT NOT NULL
+);
 
 CREATE TABLE update_scripts (
 script VARCHAR(255) NOT NULL,

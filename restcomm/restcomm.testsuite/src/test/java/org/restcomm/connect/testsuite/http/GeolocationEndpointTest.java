@@ -68,7 +68,7 @@ import com.google.gson.JsonObject;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
- * @author <a href="mailto:fernando.mendioroz@telestax.com"> Fernando Mendioroz </a>
+ * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  *
  */
 @RunWith(Arquillian.class)

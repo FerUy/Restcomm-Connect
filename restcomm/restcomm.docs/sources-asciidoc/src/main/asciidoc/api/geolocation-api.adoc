@@ -1362,7 +1362,7 @@ password are optional for GMLC.
 <!-- TelScale GMLC -->
 
 <gmlc>
-    <gmlc-uri>GMLC_IP:PORT_NUMBER</ gmlc -uri>
+    <gmlc-uri>GMLC_IP:PORT_NUMBER/restcomm/gmlc/rest</gmlc-uri>
         <gmlc-user></gmlc-user>
         <gmlc-password></ gmlc-password>
 </gmlc>

@@ -47,7 +47,7 @@ import org.restcomm.connect.dao.entities.Geolocation;
 import org.restcomm.connect.commons.dao.Sid;
 
 /**
- * @author <a href="mailto:fernando.mendioroz@telestax.com"> Fernando Mendioroz </a>
+ * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
  *
  */
 public class MybatisGeolocationDao implements GeolocationDao {
