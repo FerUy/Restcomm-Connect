@@ -151,7 +151,6 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("msisdn", gl.getMsisdn());
         map.put("imsi", gl.getImsi());
         map.put("imei", gl.getImei());
-        map.put("lmsi", gl.getLmsi());
         map.put("reference_number", gl.getReferenceNumber());
         map.put("geolocation_type", gl.getGeolocationType());
         map.put("response_status", gl.getResponseStatus());
@@ -159,6 +158,8 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("mobile_network_code", gl.getMobileNetworkCode());
         map.put("location_area_code", gl.getLocationAreaCode());
         map.put("cell_id", gl.getCellId());
+        map.put("e_cell_id", gl.getECellId());
+        map.put("nr_cell_id", gl.getNrCellId());
         map.put("service_area_code", gl.getServiceAreaCode());
         map.put("enodeb_id", gl.getEnodebId());
         map.put("tracking_area_code", gl.getTrackingAreaCode());
@@ -196,6 +197,7 @@ public class MybatisGeolocationDao implements GeolocationDao {
         map.put("barometric_pressure", gl.getBarometricPressure());
         map.put("physical_address", gl.getPhysicalAddress());
         map.put("internet_address", gl.getInternetAddress());
+        map.put("radio_access_type", gl.getRadioAccessType());
         map.put("last_geolocation_response", gl.getLastGeolocationResponse());
         map.put("cause", gl.getCause());
         map.put("api_version", gl.getApiVersion());
@@ -215,7 +217,6 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final Long msisdn = readLong(map.get("msisdn"));
         final Long imsi = readLong(map.get("imsi"));
         final String imei = readString(map.get("imei"));
-        final Long lmsi = readLong(map.get("lmsi"));
         final Long reference_number = readLong(map.get("reference_number"));
         final Geolocation.GeolocationType geolocation_type = readGeolocationType(map.get("geolocation_type"));
         final String response_status = readString(map.get("response_status"));
@@ -223,6 +224,8 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final Integer mobile_network_code = readInteger(map.get("mobile_network_code"));
         final Integer location_area_code = readInteger(map.get("location_area_code"));
         final Integer cell_id = readInteger(map.get("cell_id"));
+        final Long e_cell_id = readLong(map.get("e_cell_id"));
+        final Long nr_cell_id = readLong(map.get("nr_cell_id"));
         final Integer service_area_code = readInteger(map.get("service_area_code"));
         final Integer enodeb_id = readInteger(map.get("enodeb_id"));
         final Integer tracking_area_code = readInteger(map.get("tracking_area_code"));
@@ -260,18 +263,21 @@ public class MybatisGeolocationDao implements GeolocationDao {
         final Long barometric_pressure = readLong(map.get("barometric_pressure"));
         final String physical_address = readString(map.get("physical_address"));
         final String internet_address = readString(map.get("internet_address"));
+        final String radio_access_type = readString(map.get("radio_access_type"));
         final String last_geolocation_response = readString(map.get("last_geolocation_response"));
         final String cause = readString(map.get("cause"));
         final String api_version = readString(map.get("api_version"));
         final URI uri = readUri(map.get("uri"));
         return new Geolocation(sid, date_created, date_updated, date_executed, location_timestamp, account_sid, source, device_identifier, msisdn, imsi,
-            imei, lmsi, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code,
-            cell_id, service_area_code, enodeb_id, tracking_area_code, routing_area_code, location_number_address, network_entity_address, network_entity_name,
-            age_of_location_info, subscriber_state, not_reachable_reason, type_of_shape, device_latitude, device_longitude,
-            uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis, confidence, altitude, uncertainty_altitude,
-            inner_radius, uncertainty_inner_radius, offset_angle, included_angle, horizontal_speed, vertical_speed, uncertainty_horizontal_speed,
-            uncertainty_vertical_speed, bearing, deferred_location_event_type, geofence_type, geofence_id, motion_event_range, civic_address, barometric_pressure,
-            physical_address, internet_address, last_geolocation_response, cause, api_version, uri);
+            imei, reference_number, geolocation_type, response_status, mobile_country_code, mobile_network_code, location_area_code,
+            cell_id, e_cell_id, nr_cell_id, service_area_code, enodeb_id, tracking_area_code, routing_area_code, location_number_address,
+            network_entity_address, network_entity_name, age_of_location_info, subscriber_state, not_reachable_reason,
+            type_of_shape, device_latitude, device_longitude, uncertainty, uncertainty_semi_major_axis, uncertainty_semi_minor_axis, angle_of_major_axis,
+            confidence, altitude, uncertainty_altitude, inner_radius, uncertainty_inner_radius, offset_angle, included_angle,
+            horizontal_speed, vertical_speed, uncertainty_horizontal_speed, uncertainty_vertical_speed, bearing,
+            deferred_location_event_type, geofence_type, geofence_id, motion_event_range, civic_address, barometric_pressure,
+            physical_address, internet_address, radio_access_type, last_geolocation_response, cause, api_version, uri);
     }
 
 }
+

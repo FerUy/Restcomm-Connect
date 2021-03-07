@@ -317,18 +317,23 @@
 			<uri>http://127.0.0.1:2080</uri>
 		</telestax-proxy>
 
-		<!-- TelScale USSD Gateway -->
+		<!-- Extended USSD Gateway -->
 		<ussd-gateway>
 			<ussd-gateway-uri></ussd-gateway-uri>
 			<ussd-gateway-user></ussd-gateway-user>
 			<ussd-gateway-password></ussd-gateway-password>
 		</ussd-gateway>
 
-		<!-- TelScale GMLC -->
+		<!-- Extended GMLC -->
 		<gmlc>
 			<gmlc-uri>http://GMLC-IP:port/restcomm/gmlc/rest</gmlc-uri> <!-- Change GMLC-IP:port to appropriate value-->
-			<gmlc-user></gmlc-user>
-			<gmlc-password></gmlc-password>
+			<token></token>
+			<lcs-callback-url></lcs-callback-url>
+			<lcs-client-type></lcs-client-type> <!-- Possible values: emergency, vas, operator or lawful -->
+			<lcs-client-name></lcs-client-name> <!-- Valid only if lcs-client-type equals vas; must be consistent with the lcs-client-fi value -->
+			<lcs-client-fi></lcs-client-fi> <!-- Possible values: name, email, msisdn, url or sip -->
+			<lcs-client-external-id></lcs-client-external-id> <!-- ISDN address whose length must not exceed 16 digits -->
+			<lcs-client-internal-id></lcs-client-internal-id> <!-- Possible values: 0 (broadcastService), 1 (oandMHPLMN), 2 (oandMVPLMN), 3 (anonymousLocation) or 4 (targetMSsubscribedServiceSIP) -->
 		</gmlc>
 
 		<!-- dns-provisioning: configuration is used to proform CRUD operations for organizations, i.e creating new domains under restcomm
@@ -609,14 +614,14 @@
 
 	<!-- Control notifications sent to rcmlserver (RVD)
 		base-url: Base url where rcml server is located of the form scheme://host:port like 'http://rvdserver:8080'. Leave it empty when RVD is bundled together with restcomm.
-		api-path: relative path where rcml server api listens under like '/restcomm-rvd/services
+		api-path: relative path where rcml server api listens under like '/visual-designer/services
 		notifications: should notifications be sent or not ? defaults to 'false'
 		timeout: milis to wait response from rcmlserver before timing out when sending notifications. Defaults to 5000
 		timeout-per-notification: if several notifications are sent in one step, timeout increase for each. Defaults to 500.
 	-->
 	<rcmlserver>
 		<base-url></base-url>
-		<api-path>/restcomm-rvd/services</api-path>
+		<api-path>/visual-designer/services</api-path>
 		<notifications>true</notifications>
 		<timeout>5000</timeout>
 		<timeout-per-notification>500</timeout-per-notification>

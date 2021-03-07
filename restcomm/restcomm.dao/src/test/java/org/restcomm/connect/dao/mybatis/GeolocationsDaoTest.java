@@ -80,15 +80,16 @@ public class GeolocationsDaoTest {
         builder.setMsisdn(Long.valueOf("59899077937"));
         builder.setImsi(Long.valueOf("748026871012345"));
         builder.setImei("01171400466105");
-        builder.setLmsi(Long.valueOf("2915"));
         builder.setReferenceNumber((long) 5471);
         builder.setGeolocationType(GeolocationType.Notification);
-        builder.setResponseStatus("successfull");
+        builder.setResponseStatus("successful");
         builder.setCause("NA");
         builder.setMobileCountryCode(748);
         builder.setMobileNetworkCode(3);
         builder.setLocationAreaCode(10978);
         builder.setCellId(12345);
+        builder.setECellId(207631107L);
+        builder.setNrCellId(512063008768L);
         builder.setServiceAreaCode(12718);
         builder.setEnodebId(334);
         builder.setTrackingAreaCode(13295);
@@ -127,6 +128,7 @@ public class GeolocationsDaoTest {
         builder.setBarometricPressure((long) 101.325);
         builder.setInternetAddress("2001:0:9d38:6ab8:30a5:1c9d:58c6:5898");
         builder.setPhysicalAddress("D8-97-BA-19-02-D8");
+        builder.setRadioAccessType("EUTRAN");
         builder.setLastGeolocationResponse("true");
         builder.setCause("NA");
         builder.setApiVersion("2012-04-24");
@@ -150,7 +152,6 @@ public class GeolocationsDaoTest {
         assertTrue(result.getMsisdn().equals(geolocation.getMsisdn()));
         assertTrue(result.getImsi().equals(geolocation.getImsi()));
         assertTrue(result.getImei().equals(geolocation.getImei()));
-        assertTrue(result.getLmsi().equals(geolocation.getLmsi()));
         assertTrue(result.getReferenceNumber().equals(geolocation.getReferenceNumber()));
         assertTrue(result.getGeolocationType().equals(geolocation.getGeolocationType()));
         assertTrue(result.getResponseStatus().equals(geolocation.getResponseStatus()));
@@ -159,6 +160,8 @@ public class GeolocationsDaoTest {
         assertTrue(result.getMobileNetworkCode().equals(geolocation.getMobileNetworkCode()));
         assertTrue(result.getLocationAreaCode().equals(geolocation.getLocationAreaCode()));
         assertTrue(result.getCellId().equals(geolocation.getCellId()));
+        assertTrue(result.getECellId().equals(geolocation.getECellId()));
+        assertTrue(result.getNrCellId().equals(geolocation.getNrCellId()));
         assertTrue(result.getServiceAreaCode().equals(geolocation.getServiceAreaCode()));
         assertTrue(result.getEnodebId().equals(geolocation.getEnodebId()));
         assertTrue(result.getTrackingAreaCode().equals(geolocation.getTrackingAreaCode()));
@@ -196,6 +199,7 @@ public class GeolocationsDaoTest {
         assertTrue(result.getBarometricPressure().equals(geolocation.getBarometricPressure()));
         assertTrue(result.getInternetAddress().equals(geolocation.getInternetAddress()));
         assertTrue(result.getPhysicalAddress().equals(geolocation.getPhysicalAddress()));
+        assertTrue(result.getRadioAccessType().equals(geolocation.getRadioAccessType()));
         assertTrue(result.getLastGeolocationResponse().equals(geolocation.getLastGeolocationResponse()));
         assertTrue(result.getApiVersion().equals(geolocation.getApiVersion()));
         assertTrue(result.getUri().equals(geolocation.getUri()));
@@ -207,13 +211,14 @@ public class GeolocationsDaoTest {
         geolocation = geolocation.setMsisdn(Long.valueOf("59899077939"));
         geolocation = geolocation.setImsi(Long.valueOf("748026871012347"));
         geolocation = geolocation.setImei("01171400466101");
-        geolocation = geolocation.setLmsi(Long.valueOf("2918"));
         geolocation = geolocation.setResponseStatus("failed");
         geolocation = geolocation.setCause("API not compliant");
         geolocation = geolocation.setMobileCountryCode(1);
         geolocation = geolocation.setMobileNetworkCode(33);
         geolocation = geolocation.setLocationAreaCode(10101);
         geolocation = geolocation.setCellId(20210);
+        geolocation = geolocation.setECellId(207631109L);
+        geolocation = geolocation.setNrCellId(512063008769L);
         geolocation = geolocation.setServiceAreaCode(13971);
         geolocation = geolocation.setEnodebId(30021);
         geolocation = geolocation.setTrackingAreaCode(13291);
@@ -254,6 +259,7 @@ public class GeolocationsDaoTest {
         geolocation = geolocation.setUncertaintyVerticalSpeed(1);
         geolocation = geolocation.setInternetAddress("200.0.91.253");
         geolocation = geolocation.setPhysicalAddress("A1-DD-0A-27-92-00");
+        builder.setRadioAccessType("NR");
         geolocation = geolocation.setLastGeolocationResponse("false");
 
         // Update the Geolocation in the data store g
@@ -272,7 +278,6 @@ public class GeolocationsDaoTest {
         assertTrue(result.getMsisdn().equals(geolocation.getMsisdn()));
         assertTrue(result.getImsi().equals(geolocation.getImsi()));
         assertTrue(result.getImei().equals(geolocation.getImei()));
-        assertTrue(result.getLmsi().equals(geolocation.getLmsi()));
         assertTrue(result.getReferenceNumber().equals(geolocation.getReferenceNumber()));
         assertTrue(result.getGeolocationType().equals(geolocation.getGeolocationType()));
         assertTrue(result.getResponseStatus().equals(geolocation.getResponseStatus()));
@@ -281,6 +286,8 @@ public class GeolocationsDaoTest {
         assertTrue(result.getMobileNetworkCode().equals(geolocation.getMobileNetworkCode()));
         assertTrue(result.getLocationAreaCode().equals(geolocation.getLocationAreaCode()));
         assertTrue(result.getCellId().equals(geolocation.getCellId()));
+        assertTrue(result.getECellId().equals(geolocation.getECellId()));
+        assertTrue(result.getNrCellId().equals(geolocation.getNrCellId()));
         assertTrue(result.getServiceAreaCode().equals(geolocation.getServiceAreaCode()));
         assertTrue(result.getEnodebId().equals(geolocation.getEnodebId()));
         assertTrue(result.getTrackingAreaCode().equals(geolocation.getTrackingAreaCode()));
@@ -318,6 +325,7 @@ public class GeolocationsDaoTest {
         assertTrue(result.getBarometricPressure().equals(geolocation.getBarometricPressure()));
         assertTrue(result.getInternetAddress().equals(geolocation.getInternetAddress()));
         assertTrue(result.getPhysicalAddress().equals(geolocation.getPhysicalAddress()));
+        assertTrue(result.getRadioAccessType().equals(geolocation.getRadioAccessType()));
         assertTrue(result.getLastGeolocationResponse().equals(geolocation.getLastGeolocationResponse()));
         assertTrue(result.getApiVersion().equals(geolocation.getApiVersion()));
         assertTrue(result.getUri().equals(geolocation.getUri()));
@@ -345,15 +353,16 @@ public class GeolocationsDaoTest {
         builder.setMsisdn(Long.valueOf("59899077937"));
         builder.setImsi(Long.valueOf("748026871012345"));
         builder.setImei("01171400466105");
-        builder.setLmsi(Long.valueOf("2915"));
         builder.setReferenceNumber((long) 5471);
         builder.setGeolocationType(GeolocationType.Immediate);
-        builder.setResponseStatus("successfull");
+        builder.setResponseStatus("successful");
         builder.setCause("NA");
         builder.setMobileCountryCode(748);
         builder.setMobileNetworkCode(3);
         builder.setLocationAreaCode(30978);
         builder.setCellId(12345);
+        builder.setECellId(207631107L);
+        builder.setNrCellId(512063008769L);
         builder.setServiceAreaCode(2718);
         builder.setEnodebId(21710);
         builder.setTrackingAreaCode(13295);
@@ -391,6 +400,7 @@ public class GeolocationsDaoTest {
         builder.setBarometricPressure((long) 101.325);
         builder.setInternetAddress("2001:0:9d38:6ab8:30a5:1c9d:58c6:5898");
         builder.setPhysicalAddress("D8-97-BA-19-02-D8");
+        builder.setRadioAccessType("UTRAN");
         builder.setLastGeolocationResponse("true");
         builder.setApiVersion("2012-04-24");
         builder.setUri(url);
@@ -411,3 +421,4 @@ public class GeolocationsDaoTest {
     }
 
 }
+

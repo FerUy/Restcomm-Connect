@@ -69,7 +69,6 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         writeMsisdn(geolocation.getMsisdn(), writer);
         writeImsi(geolocation.getImsi(), writer);
         writeImei(geolocation.getImei(), writer);
-        writeLmsi(geolocation.getLmsi(), writer);
         writeReferenceNumber(geolocation.getReferenceNumber(), writer);
         writeGeolocationType(geolocation.getGeolocationType(), writer);
         writeResponseStatus(geolocation.getResponseStatus(), writer);
@@ -94,7 +93,6 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         writeMsisdn(geolocation.getMsisdn(), object);
         writeImsi(geolocation.getImsi(), object);
         writeImei(geolocation.getImei(), object);
-        writeLmsi(geolocation.getLmsi(), object);
         writeReferenceNumber(geolocation.getReferenceNumber(), object);
         writeGeolocationType(geolocation.getGeolocationType(), object);
         writeResponseStatus(geolocation.getResponseStatus(), object);
@@ -270,6 +268,8 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), writer);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), writer);
             writeCellId(geolocation.getCellId(), writer);
+            writeECellId(geolocation.getECellId(), writer);
+            writeNrCellId(geolocation.getNrCellId(), writer);
             writeSac(geolocation.getServiceAreaCode(), writer);
             writeEnbid(geolocation.getEnodebId(), writer);
             writeTrackingAreaCode(geolocation.getTrackingAreaCode(), writer);
@@ -304,6 +304,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMotionEventRange(geolocation.getMotionEventRange(), writer);
             writeCivicAddress(geolocation.getCivicAddress(), writer);
             writeBarometricPressure(geolocation.getBarometricPressure(), writer);
+            writeRadioAccessType(geolocation.getRadioAccessType(), writer);
             writeInternetAddress(geolocation.getInternetAddress(), writer);
             writePhysicalAddress(geolocation.getPhysicalAddress(), writer);
         }
@@ -318,6 +319,8 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMobileNetworkCode(geolocation.getMobileNetworkCode(), locationDataJsonObject);
             writeLocationAreaCode(geolocation.getLocationAreaCode(), locationDataJsonObject);
             writeCellId(geolocation.getCellId(), locationDataJsonObject);
+            writeECellId(geolocation.getECellId(), locationDataJsonObject);
+            writeNrCellId(geolocation.getNrCellId(), locationDataJsonObject);
             writeSac(geolocation.getServiceAreaCode(), locationDataJsonObject);
             writeEnbid(geolocation.getEnodebId(), locationDataJsonObject);
             writeTrackingAreaCode(geolocation.getTrackingAreaCode(), locationDataJsonObject);
@@ -353,6 +356,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             writeMotionEventRange(geolocation.getMotionEventRange(), locationDataJsonObject);
             writeCivicAddress(geolocation.getCivicAddress(), locationDataJsonObject);
             writeBarometricPressure(geolocation.getBarometricPressure(), locationDataJsonObject);
+            writeRadioAccessType(geolocation.getRadioAccessType(), locationDataJsonObject);
             writeInternetAddress(geolocation.getInternetAddress(), locationDataJsonObject);
             writePhysicalAddress(geolocation.getPhysicalAddress(), locationDataJsonObject);
             object.add("geolocation_data", locationDataJsonObject);
@@ -422,6 +426,38 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
             object.addProperty("cell_id", cellId);
         } else {
             object.add("cell_id", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeECellId(final Long eCellId, final HierarchicalStreamWriter writer) {
+        if (eCellId != null) {
+            writer.startNode("ECellId");
+            writer.setValue(String.valueOf(eCellId));
+            writer.endNode();
+        }
+    }
+
+    protected void writeECellId(final Long eCellId, final JsonObject object) {
+        if (eCellId != null) {
+            object.addProperty("e_cell_id", eCellId);
+        } else {
+            object.add("e_cell_id", JsonNull.INSTANCE);
+        }
+    }
+
+    protected void writeNrCellId(final Long nrCellId, final HierarchicalStreamWriter writer) {
+        if (nrCellId != null) {
+            writer.startNode("NRCellId");
+            writer.setValue(String.valueOf(nrCellId));
+            writer.endNode();
+        }
+    }
+
+    protected void writeNrCellId(final Long nrCellId, final JsonObject object) {
+        if (nrCellId != null) {
+            object.addProperty("nr_cell_id", nrCellId);
+        } else {
+            object.add("nr_cell_id", JsonNull.INSTANCE);
         }
     }
 
@@ -971,7 +1007,7 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
     }
 
     protected void writeDeferredLocationEventType(final String geofenceEventType,
-                                                   final HierarchicalStreamWriter writer) {
+                                                  final HierarchicalStreamWriter writer) {
         if (geofenceEventType != null) {
             writer.startNode("DeferredLocationEventType");
             writer.setValue(geofenceEventType);
@@ -1035,6 +1071,21 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
         }
     }
 
+    protected void writeRadioAccessType(final String radioAccessType, final HierarchicalStreamWriter writer) {
+        if (radioAccessType != null) {
+            writer.startNode("RadioAccessType");
+            writer.setValue(radioAccessType);
+            writer.endNode();
+        }
+    }
+
+    protected void writeRadioAccessType(final String radioAccessType, final JsonObject object) {
+        if (radioAccessType != null) {
+            object.addProperty("radio_access_type", radioAccessType);
+        } else {
+            object.add("radio_access_type", JsonNull.INSTANCE);
+        }
+    }
 
     protected void writeLastGeolocationResponse(final String lastGeolocationResponse, final HierarchicalStreamWriter writer) {
         if (lastGeolocationResponse != null) {
@@ -1069,4 +1120,5 @@ public class GeolocationConverter extends AbstractConverter implements JsonSeria
     }
 
 }
+
 

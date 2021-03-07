@@ -33,8 +33,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.apache.log4j.Logger;
 
 /**
- * @author <a href="mailto:fernando.mendioroz@telestax.com"> Fernando Mendioroz
- * </a>
+ * @author <a href="mailto:fernando.mendioroz@telestax.com"> Fernando Mendioroz </a>
  *
  */
 public class RestcommGeolocationsTool {
@@ -155,7 +154,7 @@ public class RestcommGeolocationsTool {
         jerseyClient.addFilter(new HTTPBasicAuthFilter(adminUsername, adminAuthToken));
         String url = getImmediateGeolocationUrl(deploymentUrl, adminAccountSid, geolocationSid, false);
         WebResource webResource = jerseyClient.resource(url);
-        String response = null;
+        String response;
         JsonObject jsonResponse = null;
         try {
             response = webResource.accept(MediaType.APPLICATION_JSON).get(String.class);
@@ -173,7 +172,7 @@ public class RestcommGeolocationsTool {
         jerseyClient.addFilter(new HTTPBasicAuthFilter(adminUsername, adminAuthToken));
         String url = getNotificationGeolocationUrl(deploymentUrl, adminAccountSid, geolocationSid, false);
         WebResource webResource = jerseyClient.resource(url);
-        String response = null;
+        String response;
         JsonObject jsonResponse = null;
         try {
             response = webResource.accept(MediaType.APPLICATION_JSON).get(String.class);
@@ -203,7 +202,7 @@ public class RestcommGeolocationsTool {
         jerseyClient.addFilter(new HTTPBasicAuthFilter(adminUsername, adminAuthToken));
         String url = getImmediateGeolocationUrl(deploymentUrl, adminAccountSid, geolocationSid, false);
         WebResource webResource = jerseyClient.resource(url);
-        String response = "";
+        String response;
         if (usePut) {
             response = webResource.accept(MediaType.APPLICATION_JSON).put(String.class, geolocationParams);
         } else {
@@ -220,7 +219,7 @@ public class RestcommGeolocationsTool {
         jerseyClient.addFilter(new HTTPBasicAuthFilter(adminUsername, adminAuthToken));
         String url = getNotificationGeolocationUrl(deploymentUrl, adminAccountSid, geolocationSid, false);
         WebResource webResource = jerseyClient.resource(url);
-        String response = "";
+        String response;
         if (usePut) {
             response = webResource.accept(MediaType.APPLICATION_JSON).put(String.class, geolocationParams);
         } else {

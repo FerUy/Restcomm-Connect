@@ -43,7 +43,6 @@ public final class Geolocation {
     private final Long msisdn;
     private final Long imsi;
     private final String imei;
-    private final Long lmsi;
     private final Long referenceNumber;
     private final GeolocationType geolocationType;
     private final String responseStatus;
@@ -51,6 +50,8 @@ public final class Geolocation {
     private final Integer mobileNetworkCode;
     private final Integer locationAreaCode;
     private final Integer cellId;
+    private final Long eCellId;
+    private final Long nrCellId;
     private final Integer serviceAreaCode;
     private final Integer enodebId;
     private final Integer trackingAreaCode;
@@ -88,15 +89,16 @@ public final class Geolocation {
     private Long barometricPressure;
     private final String physicalAddress;
     private final String internetAddress;
+    private String radioAccessType;
     private final String lastGeolocationResponse;
     private final String cause;
     private final String apiVersion;
     private final URI uri;
 
     public Geolocation(Sid sid, DateTime dateCreated, DateTime dateUpdated, DateTime dateExecuted, DateTime locationTimestamp, Sid accountSid,
-                       String source, String deviceIdentifier, Long msisdn, Long imsi, String imei, Long lmsi, Long referenceNumber,
+                       String source, String deviceIdentifier, Long msisdn, Long imsi, String imei, Long referenceNumber,
                        GeolocationType geolocationType, String responseStatus, Integer mobileCountryCode, Integer mobileNetworkCode,
-                       Integer locationAreaCode, Integer cellId, Integer serviceAreaCode,
+                       Integer locationAreaCode, Integer cellId, Long eCellId, Long nrCellId, Integer serviceAreaCode,
                        Integer enodebId, Integer trackingAreaCode, Integer routingAreaCode, Long locationNumberAddress,
                        Long networkEntityAddress, String networkEntityName, Integer ageOfLocationInfo, String subscriberState, String notReachableReason,
                        String typeOfShape, String deviceLatitude, String deviceLongitude, Double uncertainty, Double uncertaintySemiMajorAxis,
@@ -104,7 +106,7 @@ public final class Geolocation {
                        Integer innerRadius, Double uncertaintyInnerRadius, Double offsetAngle, Double includedAngle,
                        Integer horizontalSpeed, Integer verticalSpeed, Integer uncertaintyHorizontalSpeed, Integer uncertaintyVerticalSpeed, Integer bearing,
                        String deferredLocationEventType, String geofenceType, String geofenceId, Long motionEventRange, String civicAddress, Long barometricPressure,
-                       String physicalAddress, String internetAddress, String lastGeolocationResponse, String cause, String apiVersion, URI uri) {
+                       String physicalAddress, String internetAddress, String radioAccessType, String lastGeolocationResponse, String cause, String apiVersion, URI uri) {
         super();
         this.sid = sid;
         this.dateCreated = dateCreated;
@@ -117,7 +119,6 @@ public final class Geolocation {
         this.msisdn = msisdn;
         this.imsi = imsi;
         this.imei = imei;
-        this.lmsi = lmsi;
         this.referenceNumber = referenceNumber;
         this.geolocationType = geolocationType;
         this.responseStatus = responseStatus;
@@ -125,6 +126,8 @@ public final class Geolocation {
         this.mobileNetworkCode = mobileNetworkCode;
         this.locationAreaCode = locationAreaCode;
         this.cellId = cellId;
+        this.eCellId = eCellId;
+        this.nrCellId = nrCellId;
         this.serviceAreaCode = serviceAreaCode;
         this.enodebId = enodebId;
         this.trackingAreaCode = trackingAreaCode;
@@ -162,6 +165,7 @@ public final class Geolocation {
         this.barometricPressure = barometricPressure;
         this.physicalAddress = physicalAddress;
         this.internetAddress = internetAddress;
+        this.radioAccessType = radioAccessType;
         this.lastGeolocationResponse = lastGeolocationResponse;
         this.cause = cause;
         this.apiVersion = apiVersion;
@@ -212,10 +216,6 @@ public final class Geolocation {
         return imei;
     }
 
-    public Long getLmsi() {
-        return lmsi;
-    }
-
     public Long getReferenceNumber() {
         return referenceNumber;
     }
@@ -242,6 +242,14 @@ public final class Geolocation {
 
     public Integer getCellId() {
         return cellId;
+    }
+
+    public Long getECellId() {
+        return eCellId;
+    }
+
+    public Long getNrCellId() {
+        return nrCellId;
     }
 
     public Integer getServiceAreaCode() {
@@ -392,6 +400,10 @@ public final class Geolocation {
         return internetAddress;
     }
 
+    public String getRadioAccessType() {
+        return radioAccessType;
+    }
+
     public String getLastGeolocationResponse() {
         return lastGeolocationResponse;
     }
@@ -437,723 +449,747 @@ public final class Geolocation {
 
     public Geolocation setSid(Sid sid) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDateCreated(DateTime dateCreated) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDateUpdated(DateTime dateUpdated) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDateExecuted(DateTime dateExecuted) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setLocationTimestamp(DateTime locationTimestamp) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setAccountSid(Sid accountSid) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setSource(String source) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDeviceIdentifier(String deviceIdentifier) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setMsisdn(Long msisdn) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setImsi(Long imsi) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setImei(String imei) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
-    }
-
-    public Geolocation setLmsi(Long lmsi) {
-        return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
-            subscriberState, notReachableReason,
-            typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
-            confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
-            horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
-            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setReferenceNumber(Long referenceNumber) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setGeolocationType(GeolocationType geolocationType) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setResponseStatus(String responseStatus) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setMobileCountryCode(Integer mobileCountryCode) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setMobileNetworkCode(Integer mobileNetworkCode) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setLocationAreaCode(Integer locationAreaCode) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setCellId(Integer cellId) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
+    }
+
+    public Geolocation setECellId(Long eCellId) {
+        return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            subscriberState, notReachableReason,
+            typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
+            confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
+            horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
+    }
+
+    public Geolocation setNrCellId(Long nrCellId) {
+        return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            subscriberState, notReachableReason,
+            typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
+            confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
+            horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setServiceAreaCode(Integer serviceAreaCode) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setEnodebId(Integer enodebId) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setNetworkEntityAddress(Long networkEntityAddress) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setNetworkEntityName(String networkEntityName) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setAgeOfLocationInfo(Integer ageOfLocationInfo) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setSubscriberState(String subscriberState) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setNotReachableReason(String notReachableReason) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setTrackingAreaCode(Integer trackingAreaCode) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setRoutingAreaCode(Integer routingAreaCode) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setLocationNumberAddress(Long locationNumberAddress) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
 
     public Geolocation setTypeOfShape(String typeOfShape) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDeviceLatitude(String deviceLatitude) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDeviceLongitude(String deviceLongitude) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertainty(Double uncertainty) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertaintySemiMajorAxis(Double uncertaintySemiMajorAxis) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertaintySemiMinorAxis(Double uncertaintySemiMinorAxis) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setAngleOfMajorAxis(Double angleOfMajorAxis) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setConfidence(Integer confidence) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setAltitude(Integer altitude) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertaintyAltitude(Double uncertaintyAltitude) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setInnerRadius(Integer innerRadius) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertaintyInnerRadius(Double uncertaintyInnerRadius) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setOffsetAngle(Double offsetAngle) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setIncludedAngle(Double includedAngle) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setHorizontalSpeed(Integer horizontalSpeed) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setVerticalSpeed(Integer verticalSpeed) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertaintyHorizontalSpeed(Integer uncertaintyHorizontalSpeed) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUncertaintyVerticalSpeed(Integer uncertaintyVerticalSpeed) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setBearing(Integer bearing) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setDeferredLocationEventType(String deferredLocationEventType) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setGeofenceType(String geofenceType) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setGeofenceId(String geofenceId) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setMotionEventRange(Long motionEventRange) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setCivicAddress(String civicAddress) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setBarometricPressure(Long barometricPressure) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setPhysicalAddress(String physicalAddress) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setInternetAddress(String internetAddress) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
+    }
+
+    public Geolocation setRadioAccessType(String radioAccessType) {
+        return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            subscriberState, notReachableReason,
+            typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
+            confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
+            horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
+            deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setLastGeolocationResponse(String lastGeolocationResponse) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setCause(String cause) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setApiVersion(String apiVersion) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public Geolocation setUri(URI uri) {
         return new Geolocation(sid, dateCreated, dateUpdated, dateExecuted, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-            imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, serviceAreaCode,
-            enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
+            imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
+            serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress, networkEntityAddress, networkEntityName, ageOfLocationInfo,
             subscriberState, notReachableReason,
             typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
             confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
             horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
             deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-            physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+            physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
     }
 
     public static Builder builder() {
@@ -1174,7 +1210,6 @@ public final class Geolocation {
         private Long msisdn;
         private Long imsi;
         private String imei;
-        private Long lmsi;
         private Long referenceNumber;
         private GeolocationType geolocationType;
         private String responseStatus;
@@ -1182,6 +1217,8 @@ public final class Geolocation {
         private Integer mobileNetworkCode;
         private Integer locationAreaCode;
         private Integer cellId;
+        private Long eCellId;
+        private Long nrCellId;
         private Integer serviceAreaCode;
         private Integer enodebId;
         private Long networkEntityAddress;
@@ -1219,6 +1256,7 @@ public final class Geolocation {
         private Long barometricPressure;
         private String physicalAddress;
         private String internetAddress;
+        private String radioAccessType;
         private String lastGeolocationResponse;
         private String cause;
         private String apiVersion;
@@ -1231,14 +1269,14 @@ public final class Geolocation {
         public Geolocation build() {
             final DateTime now = DateTime.now();
             return new Geolocation(sid, now, dateUpdated, now, locationTimestamp, accountSid, source, deviceIdentifier, msisdn, imsi,
-                imei, lmsi, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId,
+                imei, referenceNumber, geolocationType, responseStatus, mobileCountryCode, mobileNetworkCode, locationAreaCode, cellId, eCellId, nrCellId,
                 serviceAreaCode, enodebId, trackingAreaCode, routingAreaCode, locationNumberAddress,
                 networkEntityAddress, networkEntityName, ageOfLocationInfo, subscriberState, notReachableReason,
                 typeOfShape, deviceLatitude, deviceLongitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis, angleOfMajorAxis,
                 confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyInnerRadius, offsetAngle, includedAngle,
                 horizontalSpeed, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed, bearing,
                 deferredLocationEventType, geofenceType, geofenceId, motionEventRange, civicAddress, barometricPressure,
-                physicalAddress, internetAddress, lastGeolocationResponse, cause, apiVersion, uri);
+                physicalAddress, internetAddress, radioAccessType, lastGeolocationResponse, cause, apiVersion, uri);
         }
 
         public void setSid(Sid sid) {
@@ -1282,10 +1320,6 @@ public final class Geolocation {
             this.imei = imei;
         }
 
-        public void setLmsi(Long lmsi) {
-            this.lmsi = lmsi;
-        }
-
         public void setReferenceNumber(Long referenceNumber) {
             this.referenceNumber = referenceNumber;
         }
@@ -1312,6 +1346,14 @@ public final class Geolocation {
 
         public void setCellId(Integer cellId) {
             this.cellId = cellId;
+        }
+
+        public void setECellId(Long eCellId) {
+            this.eCellId = eCellId;
+        }
+
+        public void setNrCellId(Long nrCellId) {
+            this.nrCellId = nrCellId;
         }
 
         public void setServiceAreaCode(Integer serviceAreaCode) {
@@ -1462,6 +1504,10 @@ public final class Geolocation {
             this.barometricPressure = barometricPressure;
         }
 
+        public void setRadioAccessType(String radioAccessType) {
+            this.radioAccessType = radioAccessType;
+        }
+
         public void setLastGeolocationResponse(String lastGeolocationResponse) {
             this.lastGeolocationResponse = lastGeolocationResponse;
         }
@@ -1491,3 +1537,4 @@ public final class Geolocation {
     }
 
 }
+

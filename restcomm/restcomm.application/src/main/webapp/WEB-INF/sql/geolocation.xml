@@ -4,25 +4,27 @@
 <mapper namespace="org.mobicents.servlet.sip.restcomm.dao.GeolocationDao">
   <insert id="addGeolocation" parameterType="map">
     INSERT INTO "restcomm_geolocation"("sid", "date_created", "date_updated", "date_executed", "location_timestamp", "account_sid", "source",
-    "device_identifier", "msisdn", "imsi", "imei", "lmsi", "reference_number", "geolocation_type", "response_status",
-    "mobile_country_code", "mobile_network_code", "location_area_code",  "cell_id", "service_area_code",
+    "device_identifier", "msisdn", "imsi", "imei", "reference_number", "geolocation_type", "response_status",
+    "mobile_country_code", "mobile_network_code", "location_area_code", "cell_id", "e_cell_id", "nr_cell_id", "service_area_code",
     "enodeb_id", "tracking_area_code", "routing_area_code", "location_number_address",
     "network_entity_address", "network_entity_name", "age_of_location_info", "subscriber_state", "not_reachable_reason",
     "type_of_shape", "device_latitude", "device_longitude", "uncertainty", "uncertainty_semi_major_axis", "uncertainty_semi_minor_axis", "angle_of_major_axis",
     "confidence", "altitude", "uncertainty_altitude", "inner_radius", "uncertainty_inner_radius", "offset_angle", "included_angle",
     "horizontal_speed", "vertical_speed", "uncertainty_horizontal_speed", "uncertainty_vertical_speed", "bearing",
     "deferred_location_event_type", "geofence_type", "geofence_id", "motion_event_range", "civic_address", "barometric_pressure",
-    "physical_address", "internet_address", "last_geolocation_response", "cause", "api_version", "uri")
+    "physical_address", "internet_address", "radio_access_type", "last_geolocation_response", "cause", "api_version", "uri")
     VALUES(#{sid}, #{date_created}, #{date_updated}, #{date_executed}, #{location_timestamp}, #{account_sid}, #{source},
-    #{device_identifier}, #{msisdn}, #{imsi}, #{imei}, #{lmsi}, #{reference_number}, #{geolocation_type}, #{response_status},
-    #{mobile_country_code}, #{mobile_network_code}, #{location_area_code}, #{cell_id}, #{service_area_code},
+    #{device_identifier}, #{msisdn}, #{imsi}, #{imei}, #{reference_number}, #{geolocation_type}, #{response_status},
+    #{mobile_country_code}, #{mobile_network_code}, #{location_area_code}, #{cell_id}, #{e_cell_id}, #{nr_cell_id}, #{service_area_code},
     #{enodeb_id}, #{tracking_area_code}, #{routing_area_code}, #{location_number_address},
     #{network_entity_address}, #{network_entity_name}, #{age_of_location_info}, #{subscriber_state}, #{not_reachable_reason},
     #{type_of_shape}, #{device_latitude}, #{device_longitude}, #{uncertainty}, #{uncertainty_semi_major_axis}, #{uncertainty_semi_minor_axis}, #{angle_of_major_axis},
     #{confidence},  #{altitude},  #{uncertainty_altitude}, #{inner_radius}, #{uncertainty_inner_radius}, #{offset_angle}, #{included_angle},
     #{horizontal_speed}, #{vertical_speed}, #{uncertainty_horizontal_speed}, #{uncertainty_vertical_speed}, #{bearing},
-    #{deferred_location_event_type}, #{geofence_type}, #{geofence_id}, #{motion_event_range}, #{civic_address}, #{barometric_pressure},
-    #{physical_address}, #{internet_address}, #{last_geolocation_response}, #{cause}, #{api_version}, #{uri});
+    #{deferred_location_event_type},
+    #{geofence_type}, #{geofence_id}, #{motion_event_range},
+    #{civic_address}, #{barometric_pressure},
+    #{physical_address}, #{internet_address}, #{radio_access_type}, #{last_geolocation_response}, #{cause}, #{api_version}, #{uri});
   </insert>
 
   <select id="getGeolocation" parameterType="string" resultType="hashmap">
@@ -39,10 +41,10 @@
 
   <update id="updateGeolocation" parameterType="map">
     UPDATE "restcomm_geolocation" SET "date_updated"=#{date_updated}, "location_timestamp"=#{location_timestamp}, "source"=#{source},
-    "msisdn"=#{msisdn}, "imsi"=#{imsi}, "imei"=#{imei}, "lmsi"=#{lmsi}, "reference_number"=#{reference_number}, "response_status"=#{response_status},
+    "msisdn"=#{msisdn}, "imsi"=#{imsi}, "imei"=#{imei}, "reference_number"=#{reference_number}, "response_status"=#{response_status},
     "mobile_country_code"=#{mobile_country_code}, "mobile_network_code"=#{mobile_network_code}, "location_area_code"=#{location_area_code},
-    "cell_id"=#{cell_id}, "service_area_code"=#{service_area_code},
-    "enodeb_id"=#{enodeb_id}, "tracking_area_code"=#{tracking_area_code}, "routing_area_code"=#{routing_area_code}, "location_number_address"=#{location_number_address},
+    "cell_id"=#{cell_id}, "e_cell_id"=#{e_cell_id}, "nr_cell_id"=#{nr_cell_id}, "service_area_code"=#{service_area_code}, "enodeb_id"=#{enodeb_id},
+    "tracking_area_code"=#{tracking_area_code}, "routing_area_code"=#{routing_area_code}, "location_number_address"=#{location_number_address},
     "network_entity_address"=#{network_entity_address}, "network_entity_name"=#{network_entity_name},
     "age_of_location_info"=#{age_of_location_info}, "subscriber_state"=#{subscriber_state}, "not_reachable_reason"=#{not_reachable_reason},
     "type_of_shape"=#{type_of_shape}, "device_latitude"=#{device_latitude}, "device_longitude"=#{device_longitude},
@@ -51,9 +53,12 @@
     "inner_radius"=#{inner_radius}, "uncertainty_inner_radius"=#{uncertainty_inner_radius}, "offset_angle"=#{offset_angle}, "included_angle"=#{included_angle},
     "horizontal_speed"=#{horizontal_speed}, "vertical_speed"=#{vertical_speed}, "uncertainty_horizontal_speed"=#{uncertainty_horizontal_speed},
     "uncertainty_vertical_speed"=#{uncertainty_vertical_speed}, "bearing"=#{bearing},
-    "deferred_location_event_type"=#{deferred_location_event_type}, "geofence_type"=#{geofence_type}, "geofence_id"=#{geofence_id}, "motion_event_range"=#{motion_event_range},
+    "deferred_location_event_type"=#{deferred_location_event_type},
+    "geofence_type"=#{geofence_type}, "geofence_id"=#{geofence_id}, "motion_event_range"=#{motion_event_range},
     "civic_address"=#{civic_address}, "barometric_pressure"=#{barometric_pressure},
-    "physical_address"=#{physical_address}, "internet_address"=#{internet_address}, "last_geolocation_response"=#{last_geolocation_response}, "cause"=#{cause}
+    "physical_address"=#{physical_address}, "internet_address"=#{internet_address}, "radio_access_type"=#{radio_access_type},
+    "last_geolocation_response"=#{last_geolocation_response}, "cause"=#{cause}
     WHERE "sid"=#{sid};
   </update>
 </mapper>
+

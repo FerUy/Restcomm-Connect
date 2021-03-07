@@ -172,18 +172,23 @@
             <uri>http://127.0.0.1:2080</uri>
         </telestax-proxy>
 
-        <!-- TelScale USSD Gateway -->
+        <!-- Extended USSD Gateway -->
         <ussd-gateway>
             <ussd-gateway-uri></ussd-gateway-uri>
             <ussd-gateway-user></ussd-gateway-user>
             <ussd-gateway-password></ussd-gateway-password>
         </ussd-gateway>
 
-        <!-- TelScale GMLC -->
+        <!-- Extended GMLC -->
         <gmlc>
-            <gmlc-uri>http://GMLC-IP:port/restcomm/gmlc/rest?msisdn=</gmlc-uri> <!-- Change GMLC-IP:port to appropriate value-->
-            <gmlc-user></gmlc-user>
-            <gmlc-password></gmlc-password>
+            <gmlc-uri>http://GMLC-IP:port/restcomm/gmlc/rest</gmlc-uri> <!-- Change GMLC-IP:port to appropriate value-->
+            <token></token>
+            <lcs-callback-url></lcs-callback-url>
+            <lcs-client-type></lcs-client-type> <!-- Possible values: emergency, vas, operator or lawful -->
+            <lcs-client-name></lcs-client-name> <!-- Valid only if lcs-client-type equals vas; must be consistent with the lcs-client-fi value -->
+            <lcs-client-fi></lcs-client-fi> <!-- Possible values: name, email, msisdn, url or sip -->
+            <lcs-client-external-id></lcs-client-external-id> <!-- ISDN address whose length must not exceed 16 digits -->
+            <lcs-client-internal-id></lcs-client-internal-id> <!-- Possible values: 0 (broadcastService), 1 (oandMHPLMN), 2 (oandMVPLMN), 3 (anonymousLocation) or 4 (targetMSsubscribedServiceSIP) -->
         </gmlc>
 
         <!-- Each permission is represented as three columns Domain:Action:Target
@@ -405,7 +410,7 @@
         timeout-per-notification: if several notifications are sent in one step, timeout increase for each. Defaults to 500.
     -->
     <rcmlserver-api>
-        <base-url>/restcomm-rvd/services</base-url>
+        <base-url>/visual-designer/services</base-url>
         <notifications>true</notifications>
         <timeout>5000</timeout>
         <timeout-per-notification>500</timeout-per-notification>
